@@ -1,0 +1,12 @@
+{
+  "name": "bringMeNative",
+  "displayName": "bringMeNative",
+  "expo": {
+    "name": "bringMeNative",
+    "slug": "bringMeNative",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
