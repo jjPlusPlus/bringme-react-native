@@ -1,0 +1,7 @@
+{
+  "react-native": {
+    "ml_vision_label_model": true,
+    "ml_vision_image_label_model": true,
+    "ml_kit_image_labeling": true
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "304690382602",
+    "firebase_url": "https://bringme-d9ab1.firebaseio.com",
+    "project_id": "bringme-d9ab1",
+    "storage_bucket": "bringme-d9ab1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:304690382602:android:c8c35fe3cb4cbcfc0c5cf3",
+        "android_client_info": {
+          "package_name": "com.bringmenative"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "304690382602-1j7cgqe2jls385f419mnu4es3u8m0u6a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqLOrotMGx5FILfc7jbrlliWlAzS--aQc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "304690382602-1j7cgqe2jls385f419mnu4es3u8m0u6a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

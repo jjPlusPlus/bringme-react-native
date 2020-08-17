@@ -78,6 +78,16 @@ target 'bringMeNative' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
+  pod 'Firebase/Analytics'
+  pod 'Firebase/Database'  
+  pod 'Firebase/Firestore'
+  pod 'Firebase/Storage'
+  pod 'Firebase/Functions'
+  pod 'Firebase/Auth'
+  pod 'Firebase/MLVision'
+  pod 'Firebase/MLVisionLabelModel'
+  pod 'Firebase/Performance'
+
   use_unimodules!
   use_native_modules!
 
