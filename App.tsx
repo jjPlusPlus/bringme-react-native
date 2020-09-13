@@ -5,21 +5,27 @@ import { createStackNavigator } from '@react-navigation/stack';
 import React, { useState, useEffect } from 'react'
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth'
 
-import { StatusBar } from 'expo-status-bar'
 import { StyleSheet, Text, View } from 'react-native'
 
-import Lobby from './components/Lobby'
-import Match from './components/Match'
-import Login from './components/Login'
-import Registration from './components/Registration'
+import Login from './components/screens/Login'
+import Registration from './components/screens/Registration'
+import Home from './components/screens/Home'
+import Settings from './components/screens/Settings'
+import Multiplayer from './components/screens/Multiplayer'
+import Matchmaking from './components/screens/Matchmaking'
+import Match from './components/screens/Match'
+
 
 export type RootStackParamList = {
   Login: undefined
   Register: undefined
   Auth: undefined
-  Lobby: undefined
+  Home: undefined
+  Settings: undefined
+  Multiplayer: undefined
+  Matchmaking: undefined
   Match: undefined
-};
+}
 
 export default function App() {
   const [loading, setLoading] = useState<boolean>(true)
@@ -43,13 +49,27 @@ export default function App() {
       <Stack.Navigator initialRouteName="Login">
         {user ? (
           <>
-            <Stack.Screen name="Lobby" options={{ title: 'Lobby' }}>
-              {props => <Lobby {...props} user={user}/>}
+            <Stack.Screen name="Home" options={{ title: 'Home' }}>
+              {props => <Home {...props} user={user} />}
             </Stack.Screen>
-            <Stack.Screen name="Match" component={Match} options={{ title: 'Match' }} />
+
+            <Stack.Screen name="Settings" options={{ title: 'Settings' }} >
+              {props => <Settings {...props} user={user} />}
+            </Stack.Screen>
+
+            <Stack.Screen name="Match" options={{ title: 'Match' }} >
+              {props => <Match {...props} />}
+            </Stack.Screen>
+
+            <Stack.Screen name="Multiplayer" options={{ title: 'Multiplayer' }} >
+              {props => <Multiplayer {...props} user={user} />}
+            </Stack.Screen>
+
+            <Stack.Screen name="Matchmaking" options={{ title: 'Matchmaking' }} >
+              {props => <Matchmaking {...props} user={user} />}
+            </Stack.Screen>
           </>
         ) : (
-          // <Stack.Screen name="Auth" component={Auth} options={{ title: 'Sign In' }} />
           <>
             <Stack.Screen name="Login" component={Login} options={{ title: 'Sign In' }} />
             <Stack.Screen name="Register" component={Registration} options={{ title: 'Sign Up' }} />
