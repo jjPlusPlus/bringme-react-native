@@ -113,12 +113,12 @@ export default function Multiplayer(props: any) {
           return (
             <View style={styles.match}>
               <Text>Status: {item.status}</Text>
-              <Text>Players: {item.players.length}/4</Text>
+              <Text>Players: {item.players?.length}/4</Text>
               <Text>Hosted by: {item.host?.username}</Text>
               
               { /* I can join the match if: */
                 item.host.uid !== user?.id && /* I'm not the host */
-                item.players.length < 4 && /* There is an empty space in [players] */
+                item.players?.length < 4 && /* There is an empty space in [players] */
                 (item.players && !item.players.find(p => p.id === user?.id)) && /* I haven't already joined */
                 (
                   <Button title="Join" onPress={() => joinMatch(item)} />
