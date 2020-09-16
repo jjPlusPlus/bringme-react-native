@@ -18,7 +18,7 @@ Clone this repo, run `npm install`, and then `pod install` inside the /ios direc
 
 ### Todo:
 - Settings page
-  - [] Ability to update username
+  - [X] Ability to update username
   - [] Player stats (Win/Loss, total games played)
 - Multiplayer Lobby & Matchmaking
   - [] The host should be able to Start a match once Players is filled
