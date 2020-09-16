@@ -29,6 +29,7 @@ export default function Settings(props: any) {
           ...data,
           id: querySnapshot.docs[0].id
         }
+        setUsername(data.name)
         return setUser(withId)
       })
   }, [])
