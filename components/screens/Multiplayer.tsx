@@ -55,7 +55,7 @@ export default function Multiplayer(props: any) {
   useEffect(() => {
     firestore()
       .collection('matches')
-      .where('status', 'in', ['matchmaking', 'in-progress'])
+      // .where('status', 'in', ['matchmaking', 'in-progress'])
       .orderBy('created_at', 'desc')
       .limit(100)
       .onSnapshot(querySnapshot => {
