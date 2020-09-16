@@ -14,6 +14,7 @@ interface User {
 export default function Settings(props: any) {
   const [user, setUser] = useState<User | null>(null)
   const [userName, setUsername] = useState('')
+  const [error, setError] = useState({})
   useEffect(() => {
     // get the full current user document
     firestore()
@@ -34,6 +35,19 @@ export default function Settings(props: any) {
       })
   }, [])
 
+  useEffect(() => {
+    validateUsername()
+  }, [userName])
+
+  const validateUsername = () => {
+    if (userName.length < 3) {
+      return setError({userName: "Your username must be at least 3 characters"})
+    }
+    if (userName.match(/[^a-zA-Z0-9]/)) {
+      return setError({userName: "Usernames can only include letters and numbers"})
+    }
+    return setError({})
+  }
   if (!user) {
     return <View style={styles.container}><Text>Error: User Not Found</Text></View>
   }
@@ -48,6 +62,7 @@ export default function Settings(props: any) {
         }}
         defaultValue={user.name}
       />
+      {error.userName && <Text>{error.userName}</Text>}
       <Button onPress={() => auth().signOut().then(() => console.log('User signed out!'))} title="Sign Out" />
     </View>
   )
