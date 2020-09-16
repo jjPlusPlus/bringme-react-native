@@ -61,6 +61,27 @@ export default function Matchmaking(props: any) {
       })
   }, [])
 
+  useEffect(() => {
+    if (match?.status === 'in-progress') {
+      props.navigation.navigate('Match', {
+        matchId: match.id
+      })
+    }
+  }, [match])
+
+  const startMatch = () => {
+    firestore()
+      .collection('matches')
+      .doc(match.id)
+      .update('status', 'in-progress')
+      .then(() => {
+        console.log('Match updated!');
+        props.navigation.navigate('Match', {
+          matchId: match.id
+        })
+      });  
+  }
+
   if (!match) {
     return <View style={styles.container}><Text>Match Not Found</Text></View>
   }
