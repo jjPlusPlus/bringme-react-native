@@ -31,8 +31,7 @@ export default function Matchmaking(props: any) {
     firestore()
       .collection('matches')
       .doc(matchId)
-      .get()
-      .then(documentSnapshot => {
+      .onSnapshot(documentSnapshot => {
         if (!documentSnapshot) {
           return
         }
