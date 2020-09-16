@@ -23,11 +23,28 @@ interface Match {
 
 export default function Matchmaking(props: any) {
   const matchId = props.route.params.matchId
+
+  const [user, setUser] = useState<User | null>(null)
   const [match, setMatch] = useState(null)
 
-
-
   useEffect(() => {
+    // get the full current user document
+    firestore()
+      .collection('users')
+      .where('user', '==', props.user.uid)
+      .get()
+      .then(querySnapshot => {
+        if (!querySnapshot) {
+          return console.error('users query failed')
+        }
+        const data = querySnapshot.docs[0].data()
+        const withId = {
+          ...data,
+          id: querySnapshot.docs[0].id
+        }
+        return setUser(withId)
+      })
+
     firestore()
       .collection('matches')
       .doc(matchId)
@@ -60,6 +77,19 @@ export default function Matchmaking(props: any) {
       <Text>3. {match?.players[2] ? match.players[2].name : "Waiting for player"}</Text>
       <Text>4. {match?.players[3] ? match.players[3].name : "Waiting for player"}</Text>
 
+      {/* If I'm the host, I should be able to start the match if all of the players are present */}
+      {match?.host?.uid === user?.id && match?.status !== 'in-progress' && (
+        <Button onPress={startMatch} disabled={match?.players?.length !== 4} title="Start Match" />
+      )}
+
+      {/* If the match is started and I somehow managed to get here */}
+      {match?.status === 'in-progress' && (
+        <Button 
+          onPress={() => props.navigation.navigate('Match', { matchId: match?.id })} 
+          title="Enter Match" 
+        />
+      )}
+      
     </View>
   )
 }
