@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-import { StyleSheet, Text, View, Button } from 'react-native'
+import { StyleSheet, Text, TextInput, View, Button } from 'react-native'
 
 import auth from '@react-native-firebase/auth'
 import firestore from '@react-native-firebase/firestore'
@@ -13,7 +13,7 @@ interface User {
 
 export default function Settings(props: any) {
   const [user, setUser] = useState<User | null>(null)
-
+  const [userName, setUsername] = useState('')
   useEffect(() => {
     // get the full current user document
     firestore()
@@ -39,7 +39,14 @@ export default function Settings(props: any) {
 
   return (
     <View style={styles.container}>
-      <Text>Coming Soon: Edit username</Text>
+      <TextInput
+        style={{ height: 40 }}
+        placeholder="Username"
+        onChangeText={text => {
+          setUsername(text)
+        }}
+        defaultValue={user.name}
+      />
       <Button onPress={() => auth().signOut().then(() => console.log('User signed out!'))} title="Sign Out" />
     </View>
   )
