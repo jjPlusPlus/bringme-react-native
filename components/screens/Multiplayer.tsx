@@ -27,7 +27,6 @@ export default function Multiplayer(props: any) {
   const [matches, setMatches] = useState([])
 
   useEffect(() => {
-
     // get the full current user document
     firestore()
       .collection('users')
@@ -44,26 +43,38 @@ export default function Multiplayer(props: any) {
         }
         return setUser(withId)
       })
+  }, [props.user])
 
-    // get a collection of all matches
-    // sort by newest first (created_at)
-    // filter out matches with status: in progress, abandoned, complete
+
+  /* 
+    Get a manicured list of collections
+    Sorted by newest-first, limit of 100
+    Only games that are in matchmaking or in progress
+  */
+  useEffect(() => {
     firestore()
       .collection('matches')
+      .where('status', 'in', ['matchmaking', 'in-progress'])
+      .orderBy('created_at', 'desc')
+      .limit(100)
       .onSnapshot(querySnapshot => {
-        const matchCollection:Match[] = [];
-
-        querySnapshot.forEach((documentSnapshot:any) => {
-          const data:Match = documentSnapshot.data()
+        const matchCollection: Match[] = [];
+        querySnapshot?.forEach((documentSnapshot: any) => {
+          // console.log(documentSnapshot)
+          const data: Match = documentSnapshot.data()
           matchCollection.push({
             ...data,
             id: documentSnapshot.id
           });
         });
+
+        // band-aid for a bug...
+        if (!matchCollection.length) { return }
+
         setMatches(matchCollection)
       })
+  }, [])
 
-  }, [props.user])
 
   const createNewLobby = () => {
     firestore()
