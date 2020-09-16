@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View, Button } from 'react-native'
 
 import firestore from '@react-native-firebase/firestore'
 
