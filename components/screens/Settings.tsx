@@ -48,6 +48,38 @@ export default function Settings(props: any) {
     }
     return setError({})
   }
+
+  const saveUsername = () => {
+    if (Object.keys(error).length) {
+      return 
+    }
+    /* Faking uniqueness*/
+    firestore()
+      .collection('users')
+      .where('name', '==', userName)
+      .get()
+      .then(querySnapshot => {
+        if (!querySnapshot) {
+          return console.error('update failed while looking for duplicates')
+        }
+        const existing = querySnapshot.docs.length
+        if (existing) {
+          return setError({userName: "That username is taken"})
+        }
+        // if it hasn't been found, update the username
+        firestore()
+          .collection('users')
+          .doc(user.id)
+          .update({
+            name: userName
+          })
+          .then(() => {
+            console.log('Username updated!');
+            // some sort of nice notification here
+          });  
+      })
+  }
+
   if (!user) {
     return <View style={styles.container}><Text>Error: User Not Found</Text></View>
   }
@@ -63,6 +95,7 @@ export default function Settings(props: any) {
         defaultValue={user.name}
       />
       {error.userName && <Text>{error.userName}</Text>}
+      <Button onPress={saveUsername} title="Save" />
       <Button onPress={() => auth().signOut().then(() => console.log('User signed out!'))} title="Sign Out" />
     </View>
   )
