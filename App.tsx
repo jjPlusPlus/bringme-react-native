@@ -57,16 +57,16 @@ export default function App() {
               {props => <Settings {...props} user={user} />}
             </Stack.Screen>
 
-            <Stack.Screen name="Match" options={{ title: 'Match' }} >
-              {props => <Match {...props} />}
-            </Stack.Screen>
-
             <Stack.Screen name="Multiplayer" options={{ title: 'Multiplayer' }} >
               {props => <Multiplayer {...props} user={user} />}
             </Stack.Screen>
 
             <Stack.Screen name="Matchmaking" options={{ title: 'Matchmaking' }} >
               {props => <Matchmaking {...props} user={user} />}
+            </Stack.Screen>
+
+            <Stack.Screen name="Match" options={{ title: 'Match' }} >
+              {props => <Match {...props} user={user} />}
             </Stack.Screen>
           </>
         ) : (
