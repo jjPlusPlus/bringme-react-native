@@ -24,10 +24,12 @@ Clone this repo, run `npm install`, and then `pod install` inside the /ios direc
   - [] The host should be able to Start a match once Players is filled
     - [] When the host starts the match, the host and players should be moved to the /match/:matchId screen
       - [] If I'm a Player in a Match Lobby, and the Match['status'] goes from 'matchmaking' to 'starting', then I should navigate to /match/:matchId
-  - [] A player should only be able to join one match at a time
+  - [X] A player should only be able to join or host one match at a time
   - [] Players must confirm they want to back out of a Match Lobby 
   - [] Players should be removed if they leave a Match Lobby
   - [] [#notSureIf]: A Host should enter the Match [words] before starting the match
+  - [] Sorting on MultiPlayer screen: 'my' match (whether as a host or player) should be first  
+  - [] Filtering on MultiPlayer screen: debug broken realtime updates 
   - [] Set up tailwind, and style all initial views
   - [] Generate and implement a WIP logo for development
 

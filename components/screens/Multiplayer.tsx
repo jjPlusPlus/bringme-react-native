@@ -131,8 +131,8 @@ export default function Multiplayer(props: any) {
 
   return (
     <View style={styles.container}>
+
       {!committed && <Button title="Host a Match" onPress={() => createNewLobby()} />}
-      
 
       <Text>Matches</Text>
       <FlatList
