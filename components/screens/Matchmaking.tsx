@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View, Alert } from 'react-native'
 
 import firestore from '@react-native-firebase/firestore'
 
@@ -23,11 +23,28 @@ interface Match {
 
 export default function Matchmaking(props: any) {
   const matchId = props.route.params.matchId
+
+  const [user, setUser] = useState<User | null>(null)
   const [match, setMatch] = useState(null)
 
-
-
   useEffect(() => {
+    // get the full current user document
+    firestore()
+      .collection('users')
+      .where('user', '==', props.user.uid)
+      .get()
+      .then(querySnapshot => {
+        if (!querySnapshot) {
+          return console.error('users query failed')
+        }
+        const data = querySnapshot.docs[0].data()
+        const withId = {
+          ...data,
+          id: querySnapshot.docs[0].id
+        }
+        return setUser(withId)
+      })
+
     firestore()
       .collection('matches')
       .doc(matchId)
