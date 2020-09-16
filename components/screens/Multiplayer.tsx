@@ -25,6 +25,7 @@ interface Match {
 export default function Multiplayer(props: any) {
   const [user, setUser] = useState<User | null>(null)
   const [matches, setMatches] = useState([])
+  const [committed, setCommitted] = useState(true)
 
   useEffect(() => {
     // get the full current user document
@@ -75,6 +76,22 @@ export default function Multiplayer(props: any) {
       })
   }, [])
 
+  /* Check matches to see if user is a host or player already */
+  useEffect(() => {
+    const playing = matches?.find(m => {
+      return m.players?.find(p => {
+        return p.id === user?.id
+      })
+    })
+
+    const hosting = matches?.find(m => m.host.uid === user?.id)
+
+    if (playing || hosting) {
+      setCommitted(true)
+    } else {
+      setCommitted(false)
+    }
+  }, [matches])
 
   const createNewLobby = () => {
     firestore()
@@ -130,7 +147,8 @@ export default function Multiplayer(props: any) {
               { /* I can join the match if: */
                 item.host.uid !== user?.id && /* I'm not the host */
                 item.players.length < 4 && /* There is an empty space in [players] */
-                (item.players && !item.players.find(p => p.id === user?.id)) && /* I haven't already joined */
+                (item.players && !item.players.find(p => p.id === user?.id)) && /* I haven't already joined this match */
+                !committed && /* I haven't joined ANY active match */
                 (
                   <Button title="Join" onPress={() => joinMatch(item)} />
                 )
