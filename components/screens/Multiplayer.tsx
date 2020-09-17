@@ -25,9 +25,9 @@ interface Match {
 export default function Multiplayer(props: any) {
   const [user, setUser] = useState<User | null>(null)
   const [matches, setMatches] = useState([])
+  const [committed, setCommitted] = useState(true)
 
   useEffect(() => {
-
     // get the full current user document
     firestore()
       .collection('users')
@@ -44,26 +44,54 @@ export default function Multiplayer(props: any) {
         }
         return setUser(withId)
       })
+  }, [props.user])
 
-    // get a collection of all matches
-    // sort by newest first (created_at)
-    // filter out matches with status: in progress, abandoned, complete
+
+  /* 
+    Get a manicured list of collections
+    Sorted by newest-first, limit of 100
+    Only games that are in matchmaking or in progress
+  */
+  useEffect(() => {
     firestore()
       .collection('matches')
+      // .where('status', 'in', ['matchmaking', 'in-progress'])
+      .orderBy('created_at', 'desc')
+      .limit(100)
       .onSnapshot(querySnapshot => {
-        const matchCollection:Match[] = [];
-
-        querySnapshot.forEach((documentSnapshot:any) => {
-          const data:Match = documentSnapshot.data()
+        const matchCollection: Match[] = [];
+        querySnapshot?.forEach((documentSnapshot: any) => {
+          // console.log(documentSnapshot)
+          const data: Match = documentSnapshot.data()
           matchCollection.push({
             ...data,
             id: documentSnapshot.id
           });
         });
+
+        // band-aid for a bug...
+        if (!matchCollection.length) { return }
+
         setMatches(matchCollection)
       })
+  }, [])
 
-  }, [props.user])
+  /* Check matches to see if user is a host or player already */
+  useEffect(() => {
+    const playing = matches?.find(m => {
+      return m.players?.find(p => {
+        return p.id === user?.id
+      })
+    })
+
+    const hosting = matches?.find(m => m.host.uid === user?.id)
+
+    if (playing || hosting) {
+      setCommitted(true)
+    } else {
+      setCommitted(false)
+    }
+  }, [matches])
 
   const createNewLobby = () => {
     firestore()
@@ -103,7 +131,8 @@ export default function Multiplayer(props: any) {
 
   return (
     <View style={styles.container}>
-      <Button title="Host a Match" onPress={() => createNewLobby()}/>
+
+      {!committed && <Button title="Host a Match" onPress={() => createNewLobby()} />}
 
       <Text>Matches</Text>
       <FlatList
@@ -118,8 +147,9 @@ export default function Multiplayer(props: any) {
               
               { /* I can join the match if: */
                 item.host.uid !== user?.id && /* I'm not the host */
-                item.players?.length < 4 && /* There is an empty space in [players] */
-                (item.players && !item.players.find(p => p.id === user?.id)) && /* I haven't already joined */
+                item.players.length < 4 && /* There is an empty space in [players] */
+                (item.players && !item.players.find(p => p.id === user?.id)) && /* I haven't already joined this match */
+                !committed && /* I haven't joined ANY active match */
                 (
                   <Button title="Join" onPress={() => joinMatch(item)} />
                 )
