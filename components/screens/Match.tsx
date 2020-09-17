@@ -4,10 +4,10 @@ import { RNCamera } from 'react-native-camera'
 import { StyleSheet, Text, View } from 'react-native'
 
 export default function Match() {
-  let camera = useRef<RNCamera | null>(null)
+  // let camera = useRef<RNCamera | null>(null)
   return (
     <View style={styles.container}>
-      <RNCamera
+      {/* <RNCamera
         ref={ref => {
           camera = ref;
         }}
@@ -26,7 +26,7 @@ export default function Match() {
           buttonPositive: 'Ok',
           buttonNegative: 'Cancel',
         }}
-      />
+      /> */}
     </View>
   )
 }

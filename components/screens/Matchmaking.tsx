@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-import { StyleSheet, Text, View, Alert } from 'react-native'
-
+import { StyleSheet, Text, View, Alert, Button } from 'react-native'
 import firestore from '@react-native-firebase/firestore'
 
 interface User {
@@ -48,8 +47,7 @@ export default function Matchmaking(props: any) {
     firestore()
       .collection('matches')
       .doc(matchId)
-      .get()
-      .then(documentSnapshot => {
+      .onSnapshot(documentSnapshot => {
         if (!documentSnapshot) {
           return
         }
@@ -92,6 +90,27 @@ export default function Matchmaking(props: any) {
     })
   }, [])
 
+  useEffect(() => {
+    if (match?.status === 'in-progress') {
+      props.navigation.navigate('Match', {
+        matchId: match.id
+      })
+    }
+  }, [match])
+
+  const startMatch = () => {
+    firestore()
+      .collection('matches')
+      .doc(match.id)
+      .update('status', 'in-progress')
+      .then(() => {
+        console.log('Match updated!');
+        props.navigation.navigate('Match', {
+          matchId: match.id
+        })
+      });  
+  }
+
   if (!match) {
     return <View style={styles.container}><Text>Match Not Found</Text></View>
   }
@@ -108,6 +127,19 @@ export default function Matchmaking(props: any) {
       <Text>3. {match?.players[2] ? match.players[2].name : "Waiting for player"}</Text>
       <Text>4. {match?.players[3] ? match.players[3].name : "Waiting for player"}</Text>
 
+      {/* If I'm the host, I should be able to start the match if all of the players are present */}
+      {match?.host?.uid === user?.id && match?.status !== 'in-progress' && (
+        <Button onPress={startMatch} disabled={match?.players?.length !== 4} title="Start Match" />
+      )}
+
+      {/* If the match is started and I somehow managed to get here */}
+      {match?.status === 'in-progress' && (
+        <Button 
+          onPress={() => props.navigation.navigate('Match', { matchId: match?.id })} 
+          title="Enter Match" 
+        />
+      )}
+      
     </View>
   )
 }

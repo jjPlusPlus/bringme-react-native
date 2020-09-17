@@ -18,12 +18,12 @@ Clone this repo, run `npm install`, and then `pod install` inside the /ios direc
 
 ### Todo:
 - Settings page
-  - [] Ability to update username
+  - [X] Ability to update username
   - [] Player stats (Win/Loss, total games played)
 - Multiplayer Lobby & Matchmaking
-  - [] The host should be able to Start a match once Players is filled
-    - [] When the host starts the match, the host and players should be moved to the /match/:matchId screen
-      - [] If I'm a Player in a Match Lobby, and the Match['status'] goes from 'matchmaking' to 'starting', then I should navigate to /match/:matchId
+  - [x] The host should be able to Start a match once Players is filled
+    - [x] When the host starts the match, the host and players should be moved to the /match/:matchId screen
+      - [x] If I'm a Player in a Match Lobby, and the Match['status'] goes from 'matchmaking' to 'starting', then I should navigate to /match/:matchId
   - [] A player should only be able to join one match at a time
   - [X] Players must confirm they want to back out of a Match Lobby 
   - [X] Players should be removed if they leave a Match Lobby
