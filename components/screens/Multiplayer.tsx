@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react'
 
-import { StyleSheet, Text, View, Button, FlatList } from 'react-native'
+import { ActivityIndicator, FlatList, Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
 import firestore from '@react-native-firebase/firestore'
+import { t } from 'react-native-tailwindcss';
+import styled from 'styled-components/native';
 
 interface User {
   uid?: string,
