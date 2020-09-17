@@ -17,12 +17,16 @@ export default function Register({ navigation }: Props) {
   const [username, setUsername] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [error, setError] = useState<String | null>(null)
+  const [error, setError] = useState({})
+
+  useEffect(() => {
+    validateUsername()
+  }, [username])
 
   const register = async () => {
     // first, check that the username is unique
     // if it's unique, then try to create the new auth account
-    setError(null)
+    setError({})
 
     await firestore()
       .collection('users')
@@ -31,7 +35,7 @@ export default function Register({ navigation }: Props) {
       .then(querySnapshot => {
         // querySnapshot.empty still true if size is 0...?
         if (querySnapshot.size > 0) {
-          return setError('That username is taken!')
+          return setError({userName: 'That username is taken!'})
         }
         auth()
           .createUserWithEmailAndPassword(email, password)
@@ -55,13 +59,23 @@ export default function Register({ navigation }: Props) {
           })
           .catch(error => {
             if (error.code === 'auth/email-already-in-use') {
-              setError('That email address is already in use!')
+              setError({email: 'That email address is already in use!'})
             }
             if (error.code === 'auth/invalid-email') {
-              setError('That email address is invalid!')
+              setError({email: 'That email address is invalid!'})
             }
           })
       })
+  }
+
+  const validateUsername = () => {
+    if (username.length < 3) {
+      return setError({ userName: "Your username must be at least 3 characters" })
+    }
+    if (username.match(/[^a-zA-Z0-9]/)) {
+      return setError({ userName: "Usernames can only include letters and numbers" })
+    }
+    return setError({})
   }
 
   return (
@@ -78,6 +92,9 @@ export default function Register({ navigation }: Props) {
           autoCapitalize="none"
           onChangeText={value => setUsername(value)}
         />
+        {error.userName && (
+          <Text style={styles.error}>{error.userName}</Text>
+        )}
         <TextInput
           placeholder="Email"
           placeholderTextColor="#aaaaaa"
@@ -87,6 +104,9 @@ export default function Register({ navigation }: Props) {
           autoCapitalize="none"
           onChangeText={value => setEmail(value)}
         />
+        {error.email && (
+          <Text style={styles.error}>{error.email}</Text>
+        )}
         <TextInput
           placeholder="Password"
           placeholderTextColor="#aaaaaa"
@@ -98,9 +118,7 @@ export default function Register({ navigation }: Props) {
           autoCapitalize="none"
           onChangeText={value => setPassword(value)}
         />
-        {error && (
-          <Text style={styles.error}>{error}</Text>
-        )}
+        
         <TouchableOpacity
           style={styles.button}
           onPress={() => register()}
