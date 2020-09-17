@@ -49,7 +49,7 @@ export default function App() {
       <Stack.Navigator initialRouteName="Login">
         {user ? (
           <>
-            <Stack.Screen name="Home" options={{ title: 'Home' }}>
+            <Stack.Screen name="Home" options={{ title: 'Home', headerShown: false }}>
               {props => <Home {...props} user={user} />}
             </Stack.Screen>
 
