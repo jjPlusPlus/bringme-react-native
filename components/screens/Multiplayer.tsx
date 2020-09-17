@@ -132,48 +132,65 @@ export default function Multiplayer(props: any) {
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      {!committed &&
+        <View style={[t.mX4]}>
+          <SCard>
+              <HostButton onPress={() => createNewLobby()}>
+                <Image source={require('../../assets/host.png')} style={[ t.hFull, t.objectContain, t.w1_2]}/>
+                <Text style={[t.w1_2, t.text3xl, { fontFamily: 'LuckiestGuy-Regular', color: '#2568EF' }]}>
+                  Host a Match
+                </Text>
+              </HostButton>
+            </SCard>
+        </View>
+      }
+      <ScrollView style={[t.p4, t.wFull]}>
+        <Text style={[ t.text4xl, {fontFamily: 'LuckiestGuy-Regular'}]}>Matches</Text>
+        <FlatList
+          data={matches}
+          numColumns={2}
+          keyExtractor={(m) => m.id}
+          renderItem={({item}) => {
+            return (
+              <MatchCard>
+                <View style={[t.p4, t.pB2]}>
+                  <Text style={[t.fontBold, t.textLg]}>{item.host?.username}'s game</Text>
+                  <View style={[t.flexRow, t.mT1 ]}>
+                    <Text style={[ t.flex1, t.italic ]}>{item.status === 'in-progress' ? item.status : "waiting for players..."}</Text>
+                    {
+                      item.status === 'matchmaking' && <ActivityIndicator />
+                    }
+                  </View>
+                  <NumberPlayers>{item.players.length}/4</NumberPlayers>
+                </View>
+                
+                { /* I can join the match if: */
+                  item.host.uid !== user?.id && /* I'm not the host */
+                  item.players.length < 4 && /* There is an empty space in [players] */
+                  (item.players && !item.players.find(p => p.id === user?.id)) && /* I haven't already joined */
+                  (
+                    <JoinButton title="Join" onPress={() => joinMatch(item)}>
+                      <JoinButtonText>Join</JoinButtonText>
+                    </JoinButton>
+                  )
+                }
 
-      {!committed && <Button title="Host a Match" onPress={() => createNewLobby()} />}
-
-      <Text>Matches</Text>
-      <FlatList
-        data={matches}
-        keyExtractor={(m) => m.id}
-        renderItem={({item}) => {
-          return (
-            <View style={styles.match}>
-              <Text>Status: {item.status}</Text>
-              <Text>Players: {item.players?.length}/4</Text>
-              <Text>Hosted by: {item.host?.username}</Text>
-              
-              { /* I can join the match if: */
-                item.host.uid !== user?.id && /* I'm not the host */
-                item.players.length < 4 && /* There is an empty space in [players] */
-                (item.players && !item.players.find(p => p.id === user?.id)) && /* I haven't already joined this match */
-                !committed && /* I haven't joined ANY active match */
-                (
-                  <Button title="Join" onPress={() => joinMatch(item)} />
-                )
-              }
-
-              { /* I can enter the Match Lobby directly if */
-                item.host.uid === user?.id || /* if I'm the host */
-                (item.players && item.players.find(p => p.id === user?.id)) ? /* I've already joined */
-                (
-                  <Button 
-                    title="Enter" 
-                    onPress={() => props.navigation.navigate('Matchmaking', { 
-                      matchId: item.id
-                    })} 
-                  />
-                ) : null
-              }
-            </View>
-          )
-        }}
-      />
-    </View>
+                { /* I can enter the Match Lobby directly if */
+                  item.host.uid === user?.id || /* if I'm the host */
+                  (item.players && item.players.find(p => p.id === user?.id)) ? /* I've already joined */
+                  (
+                    <JoinButton onPress={() => props.navigation.navigate('Matchmaking', { matchId: item.id })} >
+                      <JoinButtonText>Enter</JoinButtonText>
+                    </JoinButton>
+                  ) : null
+                }
+              </MatchCard>
+            )
+          }}
+        />
+      </ScrollView>
+    </SafeAreaView>
   )
 }
 
