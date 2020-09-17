@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-import { StyleSheet, Text, View, Button } from 'react-native'
-
+import { StyleSheet, Text, View, Alert, Button } from 'react-native'
 import firestore from '@react-native-firebase/firestore'
 
 interface User {
@@ -59,6 +58,36 @@ export default function Matchmaking(props: any) {
         }
         setMatch(withId)
       })
+
+    props.navigation.addListener('beforeRemove', (e) => {
+      e.preventDefault();
+      Alert.alert(
+        'Leave the Match?',
+        'Going back will remove you from this match',
+        [
+          { text: "Don't leave", style: 'cancel', onPress: () => { } },
+          {
+            text: 'Leave',
+            style: 'destructive',
+            onPress: () => {
+              // remove the player from the match
+              const players = match?.players?.filter(p => p.id !== user.id)
+              firestore()
+                .collection('matches')
+                .doc(matchId)
+                .update({
+                  players: players || []
+                })
+                .then(() => {
+                  console.log('Player removed');
+                  props.navigation.dispatch(e.data.action)
+                });  
+              
+            },
+          },
+        ]
+      );
+    })
   }, [])
 
   useEffect(() => {
