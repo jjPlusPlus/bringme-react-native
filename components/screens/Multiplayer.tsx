@@ -131,25 +131,49 @@ export default function Multiplayer(props: any) {
       });  
   }
 
+  const EmptyMatches = () => {
+    return (
+      <View style={[ t.flexGrow, t.hFull, t.justifyCenter]}>
+        <Image source={require('../../assets/empty-matches.png')} style={[ t.h64, t.objectContain, t.wFull]}/>
+        <View>
+          <Text style={[ t.fontBold, t.textCenter, t.textXl ]}>Aw, no one's playing.</Text>
+          <Text style={[ t.fontBold, t.textCenter, t.textXl ]}>Go start a match!</Text>
+        </View>
+        
+      </View>
+    )
+  }
+
   return (
     <SafeAreaView style={styles.container}>
-      {!committed &&
-        <View style={[t.mX4]}>
-          <SCard>
-              <HostButton onPress={() => createNewLobby()}>
-                <Image source={require('../../assets/host.png')} style={[ t.hFull, t.objectContain, t.w1_2]}/>
-                <Text style={[t.w1_2, t.text3xl, { fontFamily: 'LuckiestGuy-Regular', color: '#2568EF' }]}>
-                  Host a Match
-                </Text>
-              </HostButton>
-            </SCard>
-        </View>
-      }
-      <ScrollView style={[t.p4, t.wFull]}>
+      <View style={[t.mX4]}>
+        <SCard style={ committed && [t.bgGray400] }>
+            <TouchableOpacity onPress={() => createNewLobby()} disabled={committed}>
+              { !committed ?
+                <HostButton>
+                  <Image source={require('../../assets/host.png')} style={[ t.hFull, t.objectContain, t.w1_2]}/>
+                  <Text style={[t.w1_2, t.text3xl, { fontFamily: 'LuckiestGuy-Regular', color: '#2568EF' }]}>
+                    Host a Match
+                  </Text>
+                </HostButton>
+                :
+                <HostButton>
+                  <Image source={require('../../assets/no-host.png')} style={[ t.hFull, t.objectContain, t.w1_2]}/>
+                  <Text style={[t.w1_2, t.text3xl, t.textGray600, { fontFamily: 'LuckiestGuy-Regular' }]}>
+                    Already in a match!
+                  </Text>
+                </HostButton>
+              }
+            </TouchableOpacity>
+          </SCard>
+      </View>
+      <View style={[t.hFull, t.p4, t.wFull]}>
         <Text style={[ t.text4xl, {fontFamily: 'LuckiestGuy-Regular'}]}>Matches</Text>
         <FlatList
+          contentContainerStyle={ matches.length === 0 && [t.flexGrow, t.justifyCenter, { maxHeight: 500}] }
           data={matches}
           numColumns={2}
+          ListEmptyComponent={EmptyMatches()}
           keyExtractor={(m) => m.id}
           renderItem={({item}) => {
             return (
@@ -189,7 +213,7 @@ export default function Multiplayer(props: any) {
             )
           }}
         />
-      </ScrollView>
+      </View>
     </SafeAreaView>
   )
 }
@@ -210,7 +234,7 @@ const SCard = styled(View)`
   ${[ t.h32, t.p4, t.m4, t.roundedLg, t.selfCenter, t.shadow, t.wFull, { backgroundColor: '#FFE8E7'} ]}
 `;
 
-const HostButton = styled(TouchableOpacity)`
+const HostButton = styled(View)`
   ${[ t.flexRow, t.hFull, t.itemsCenter, t.wFull ]}
 `;
 
