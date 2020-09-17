@@ -142,7 +142,7 @@ export default function Multiplayer(props: any) {
           return (
             <View style={styles.match}>
               <Text>Status: {item.status}</Text>
-              <Text>Players: {item.players.length}/4</Text>
+              <Text>Players: {item.players?.length}/4</Text>
               <Text>Hosted by: {item.host?.username}</Text>
               
               { /* I can join the match if: */

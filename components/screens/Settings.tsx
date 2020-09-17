@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-import { StyleSheet, Text, View, Button } from 'react-native'
+import { StyleSheet, Text, TextInput, View, Button } from 'react-native'
 
 import auth from '@react-native-firebase/auth'
 import firestore from '@react-native-firebase/firestore'
@@ -13,7 +13,8 @@ interface User {
 
 export default function Settings(props: any) {
   const [user, setUser] = useState<User | null>(null)
-
+  const [userName, setUsername] = useState('')
+  const [error, setError] = useState({})
   useEffect(() => {
     // get the full current user document
     firestore()
@@ -29,9 +30,55 @@ export default function Settings(props: any) {
           ...data,
           id: querySnapshot.docs[0].id
         }
+        setUsername(data.name)
         return setUser(withId)
       })
   }, [])
+
+  useEffect(() => {
+    validateUsername()
+  }, [userName])
+
+  const validateUsername = () => {
+    if (userName.length < 3) {
+      return setError({userName: "Your username must be at least 3 characters"})
+    }
+    if (userName.match(/[^a-zA-Z0-9]/)) {
+      return setError({userName: "Usernames can only include letters and numbers"})
+    }
+    return setError({})
+  }
+
+  const saveUsername = () => {
+    if (Object.keys(error).length) {
+      return 
+    }
+    /* Faking uniqueness*/
+    firestore()
+      .collection('users')
+      .where('name', '==', userName)
+      .get()
+      .then(querySnapshot => {
+        if (!querySnapshot) {
+          return console.error('update failed while looking for duplicates')
+        }
+        const existing = querySnapshot.docs.length
+        if (existing) {
+          return setError({userName: "That username is taken"})
+        }
+        // if it hasn't been found, update the username
+        firestore()
+          .collection('users')
+          .doc(user.id)
+          .update({
+            name: userName
+          })
+          .then(() => {
+            console.log('Username updated!');
+            // some sort of nice notification here
+          });  
+      })
+  }
 
   if (!user) {
     return <View style={styles.container}><Text>Error: User Not Found</Text></View>
@@ -39,7 +86,16 @@ export default function Settings(props: any) {
 
   return (
     <View style={styles.container}>
-      <Text>Coming Soon: Edit username</Text>
+      <TextInput
+        style={{ height: 40 }}
+        placeholder="Username"
+        onChangeText={text => {
+          setUsername(text)
+        }}
+        defaultValue={user.name}
+      />
+      {error.userName && <Text>{error.userName}</Text>}
+      <Button onPress={saveUsername} title="Save" />
       <Button onPress={() => auth().signOut().then(() => console.log('User signed out!'))} title="Sign Out" />
     </View>
   )

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-import { StyleSheet, Text, View } from 'react-native'
-
+import { StyleSheet, Text, View, Alert, Button } from 'react-native'
 import firestore from '@react-native-firebase/firestore'
 
 interface User {
@@ -23,16 +22,32 @@ interface Match {
 
 export default function Matchmaking(props: any) {
   const matchId = props.route.params.matchId
+
+  const [user, setUser] = useState<User | null>(null)
   const [match, setMatch] = useState(null)
 
-
-
   useEffect(() => {
+    // get the full current user document
+    firestore()
+      .collection('users')
+      .where('user', '==', props.user.uid)
+      .get()
+      .then(querySnapshot => {
+        if (!querySnapshot) {
+          return console.error('users query failed')
+        }
+        const data = querySnapshot.docs[0].data()
+        const withId = {
+          ...data,
+          id: querySnapshot.docs[0].id
+        }
+        return setUser(withId)
+      })
+
     firestore()
       .collection('matches')
       .doc(matchId)
-      .get()
-      .then(documentSnapshot => {
+      .onSnapshot(documentSnapshot => {
         if (!documentSnapshot) {
           return
         }
@@ -43,7 +58,58 @@ export default function Matchmaking(props: any) {
         }
         setMatch(withId)
       })
+
+    props.navigation.addListener('beforeRemove', (e) => {
+      e.preventDefault();
+      Alert.alert(
+        'Leave the Match?',
+        'Going back will remove you from this match',
+        [
+          { text: "Don't leave", style: 'cancel', onPress: () => { } },
+          {
+            text: 'Leave',
+            style: 'destructive',
+            onPress: () => {
+              // remove the player from the match
+              const players = match?.players?.filter(p => p.id !== user.id)
+              firestore()
+                .collection('matches')
+                .doc(matchId)
+                .update({
+                  players: players || []
+                })
+                .then(() => {
+                  console.log('Player removed');
+                  props.navigation.dispatch(e.data.action)
+                });  
+              
+            },
+          },
+        ]
+      );
+    })
   }, [])
+
+  useEffect(() => {
+    if (match?.status === 'in-progress') {
+      props.navigation.navigate('Match', {
+        matchId: match.id
+      })
+    }
+  }, [match])
+
+  const startMatch = () => {
+    firestore()
+      .collection('matches')
+      .doc(match.id)
+      .update('status', 'in-progress')
+      .then(() => {
+        console.log('Match updated!');
+        props.navigation.navigate('Match', {
+          matchId: match.id
+        })
+      });  
+  }
 
   if (!match) {
     return <View style={styles.container}><Text>Match Not Found</Text></View>
@@ -61,6 +127,19 @@ export default function Matchmaking(props: any) {
       <Text>3. {match?.players[2] ? match.players[2].name : "Waiting for player"}</Text>
       <Text>4. {match?.players[3] ? match.players[3].name : "Waiting for player"}</Text>
 
+      {/* If I'm the host, I should be able to start the match if all of the players are present */}
+      {match?.host?.uid === user?.id && match?.status !== 'in-progress' && (
+        <Button onPress={startMatch} disabled={match?.players?.length !== 4} title="Start Match" />
+      )}
+
+      {/* If the match is started and I somehow managed to get here */}
+      {match?.status === 'in-progress' && (
+        <Button 
+          onPress={() => props.navigation.navigate('Match', { matchId: match?.id })} 
+          title="Enter Match" 
+        />
+      )}
+      
     </View>
   )
 }
