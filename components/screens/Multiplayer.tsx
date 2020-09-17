@@ -181,8 +181,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   match: {
     borderColor: '#000',
@@ -190,3 +188,28 @@ const styles = StyleSheet.create({
     marginVertical: 2
   }
 })
+
+const SCard = styled(View)`
+  ${[ t.h32, t.p4, t.m4, t.roundedLg, t.selfCenter, t.shadow, t.wFull, { backgroundColor: '#FFE8E7'} ]}
+`;
+
+const HostButton = styled(TouchableOpacity)`
+  ${[ t.flexRow, t.hFull, t.itemsCenter, t.wFull ]}
+`;
+
+const MatchCard = styled(View)`
+  ${[ t.bgGray200, t.mR2, t.mY1, t.roundedLg, t.w1_2 ]}
+`;
+
+const NumberPlayers = styled(Text)`
+  ${[ t.opacity25, t.pT4, t.selfCenter, t.text5xl, t.textGray900, { fontFamily: 'LuckiestGuy-Regular' } ]}
+`;
+
+const JoinButton = styled(TouchableOpacity)`
+  ${[ t.p2, t.roundedBLg, { background: '#2568EF'} ]}
+`;
+
+const JoinButtonText = styled(Text)`
+  ${[ t.fontBold, t.textCenter, t.textLg, t.textWhite, t.uppercase, { fontFamily: 'LuckiestGuy-Regular' } ]}
+`;
+
