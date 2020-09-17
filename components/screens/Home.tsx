@@ -34,7 +34,9 @@ export default function Home(props:any) {
       <View style={[t.flex1, t.wFull]}>
         <Image source={require('../../assets/list.png')} style={[ t.objectContain, t.wFull, { height: 350 } ]} />
         <View style={[t.p4]}>
-          <Text style={[t.text3xl]}>Hey, {user?.name || "..."}</Text>
+          <Text style={[t.text3xl]}>
+            Hey,<Text style={[t.fontBold, { color: '#FF564F'} ]}> {user?.name || "..."}</Text>
+          </Text>
         </View>
       </View>
       <View style={[t.mB8, t.pR8, t.selfStart, t.wFull]}>
