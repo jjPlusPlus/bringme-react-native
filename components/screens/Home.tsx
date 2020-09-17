@@ -43,6 +43,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
   },
 })
+
+const StyledButton = styled(TouchableOpacity)`
+  ${[t.justifyCenter, t.h20, t.p4, t.mY2, { backgroundColor: '#FFE8E7', borderTopRightRadius: 20, borderBottomRightRadius: 20}]}
+`;
+
+const StyledButtonText = styled(Text)`
+  ${[t.fontBold,t.pT2, t.text3xl, { color: '#2568EF', fontFamily: 'LuckiestGuy-Regular'}]}
+`;
