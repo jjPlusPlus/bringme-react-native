@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react'
 
-import { StyleSheet, Text, TextInput, View, Button } from 'react-native'
+import {Button, Image, StyleSheet, Text, TextInput, View  } from 'react-native'
 
 import auth from '@react-native-firebase/auth'
 import firestore from '@react-native-firebase/firestore'
+import { t } from 'react-native-tailwindcss'
+import styled from 'styled-components/native'
 
 interface User {
   name: string,
