@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import auth from '@react-native-firebase/auth'
 
-import { StyleSheet, Text, TextInput, TouchableOpacity, Button, View } from 'react-native'
+import { Image, ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity, Button, View } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 import { RootStackParamList } from '../App'
 import { StackNavigationProp } from '@react-navigation/stack'
+import { t } from 'react-native-tailwindcss'
+import styled from 'styled-components/native'
+
 type AuthScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Auth'>
 
 type Props = {
@@ -22,23 +25,30 @@ export default function Login({ navigation }: Props) {
 
   return (
     <View style={styles.container}>
+      <View style={[t.mT4, t.pL8, t.pR4, t.wFull]}>
+        <Image source={require('../../assets/logo.png')} style={[t.objectContain, t.selfEnd, { width: '80%' }]} />
+      </View>
       <KeyboardAwareScrollView
         contentContainerStyle={styles.scrollView}
         keyboardShouldPersistTaps="always">
-        <TextInput
+        <View style={[t.p4]}>
+          <Image source={require('../../assets/nature.png')} style={[t.objectContain, t.selfCenter, { height: 250 } ]} />
+          <Text style={[t.p4, t.textCenter]}>
+            A fun description about Bring Me here.
+          </Text>
+        </View>
+        <StyledInput
           placeholder="Email"
           placeholderTextColor="#aaaaaa"
           value={email}
-          style={styles.authInput}
           underlineColorAndroid="transparent"
           autoCapitalize="none"
           onChangeText={value => setEmail(value)}
         />
-        <TextInput
+        <StyledInput
           placeholder="Password"
           placeholderTextColor="#aaaaaa"
           value={password}
-          style={styles.authInput}
           maxLength={15}
           secureTextEntry={true}
           underlineColorAndroid="transparent"
@@ -46,17 +56,16 @@ export default function Login({ navigation }: Props) {
 
           onChangeText={value => setPassword(value)}
         />
-        <TouchableOpacity 
-          style={styles.button}
+        <StyledButton 
           onPress={() => logIn()}
         >
-          <Text style={styles.buttonTitle}>
+          <StyledButtonText>
             Sign In
-          </Text>
-        </TouchableOpacity>
+          </StyledButtonText>
+        </StyledButton>
         <View style={styles.footer}>
           <Text style={styles.signUpText}>
-            Don't have an account? <Text style={styles.signUpLink} onPress={() => navigation.navigate('Register')}>Sign Up</Text>
+            Don't have an account? <Text style={{color: '#2568EF'}} onPress={() => navigation.navigate('Register')}>Sign Up</Text>
           </Text>
         </View>
         
@@ -70,7 +79,7 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     flex: 1,
-    backgroundColor: '#efefef'
+    backgroundColor: '#fff'
   },
   scrollView: { 
     flex: 1,
@@ -117,3 +126,15 @@ const styles = StyleSheet.create({
     fontSize: 16
   }
 })
+
+const StyledInput = styled(TextInput)`
+  ${[t.border4, t.m3, t.p4, { borderColor: '#2568EF', borderRadius: 20 }]}
+`;
+
+const StyledButton = styled(TouchableOpacity)`
+  ${[t.p4, t.m3, { backgroundColor: '#FFE8E7', borderRadius: 20 }]}
+`;
+
+const StyledButtonText = styled(Text)`
+  ${[t.fontBold,t.pT2, t.textCenter, t.textXl, { color: '#2568EF', fontFamily: 'LuckiestGuy-Regular'}]}
+`;
