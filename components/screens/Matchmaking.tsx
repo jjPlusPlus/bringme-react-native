@@ -20,6 +20,8 @@ interface Match {
   status: string
 }
 
+import { MATCH_STATES } from './constants.js'
+
 export default function Matchmaking(props: any) {
   const matchId = props.route.params.matchId
 
@@ -91,7 +93,7 @@ export default function Matchmaking(props: any) {
   }, [])
 
   useEffect(() => {
-    if (match?.status === 'in-progress') {
+    if (match?.status === MATCH_STATES.STARTED) {
       props.navigation.navigate('Match', {
         matchId: match.id
       })
@@ -102,7 +104,7 @@ export default function Matchmaking(props: any) {
     firestore()
       .collection('matches')
       .doc(match.id)
-      .update('status', 'in-progress')
+      .update('status', MATCH_STATES.STARTED)
       .then(() => {
         console.log('Match updated!');
         props.navigation.navigate('Match', {
@@ -128,12 +130,12 @@ export default function Matchmaking(props: any) {
       <Text>4. {match?.players[3] ? match.players[3].name : "Waiting for player"}</Text>
 
       {/* If I'm the host, I should be able to start the match if all of the players are present */}
-      {match?.host?.uid === user?.id && match?.status !== 'in-progress' && (
+      {match?.host?.uid === user?.id && match?.status !== MATCH_STATES.STARTED && (
         <Button onPress={startMatch} disabled={match?.players?.length !== 4} title="Start Match" />
       )}
 
       {/* If the match is started and I somehow managed to get here */}
-      {match?.status === 'in-progress' && (
+      {match?.status === MATCH_STATES.STARTED && (
         <Button 
           onPress={() => props.navigation.navigate('Match', { matchId: match?.id })} 
           title="Enter Match" 

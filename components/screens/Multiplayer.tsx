@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'
-
 import { ActivityIndicator, FlatList, Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-
 import firestore from '@react-native-firebase/firestore'
-import { t } from 'react-native-tailwindcss';
-import styled from 'styled-components/native';
+
+import { MATCH_STATES } from './constants.js'
+
+import { t } from 'react-native-tailwindcss'
+import styled from 'styled-components/native'
 
 interface User {
   uid?: string,
@@ -106,7 +107,7 @@ export default function Multiplayer(props: any) {
         started_at: null,
         ended_at: null,
         winner: null,
-        status: 'matchmaking' 
+        status: MATCH_STATES.MATCHMAKING
       })
       .then((result) => {
         props.navigation.navigate('Matchmaking', {
@@ -181,7 +182,7 @@ export default function Multiplayer(props: any) {
                 <View style={[t.p4, t.pB2]}>
                   <Text style={[t.fontBold, t.textLg]}>{item.host?.username}'s game</Text>
                   <View style={[t.flexRow, t.mT1 ]}>
-                    <Text style={[ t.flex1, t.italic ]}>{item.status === 'in-progress' ? item.status : "waiting for players..."}</Text>
+                    <Text style={[ t.flex1, t.italic ]}>{item.status === MATCH_STATES.STARTED ? item.status : "waiting for players..."}</Text>
                     {
                       item.status === 'matchmaking' && <ActivityIndicator />
                     }
