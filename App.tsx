@@ -49,7 +49,7 @@ export default function App() {
       <Stack.Navigator initialRouteName="Login">
         {user ? (
           <>
-            <Stack.Screen name="Home" options={{ title: 'Home' }}>
+            <Stack.Screen name="Home" options={{ title: 'Home', headerShown: false }}>
               {props => <Home {...props} user={user} />}
             </Stack.Screen>
 
@@ -71,7 +71,7 @@ export default function App() {
           </>
         ) : (
           <>
-            <Stack.Screen name="Login" component={Login} options={{ title: 'Sign In' }} />
+            <Stack.Screen name="Login" component={Login} options={{ title: 'Sign In', headerShown: false }} />
             <Stack.Screen name="Register" component={Registration} options={{ title: 'Sign Up' }} />
           </>
         )}

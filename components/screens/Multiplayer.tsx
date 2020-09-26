@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react'
 
-import { StyleSheet, Text, View, Button, FlatList } from 'react-native'
+import { ActivityIndicator, FlatList, Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
 import firestore from '@react-native-firebase/firestore'
+import { t } from 'react-native-tailwindcss';
+import styled from 'styled-components/native';
 
 interface User {
   uid?: string,
@@ -129,49 +131,90 @@ export default function Multiplayer(props: any) {
       });  
   }
 
+  const EmptyMatches = () => {
+    return (
+      <View style={[ t.flexGrow, t.hFull, t.justifyCenter]}>
+        <Image source={require('../../assets/empty-matches.png')} style={[ t.h64, t.objectContain, t.wFull]}/>
+        <View>
+          <Text style={[ t.fontBold, t.textCenter, t.textXl ]}>Aw, no one's playing.</Text>
+          <Text style={[ t.fontBold, t.textCenter, t.textXl ]}>Go start a match!</Text>
+        </View>
+        
+      </View>
+    )
+  }
+
   return (
-    <View style={styles.container}>
-
-      {!committed && <Button title="Host a Match" onPress={() => createNewLobby()} />}
-
-      <Text>Matches</Text>
-      <FlatList
-        data={matches}
-        keyExtractor={(m) => m.id}
-        renderItem={({item}) => {
-          return (
-            <View style={styles.match}>
-              <Text>Status: {item.status}</Text>
-              <Text>Players: {item.players?.length}/4</Text>
-              <Text>Hosted by: {item.host?.username}</Text>
-              
-              { /* I can join the match if: */
-                item.host.uid !== user?.id && /* I'm not the host */
-                item.players.length < 4 && /* There is an empty space in [players] */
-                (item.players && !item.players.find(p => p.id === user?.id)) && /* I haven't already joined this match */
-                !committed && /* I haven't joined ANY active match */
-                (
-                  <Button title="Join" onPress={() => joinMatch(item)} />
-                )
+    <SafeAreaView style={styles.container}>
+      <View style={[t.mX4]}>
+        <SCard style={ committed && [t.bgGray400] }>
+            <TouchableOpacity onPress={() => createNewLobby()} disabled={committed}>
+              { !committed ?
+                <HostButton>
+                  <Image source={require('../../assets/host.png')} style={[ t.hFull, t.objectContain, t.w1_2]}/>
+                  <Text style={[t.w1_2, t.text3xl, { fontFamily: 'LuckiestGuy-Regular', color: '#2568EF' }]}>
+                    Host a Match
+                  </Text>
+                </HostButton>
+                :
+                <HostButton>
+                  <Image source={require('../../assets/no-host.png')} style={[ t.hFull, t.objectContain, t.w1_2]}/>
+                  <Text style={[t.w1_2, t.text3xl, t.textGray600, { fontFamily: 'LuckiestGuy-Regular' }]}>
+                    Already in a match!
+                  </Text>
+                </HostButton>
               }
+            </TouchableOpacity>
+          </SCard>
+      </View>
+      <View style={[t.hFull, t.p4, t.wFull]}>
+        <Text style={[ t.text4xl, {fontFamily: 'LuckiestGuy-Regular'}]}>Matches</Text>
+        <FlatList
+          contentContainerStyle={ matches.length === 0 && [t.flexGrow, t.justifyCenter, { maxHeight: 500}] }
+          data={matches}
+          numColumns={2}
+          ListEmptyComponent={EmptyMatches()}
+          keyExtractor={(m) => m.id}
+          renderItem={({item}) => {
+            return (
+              <MatchCard>
+                <View style={[t.p4, t.pB2]}>
+                  <Text style={[t.fontBold, t.textLg]}>{item.host?.username}'s game</Text>
+                  <View style={[t.flexRow, t.mT1 ]}>
+                    <Text style={[ t.flex1, t.italic ]}>{item.status === 'in-progress' ? item.status : "waiting for players..."}</Text>
+                    {
+                      item.status === 'matchmaking' && <ActivityIndicator />
+                    }
+                  </View>
+                  <NumberPlayers>{item.players.length}/4</NumberPlayers>
+                </View>
+                
+                { /* I can join the match if: */
+                  item.host.uid !== user?.id && /* I'm not the host */
+                  item.players.length < 4 && /* There is an empty space in [players] */
+                  (item.players && !item.players.find(p => p.id === user?.id)) && /* I haven't already joined */
+                  (
+                    <JoinButton title="Join" onPress={() => joinMatch(item)}>
+                      <JoinButtonText>Join</JoinButtonText>
+                    </JoinButton>
+                  )
+                }
 
-              { /* I can enter the Match Lobby directly if */
-                item.host.uid === user?.id || /* if I'm the host */
-                (item.players && item.players.find(p => p.id === user?.id)) ? /* I've already joined */
-                (
-                  <Button 
-                    title="Enter" 
-                    onPress={() => props.navigation.navigate('Matchmaking', { 
-                      matchId: item.id
-                    })} 
-                  />
-                ) : null
-              }
-            </View>
-          )
-        }}
-      />
-    </View>
+                { /* I can enter the Match Lobby directly if */
+                  item.host.uid === user?.id || /* if I'm the host */
+                  (item.players && item.players.find(p => p.id === user?.id)) ? /* I've already joined */
+                  (
+                    <JoinButton onPress={() => props.navigation.navigate('Matchmaking', { matchId: item.id })} >
+                      <JoinButtonText>Enter</JoinButtonText>
+                    </JoinButton>
+                  ) : null
+                }
+              </MatchCard>
+            )
+          }}
+        />
+      </View>
+    </SafeAreaView>
   )
 }
 
@@ -179,8 +222,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   match: {
     borderColor: '#000',
@@ -188,3 +229,28 @@ const styles = StyleSheet.create({
     marginVertical: 2
   }
 })
+
+const SCard = styled(View)`
+  ${[ t.h32, t.p4, t.m4, t.roundedLg, t.selfCenter, t.shadow, t.wFull, { backgroundColor: '#FFE8E7'} ]}
+`;
+
+const HostButton = styled(View)`
+  ${[ t.flexRow, t.hFull, t.itemsCenter, t.wFull ]}
+`;
+
+const MatchCard = styled(View)`
+  ${[ t.bgGray200, t.mR2, t.mY1, t.roundedLg, t.w1_2 ]}
+`;
+
+const NumberPlayers = styled(Text)`
+  ${[ t.opacity25, t.pT4, t.selfCenter, t.text5xl, t.textGray900, { fontFamily: 'LuckiestGuy-Regular' } ]}
+`;
+
+const JoinButton = styled(TouchableOpacity)`
+  ${[ t.p2, t.roundedBLg, { background: '#2568EF'} ]}
+`;
+
+const JoinButtonText = styled(Text)`
+  ${[ t.fontBold, t.textCenter, t.textLg, t.textWhite, t.uppercase, { fontFamily: 'LuckiestGuy-Regular' } ]}
+`;
+
