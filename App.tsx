@@ -34,24 +34,29 @@ export default function App() {
   useEffect(() => {
     auth().onAuthStateChanged(userState => {
       // get the full current user document
-      firestore()
-        .collection('users')
-        .where('user', '==', userState.uid)
-        .get()
-        .then(querySnapshot => {
-          if (!querySnapshot) {
-            return console.error('users query failed')
-          }
-          const data = querySnapshot.docs[0].data()
-          const withId = {
-            ...data,
-            id: querySnapshot.docs[0].id
-          }
-          if (loading) {
-            setLoading(false)
-          }
-          return setUser(withId)
-        })
+      if (userState?.uid) {
+        firestore()
+          .collection('users')
+          .where('user', '==', userState.uid)
+          .get()
+          .then(querySnapshot => {
+            if (!querySnapshot) {
+              return console.error('users query failed')
+            }
+            const data = querySnapshot.docs[0].data()
+            const withId = {
+              ...data,
+              id: querySnapshot.docs[0].id
+            }
+            if (loading) {
+              setLoading(false)
+            }
+            return setUser(withId)
+          })
+      } else {
+        setUser(null)
+        setLoading(false)
+      }
     })
   }, [])
 

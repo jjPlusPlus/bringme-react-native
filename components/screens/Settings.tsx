@@ -14,28 +14,10 @@ interface User {
 }
 
 export default function Settings(props: any) {
-  const [user, setUser] = useState<User | null>(null)
+  const { user } = props
+
   const [userName, setUsername] = useState('')
   const [error, setError] = useState({})
-  useEffect(() => {
-    // get the full current user document
-    firestore()
-      .collection('users')
-      .where('user', '==', props.user.uid)
-      .get()
-      .then(querySnapshot => {
-        if (!querySnapshot) {
-          return console.error('users query failed')
-        }
-        const data = querySnapshot.docs[0].data()
-        const withId = {
-          ...data,
-          id: querySnapshot.docs[0].id
-        }
-        setUsername(data.name)
-        return setUser(withId)
-      })
-  }, [])
 
   useEffect(() => {
     validateUsername()
