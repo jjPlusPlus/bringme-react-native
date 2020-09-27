@@ -14,17 +14,7 @@ interface User {
 }
 
 export default function Home(props:any) {
-  const [user, setUser] = useState<User | null>(null)
-
-  useEffect(() => {
-    firestore()
-      .collection('users')
-      .where('user', '==', props.user.uid)
-      .get()
-      .then(querySnapshot => {
-        return setUser(querySnapshot.docs[0].data())
-      })
-  }, [props.user])
+  const { user } = props
 
   return (
     <View style={styles.container}>

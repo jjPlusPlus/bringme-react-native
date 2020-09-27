@@ -23,29 +23,12 @@ interface Match {
 import { MATCH_STATES } from './constants.js'
 
 export default function Matchmaking(props: any) {
+  const { user } = props
   const matchId = props.route.params.matchId
 
-  const [user, setUser] = useState<User | null>(null)
   const [match, setMatch] = useState(null)
 
   useEffect(() => {
-    // get the full current user document
-    firestore()
-      .collection('users')
-      .where('user', '==', props.user.uid)
-      .get()
-      .then(querySnapshot => {
-        if (!querySnapshot) {
-          return console.error('users query failed')
-        }
-        const data = querySnapshot.docs[0].data()
-        const withId = {
-          ...data,
-          id: querySnapshot.docs[0].id
-        }
-        return setUser(withId)
-      })
-
     firestore()
       .collection('matches')
       .doc(matchId)

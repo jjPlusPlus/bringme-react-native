@@ -1,11 +1,11 @@
+import React, { useState, useEffect } from 'react'
+import { StyleSheet, Text, View } from 'react-native'
+
 import 'react-native-gesture-handler'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack';
-
-import React, { useState, useEffect } from 'react'
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth'
-
-import { StyleSheet, Text, View } from 'react-native'
+import firestore from '@react-native-firebase/firestore'
 
 import Login from './components/screens/Login'
 import Registration from './components/screens/Registration'
@@ -33,10 +33,25 @@ export default function App() {
 
   useEffect(() => {
     auth().onAuthStateChanged(userState => {
-      setUser(userState)
-      if (loading) {
-        setLoading(false)
-      }
+      // get the full current user document
+      firestore()
+        .collection('users')
+        .where('user', '==', userState.uid)
+        .get()
+        .then(querySnapshot => {
+          if (!querySnapshot) {
+            return console.error('users query failed')
+          }
+          const data = querySnapshot.docs[0].data()
+          const withId = {
+            ...data,
+            id: querySnapshot.docs[0].id
+          }
+          if (loading) {
+            setLoading(false)
+          }
+          return setUser(withId)
+        })
     })
   }, [])
 

@@ -24,29 +24,13 @@ import MatchPlayerView from '../MatchPlayerView'
 */ 
 
 export default function Match(props) {
+  const { user } = props
   const matchId = props.route.params.matchId
 
-  const [user, setUser] = useState(null)
   const [match, setMatch] = useState(null)
 
-  // get user
+  // get match by ID passed in with props
   useEffect(() => {
-    // get the full current user document
-    firestore()
-      .collection('users')
-      .where('user', '==', props.user.uid)
-      .get()
-      .then(querySnapshot => {
-        if (!querySnapshot) {
-          return console.error('users query failed')
-        }
-        const data = querySnapshot.docs[0].data()
-        const withId = {
-          ...data,
-          id: querySnapshot.docs[0].id
-        }
-        return setUser(withId)
-      })
     firestore()
       .collection('matches')
       .doc(matchId)
@@ -79,7 +63,7 @@ export default function Match(props) {
     return <View><Text>Loading</Text></View>
   }
 
-  return user.id === match.host.uid ? (
+  return user.id === match?.host?.uid ? (
     <MatchHostView match={match} setRoundWord={setRoundWord} startRound={startRound}/>
   ) : (
     <MatchPlayerView match={match} submitWord={submitWord} />
