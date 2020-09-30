@@ -47,7 +47,17 @@ export default function Match(props) {
       })
   }, [])
 
-  const setRoundWord = () => {
+  const setRoundWord = (round:number, word:string) => {
+    let updated = match?.rounds
+    updated[round].word = word
+
+    firestore()
+      .collection('matches')
+      .doc(matchId)
+      .update('rounds', updated)
+      .then(() => {
+        console.log('Match Round Word updated!');
+      });  
 
   }
 
@@ -59,7 +69,7 @@ export default function Match(props) {
 
   }
 
-  if (!user) {
+  if (!match) {
     return <View><Text>Loading</Text></View>
   }
 

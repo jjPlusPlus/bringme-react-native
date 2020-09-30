@@ -1,10 +1,8 @@
-import React from 'react'
+import React, { useState } from 'react'
 
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, TextInput, Button, View } from 'react-native'
 
 /* To Do: 
- * list of Players: name, score 
- *   maybe show this as a grid, expecting us to someday have pictures streamed
  * list of Rounds: round #, word, winner, winning image 
  * Based on game state:
  *   If the previous round is over:  
@@ -19,41 +17,59 @@ import { StyleSheet, Text, View } from 'react-native'
  * Rounds 
  * Players 
  * 
- * setRoundWord [ round (uid), word (string) ]
+ * setRoundWord [ round (int, key 1-6), word (string) ]
  * startNextRound
  * endMatchEarly 
 */
 
 export default function MatchHostView({ match, setRoundWord, startRound }) {
 
+  const { rounds, players } = match
+  const [word, setWord] = useState("")
+
   return (
     <View style={styles.container}>
       <Text>Rounds</Text>
+      {rounds && Object.keys(rounds).map(round => {
 
-      <Text>Round 1</Text>
-      <Text>Word: Dog</Text>
-      <Text>Winner: Maddox</Text>
+        const noWordYet = !rounds[round].word
+        const isNextRound = round == (match.round + 1)
+        const needsWord = noWordYet && isNextRound
 
-      <Text>Round 2</Text>
-      <Text>Word: Cat</Text>
-      <Text>Winner: ... in progress</Text>
-
-      <Text>Round 3</Text>
-      <Text>Choose a word:</Text>
-      <Text>Start Round</Text>
-
-      <Text>Round 4</Text>
-      <Text>Round 5</Text>
-      <Text>Round 6</Text>
+        return <View>
+          <Text>Round {round}</Text>
+          {needsWord ? (
+            <>
+            <TextInput
+              style={{ height: 40 }}
+              placeholder="The next word will be..."
+              onChangeText={text => {
+                setWord(text)
+              }}
+              defaultValue={word}
+            />
+            <Button onPress={() => setRoundWord(round, word)} title="Set"/>
+            </>
+          ) : (
+            <Text>Word: { rounds[round].word || "..." }</Text>
+          )}
+          { !noWordYet && isNextRound && (
+            <Button onPress={() => startRound(round)} title="Start Round" />
+          )}
+          {rounds[round].winner && (
+            <Text>Winner: {rounds[round].winner}</Text>
+          )}
+          
+        </View>
+      })}
 
       <Text>Scoreboard</Text>
-      <Text>Maddox: 250</Text>
-      <Text>JJPlusPlus: 25</Text>
-      <Text>Deanomite: 0</Text>
-      <Text>Knox: disconnected</Text>
-      
-      <Text>Actions</Text>
-      <Text>End Match Early (only active if 1 or less players?)</Text>
+      {players?.map(player => (
+        <View>
+          <Text>{player.name}</Text>
+          <Text>{player.score ? player.score : "0"}</Text>
+        </View>
+      ))}
     </View>
   )
 }

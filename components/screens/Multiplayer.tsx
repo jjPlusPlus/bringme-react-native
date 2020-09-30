@@ -83,10 +83,19 @@ export default function Multiplayer(props: any) {
         host: { uid: user?.id, username: user?.name },
         name: '',
         players: [],
+        rounds: {
+          1: { word: null, winner: null, started_at: null, timeRemaining: null, score: 0 },
+          2: { word: null, winner: null, started_at: null, timeRemaining: null, score: 0 },
+          3: { word: null, winner: null, started_at: null, timeRemaining: null, score: 0 },
+          4: { word: null, winner: null, started_at: null, timeRemaining: null, score: 0 },
+          5: { word: null, winner: null, started_at: null, timeRemaining: null, score: 0 },
+          6: { word: null, winner: null, started_at: null, timeRemaining: null, score: 0 },
+        },
         created_at: firestore.FieldValue.serverTimestamp(),
         started_at: null,
         ended_at: null,
         winner: null,
+        round: 0,
         status: MATCH_STATES.MATCHMAKING
       })
       .then((result) => {
