@@ -173,7 +173,7 @@ const Multiplayer: FunctionComponent<Props> = props => {
                   item.players.length < 4 && /* There is an empty space in [players] */
                   (item.players && !item.players.find(p => p.id === user?.id)) && /* I haven't already joined */
                   (
-                    <JoinButton title="Join" onPress={() => joinMatch(item)}>
+                    <JoinButton onPress={() => joinMatch(item)}>
                       <JoinButtonText>Join</JoinButtonText>
                     </JoinButton>
                   )
