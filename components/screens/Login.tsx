@@ -127,12 +127,11 @@ const styles = StyleSheet.create({
   }
 })
 
-// TODO -- review why these styled components need explicit type
-const StyledInput: typeof TextInput = styled(TextInput)`
+const StyledInput = styled(TextInput)`
   ${[t.border4, t.m3, t.p4, { borderColor: '#2568EF', borderRadius: 20 }]}
 `;
 
-const StyledButton: typeof TouchableOpacity = styled(TouchableOpacity)`
+const StyledButton = styled(TouchableOpacity)`
   ${[t.p4, t.m3, { backgroundColor: '#FFE8E7', borderRadius: 20 }]}
 `;
 
