@@ -23,8 +23,8 @@ export type RootStackParamList = {
   Home: undefined
   Settings: undefined
   Multiplayer: undefined
-  Matchmaking: undefined
-  Match: undefined
+  Matchmaking: { matchId: string }
+  Match: { matchId: string } | undefined
 }
 
 export default function App() {
