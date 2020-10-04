@@ -11,7 +11,7 @@ type User = FirestoreUser & { id: string }
 interface FirestoreMatch {
   host: { uid: string; username: string }
   name?: string,
-  players: User[]
+  players: Array<User & { score?: number }>
   rounds: {
     [k: string]: {
       word: string | null
@@ -25,6 +25,7 @@ interface FirestoreMatch {
   started_at: string | null
   ended_at: string | null
   winner: string | null
+  round: number
   status: string
 }
 
