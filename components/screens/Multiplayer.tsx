@@ -79,7 +79,7 @@ export default function Multiplayer(props: any) {
         winner: null,
         round: 0,
         status: MATCH_STATES.MATCHMAKING
-      })
+      } as FirestoreMatch)
       .then((result) => {
         props.navigation.navigate('Matchmaking', {
           matchId: result.id
@@ -94,7 +94,7 @@ export default function Multiplayer(props: any) {
       .doc(match.id)
       .update({
         players: [...match.players, user]
-      })
+      } as Partial<FirestoreMatch>)
       .then(() => {
         console.log('Match updated!');
         props.navigation.navigate('Matchmaking', {

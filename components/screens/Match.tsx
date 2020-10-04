@@ -38,7 +38,7 @@ export default function Match(props) {
         if (!documentSnapshot) {
           return
         }
-        const data = documentSnapshot.data()
+        const data = documentSnapshot.data() as FirestoreMatch
         const withId = {
           ...data,
           id: documentSnapshot.id

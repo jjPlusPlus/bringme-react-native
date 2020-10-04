@@ -19,7 +19,7 @@ export default function Matchmaking(props: any) {
         if (!documentSnapshot) {
           return
         }
-        const data = documentSnapshot.data()
+        const data = documentSnapshot.data() as FirestoreMatch
         const withId = {
           ...data,
           id: documentSnapshot.id
@@ -45,7 +45,7 @@ export default function Matchmaking(props: any) {
                 .doc(matchId)
                 .update({
                   players: players || []
-                })
+                } as Partial<FirestoreMatch>)
                 .then(() => {
                   console.log('Player removed');
                   props.navigation.dispatch(e.data.action)
