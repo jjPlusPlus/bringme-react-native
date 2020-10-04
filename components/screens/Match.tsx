@@ -34,6 +34,10 @@ const Match: FunctionComponent<Props> = (props) => {
   const { user } = props
   const matchId = props.route.params?.matchId
 
+  if (!matchId) {
+    throw new Error('No match ID passed as route param! Singleplayer not handled yet')
+  }
+
   const [match, setMatch] = useState<Match>()
 
   // get match by ID passed in with props
@@ -55,7 +59,10 @@ const Match: FunctionComponent<Props> = (props) => {
   }, [])
 
   const setRoundWord = (round:number, word:string) => {
-    let updated = match?.rounds
+    if (!match) {
+      throw new Error('No match set. Cannot set round')
+    }
+    let updated = match.rounds
     updated[round].word = word
 
     firestore()
