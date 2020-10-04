@@ -1,15 +1,23 @@
-import React, { useState, useEffect } from 'react'
-
+import React, { useState, useEffect, FunctionComponent } from 'react'
+import { RouteProp } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
 import { StyleSheet, Text, View, Alert, Button } from 'react-native'
 import firestore from '@react-native-firebase/firestore'
 
-import { MATCH_STATES } from './constants.js'
+import { MATCH_STATES } from './constants'
+import { RootStackParamList } from '../../App'
 
-export default function Matchmaking(props: any) {
+interface Props {
+  navigation: StackNavigationProp<RootStackParamList>
+  route: RouteProp<RootStackParamList, 'Matchmaking'>
+  user: User;
+}
+
+const Matchmaking: FunctionComponent<Props> = (props) => {
   const { user } = props
   const matchId = props.route.params.matchId
 
-  const [match, setMatch] = useState(null)
+  const [match, setMatch] = useState<Match>()
 
   useEffect(() => {
     firestore()
@@ -66,6 +74,10 @@ export default function Matchmaking(props: any) {
     }
   }, [match])
 
+  if (!match) {
+    return <View style={styles.container}><Text>Match Not Found</Text></View>
+  }
+
   const startMatch = () => {
     firestore()
       .collection('matches')
@@ -77,10 +89,6 @@ export default function Matchmaking(props: any) {
           matchId: match.id
         })
       });  
-  }
-
-  if (!match) {
-    return <View style={styles.container}><Text>Match Not Found</Text></View>
   }
 
   return (
@@ -111,6 +119,8 @@ export default function Matchmaking(props: any) {
     </View>
   )
 }
+
+export default Matchmaking
 
 const styles = StyleSheet.create({
   container: {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, FunctionComponent } from 'react'
 
 import {Button, Image, StyleSheet, Text, TextInput, View  } from 'react-native'
 
@@ -7,11 +7,15 @@ import firestore from '@react-native-firebase/firestore'
 import { t } from 'react-native-tailwindcss'
 import styled from 'styled-components/native'
 
-export default function Settings(props: any) {
+interface Props {
+  user: User;
+}
+
+const Settings: FunctionComponent<Props> = (props) => {
   const { user } = props
 
   const [userName, setUsername] = useState('')
-  const [error, setError] = useState({})
+  const [error, setError] = useState<{ [field: string]: string | undefined }>({})
 
   useEffect(() => {
     validateUsername()
@@ -78,6 +82,8 @@ export default function Settings(props: any) {
     </View>
   )
 }
+
+export default Settings
 
 const styles = StyleSheet.create({
   container: {

@@ -1,15 +1,22 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, FunctionComponent } from 'react'
 import { ActivityIndicator, FlatList, Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import firestore from '@react-native-firebase/firestore'
 
-import { MATCH_STATES } from './constants.js'
+import { MATCH_STATES } from './constants'
 
 import { t } from 'react-native-tailwindcss'
 import styled from 'styled-components/native'
+import { StackNavigationProp } from '@react-navigation/stack'
+import { RootStackParamList } from '../../App'
 
-export default function Multiplayer(props: any) {
+interface Props {
+  navigation: StackNavigationProp<RootStackParamList>
+  user: User
+}
+
+const Multiplayer: FunctionComponent<Props> = props => {
   const { user } = props
-  const [matches, setMatches] = useState([])
+  const [matches, setMatches] = useState<Match[]>([])
   const [committed, setCommitted] = useState(true)
 
   /* 
@@ -189,6 +196,8 @@ export default function Multiplayer(props: any) {
     </SafeAreaView>
   )
 }
+
+export default Multiplayer
 
 const styles = StyleSheet.create({
   container: {

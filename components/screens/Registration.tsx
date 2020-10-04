@@ -5,7 +5,7 @@ import { StyleSheet, Text, TextInput, TouchableOpacity, Button, View } from 'rea
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import firestore from '@react-native-firebase/firestore'
 
-import { RootStackParamList } from '../App'
+import { RootStackParamList } from '../../App'
 import { StackNavigationProp } from '@react-navigation/stack'
 type AuthScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Auth'>
 
@@ -17,7 +17,7 @@ export default function Register({ navigation }: Props) {
   const [username, setUsername] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [error, setError] = useState({})
+  const [error, setError] = useState<{ [field: string]: string | undefined }>({})
 
   useEffect(() => {
     validateUsername()

@@ -4,7 +4,7 @@ import auth from '@react-native-firebase/auth'
 import { Image, ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity, Button, View } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
-import { RootStackParamList } from '../App'
+import { RootStackParamList } from '../../App'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { t } from 'react-native-tailwindcss'
 import styled from 'styled-components/native'
@@ -127,11 +127,12 @@ const styles = StyleSheet.create({
   }
 })
 
-const StyledInput = styled(TextInput)`
+// TODO -- review why these styled components need explicit type
+const StyledInput: typeof TextInput = styled(TextInput)`
   ${[t.border4, t.m3, t.p4, { borderColor: '#2568EF', borderRadius: 20 }]}
 `;
 
-const StyledButton = styled(TouchableOpacity)`
+const StyledButton: typeof TouchableOpacity = styled(TouchableOpacity)`
   ${[t.p4, t.m3, { backgroundColor: '#FFE8E7', borderRadius: 20 }]}
 `;
 
