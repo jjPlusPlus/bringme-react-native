@@ -50,7 +50,7 @@ export default function Settings(props: any) {
           .doc(user.id)
           .update({
             name: userName
-          })
+          } as Partial<User>)
           .then(() => {
             console.log('Username updated!');
             // some sort of nice notification here
