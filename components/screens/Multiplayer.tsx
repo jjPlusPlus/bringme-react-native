@@ -7,24 +7,6 @@ import { MATCH_STATES } from './constants.js'
 import { t } from 'react-native-tailwindcss'
 import styled from 'styled-components/native'
 
-interface User {
-  uid?: string,
-  email?: string,
-  name?: string,
-}
-
-interface Match {
-  id: string,
-  host: string,
-  name?: string,
-  players: string,
-  created_at: string,
-  started_at?: string,
-  ended_at?: string,
-  winner?: string,
-  status: string 
-}
-
 export default function Multiplayer(props: any) {
   const { user } = props
   const [matches, setMatches] = useState([])

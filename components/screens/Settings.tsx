@@ -7,12 +7,6 @@ import firestore from '@react-native-firebase/firestore'
 import { t } from 'react-native-tailwindcss'
 import styled from 'styled-components/native'
 
-interface User {
-  name: string,
-  uid: string,
-  email: string
-}
-
 export default function Settings(props: any) {
   const { user } = props
 
