@@ -1,7 +1,7 @@
 interface User {
   name: string,
-  uid: string,
   email: string
+  user: string,
 }
 
 interface Match {
