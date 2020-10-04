@@ -31,15 +31,12 @@ const Multiplayer: FunctionComponent<Props> = props => {
       .orderBy('created_at', 'desc')
       .limit(100)
       .onSnapshot(querySnapshot => {
-        const matchCollection: Match[] = [];
-        querySnapshot?.forEach((documentSnapshot: any) => {
-          // console.log(documentSnapshot)
-          const data: Match = documentSnapshot.data()
-          matchCollection.push({
-            ...data,
-            id: documentSnapshot.id
-          });
-        });
+        const matchCollection = querySnapshot.docs.map<Match>(
+          documentSnapshot => ({
+            ...(documentSnapshot.data() as FirestoreMatch),
+            id: documentSnapshot.id,
+          })
+        )
 
         // band-aid for a bug...
         if (!matchCollection.length) { return }
@@ -94,7 +91,7 @@ const Multiplayer: FunctionComponent<Props> = props => {
       });
   }
 
-  const joinMatch = (match: any) => {
+  const joinMatch = (match: Match) => {
     // add the user to the match.players array
     firestore()
       .collection('matches')
