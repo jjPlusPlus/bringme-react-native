@@ -1,11 +1,12 @@
-interface User {
+interface FirestoreUser {
   name: string,
   email: string
   user: string,
 }
 
-interface Match {
-  id: string,
+type User = FirestoreUser & { id: string }
+
+interface FirestoreMatch {
   host: string,
   name?: string,
   players: string,
@@ -15,3 +16,5 @@ interface Match {
   winner?: string,
   status: string
 }
+
+type Match = FirestoreMatch & { id: string }

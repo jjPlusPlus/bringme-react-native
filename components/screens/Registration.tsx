@@ -48,7 +48,7 @@ export default function Register({ navigation }: Props) {
                 name: username,
                 email: email,
                 user: user.user.uid,
-              } as User)
+              } as FirestoreUser)
               .then(() => {
                 console.log('User added!')
               }).catch((err) => {
