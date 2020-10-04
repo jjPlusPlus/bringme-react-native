@@ -1,3 +1,5 @@
+type FieldValue = import('@react-native-firebase/firestore').FirebaseFirestoreTypes.FieldValue
+
 interface FirestoreUser {
   name: string,
   email: string
@@ -7,13 +9,22 @@ interface FirestoreUser {
 type User = FirestoreUser & { id: string }
 
 interface FirestoreMatch {
-  host: string,
+  host: { uid: string; username: string }
   name?: string,
-  players: string,
-  created_at: string,
-  started_at?: string,
-  ended_at?: string,
-  winner?: string,
+  players: User[]
+  rounds: {
+    [k: string]: {
+      word: string | null
+      winner: string | null
+      started_at: string | null
+      timeRemaining: string | null
+      score: number
+    }
+  }
+  created_at: FieldValue
+  started_at: string | null
+  ended_at: string | null
+  winner: string | null
   status: string
 }
 
