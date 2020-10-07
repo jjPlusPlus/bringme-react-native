@@ -23,13 +23,13 @@ export type RootStackParamList = {
   Home: undefined
   Settings: undefined
   Multiplayer: undefined
-  Matchmaking: undefined
-  Match: undefined
+  Matchmaking: { matchId: string }
+  Match: { matchId: string } | undefined
 }
 
 export default function App() {
   const [loading, setLoading] = useState<boolean>(true)
-  const [user, setUser] = useState<FirebaseAuthTypes.User | null>(null)
+  const [user, setUser] = useState<User | null>(null)
 
   useEffect(() => {
     auth().onAuthStateChanged(userState => {
@@ -43,7 +43,7 @@ export default function App() {
             if (!querySnapshot) {
               return console.error('users query failed')
             }
-            const data = querySnapshot.docs[0].data()
+            const data = querySnapshot.docs[0].data() as FirestoreUser
             const withId = {
               ...data,
               id: querySnapshot.docs[0].id

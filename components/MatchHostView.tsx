@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { FunctionComponent, useState } from 'react'
 
 import { StyleSheet, Text, TextInput, Button, View } from 'react-native'
 
@@ -22,7 +22,13 @@ import { StyleSheet, Text, TextInput, Button, View } from 'react-native'
  * endMatchEarly 
 */
 
-export default function MatchHostView({ match, setRoundWord, startRound }) {
+interface Props {
+  match: Match
+  setRoundWord: (round: number, word: string) => void
+  startRound: (round: number) => void
+}
+
+const MatchHostView: FunctionComponent<Props> = ({ match, setRoundWord, startRound }) => {
 
   const { rounds, players } = match
   const [word, setWord] = useState("")
@@ -30,7 +36,8 @@ export default function MatchHostView({ match, setRoundWord, startRound }) {
   return (
     <View style={styles.container}>
       <Text>Rounds</Text>
-      {rounds && Object.keys(rounds).map(round => {
+      {rounds && Object.keys(rounds).map(roundKey => {
+        const round = parseInt(roundKey, 10);
 
         const noWordYet = !rounds[round].word
         const isNextRound = round == (match.round + 1)
@@ -73,6 +80,8 @@ export default function MatchHostView({ match, setRoundWord, startRound }) {
     </View>
   )
 }
+
+export default MatchHostView
 
 const styles = StyleSheet.create({
   container: {

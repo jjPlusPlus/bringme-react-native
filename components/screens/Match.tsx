@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React, { FunctionComponent, useEffect, useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
+import { RouteProp } from '@react-navigation/native'
 
 import firestore from '@react-native-firebase/firestore'
 
 import MatchHostView from '../MatchHostView'
 import MatchPlayerView from '../MatchPlayerView'
+import { RootStackParamList } from '../../App'
 
 /* To Do: 
  * On load, Check if the user is a Host or Player, kick user if they are not either one
@@ -23,11 +25,20 @@ import MatchPlayerView from '../MatchPlayerView'
  *   (future) voteToSkip
 */ 
 
-export default function Match(props) {
-  const { user } = props
-  const matchId = props.route.params.matchId
+interface Props {
+  user: User
+  route: RouteProp<RootStackParamList, 'Match'>
+}
 
-  const [match, setMatch] = useState(null)
+const Match: FunctionComponent<Props> = (props) => {
+  const { user } = props
+  const matchId = props.route.params?.matchId
+
+  if (!matchId) {
+    throw new Error('No match ID passed as route param! Singleplayer not handled yet')
+  }
+
+  const [match, setMatch] = useState<Match>()
 
   // get match by ID passed in with props
   useEffect(() => {
@@ -38,7 +49,7 @@ export default function Match(props) {
         if (!documentSnapshot) {
           return
         }
-        const data = documentSnapshot.data()
+        const data = documentSnapshot.data() as FirestoreMatch
         const withId = {
           ...data,
           id: documentSnapshot.id
@@ -48,7 +59,10 @@ export default function Match(props) {
   }, [])
 
   const setRoundWord = (round:number, word:string) => {
-    let updated = match?.rounds
+    if (!match) {
+      throw new Error('No match set. Cannot set round')
+    }
+    let updated = match.rounds
     updated[round].word = word
 
     firestore()
@@ -79,3 +93,5 @@ export default function Match(props) {
     <MatchPlayerView match={match} submitWord={submitWord} />
   )
 }
+
+export default Match

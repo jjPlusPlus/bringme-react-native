@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { FunctionComponent, useRef } from 'react'
 // import { RNCamera } from 'react-native-camera'
 import { StyleSheet, Text, View } from 'react-native'
 
@@ -23,7 +23,13 @@ import { StyleSheet, Text, View } from 'react-native'
  *   "Pass" buttons
  *   Leave Match
 */
-export default function MatchPlayerView() {
+
+interface Props {
+  match: Match
+  submitWord: (word: string) => void
+}
+
+const MatchPlayerView: FunctionComponent<Props> = () => {
   // let camera = useRef<RNCamera | null>(null)
 
   return (
@@ -73,6 +79,8 @@ export default function MatchPlayerView() {
     </View>
   )
 }
+
+export default MatchPlayerView
 
 const styles = StyleSheet.create({
   container: {

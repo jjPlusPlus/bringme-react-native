@@ -4,7 +4,7 @@ import auth from '@react-native-firebase/auth'
 import { Image, ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity, Button, View } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
-import { RootStackParamList } from '../App'
+import { RootStackParamList } from '../../App'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { t } from 'react-native-tailwindcss'
 import styled from 'styled-components/native'

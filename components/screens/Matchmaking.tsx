@@ -1,32 +1,23 @@
-import React, { useState, useEffect } from 'react'
-
+import React, { useState, useEffect, FunctionComponent } from 'react'
+import { RouteProp } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
 import { StyleSheet, Text, View, Alert, Button } from 'react-native'
 import firestore from '@react-native-firebase/firestore'
 
-interface User {
-  name: string,
-  uid: string,
-  email: string
-}
-interface Match {
-  id: string,
-  host: string,
-  name?: string,
-  players: string,
-  created_at: string,
-  started_at?: string,
-  ended_at?: string,
-  winner?: string,
-  status: string
+import { MATCH_STATES } from './constants'
+import { RootStackParamList } from '../../App'
+
+interface Props {
+  navigation: StackNavigationProp<RootStackParamList>
+  route: RouteProp<RootStackParamList, 'Matchmaking'>
+  user: User;
 }
 
-import { MATCH_STATES } from './constants.js'
-
-export default function Matchmaking(props: any) {
+const Matchmaking: FunctionComponent<Props> = (props) => {
   const { user } = props
   const matchId = props.route.params.matchId
 
-  const [match, setMatch] = useState(null)
+  const [match, setMatch] = useState<Match>()
 
   useEffect(() => {
     firestore()
@@ -36,7 +27,7 @@ export default function Matchmaking(props: any) {
         if (!documentSnapshot) {
           return
         }
-        const data = documentSnapshot.data()
+        const data = documentSnapshot.data() as FirestoreMatch
         const withId = {
           ...data,
           id: documentSnapshot.id
@@ -62,7 +53,7 @@ export default function Matchmaking(props: any) {
                 .doc(matchId)
                 .update({
                   players: players || []
-                })
+                } as Partial<FirestoreMatch>)
                 .then(() => {
                   console.log('Player removed');
                   props.navigation.dispatch(e.data.action)
@@ -83,6 +74,10 @@ export default function Matchmaking(props: any) {
     }
   }, [match])
 
+  if (!match) {
+    return <View style={styles.container}><Text>Match Not Found</Text></View>
+  }
+
   const startMatch = () => {
     firestore()
       .collection('matches')
@@ -94,10 +89,6 @@ export default function Matchmaking(props: any) {
           matchId: match.id
         })
       });  
-  }
-
-  if (!match) {
-    return <View style={styles.container}><Text>Match Not Found</Text></View>
   }
 
   return (
@@ -128,6 +119,8 @@ export default function Matchmaking(props: any) {
     </View>
   )
 }
+
+export default Matchmaking
 
 const styles = StyleSheet.create({
   container: {

@@ -1,33 +1,22 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, FunctionComponent } from 'react'
 import { ActivityIndicator, FlatList, Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import firestore from '@react-native-firebase/firestore'
 
-import { MATCH_STATES } from './constants.js'
+import { MATCH_STATES } from './constants'
 
 import { t } from 'react-native-tailwindcss'
 import styled from 'styled-components/native'
+import { StackNavigationProp } from '@react-navigation/stack'
+import { RootStackParamList } from '../../App'
 
-interface User {
-  uid?: string,
-  email?: string,
-  name?: string,
+interface Props {
+  navigation: StackNavigationProp<RootStackParamList>
+  user: User
 }
 
-interface Match {
-  id: string,
-  host: string,
-  name?: string,
-  players: string,
-  created_at: string,
-  started_at?: string,
-  ended_at?: string,
-  winner?: string,
-  status: string 
-}
-
-export default function Multiplayer(props: any) {
+const Multiplayer: FunctionComponent<Props> = props => {
   const { user } = props
-  const [matches, setMatches] = useState([])
+  const [matches, setMatches] = useState<Match[]>([])
   const [committed, setCommitted] = useState(true)
 
   /* 
@@ -42,15 +31,12 @@ export default function Multiplayer(props: any) {
       .orderBy('created_at', 'desc')
       .limit(100)
       .onSnapshot(querySnapshot => {
-        const matchCollection: Match[] = [];
-        querySnapshot?.forEach((documentSnapshot: any) => {
-          // console.log(documentSnapshot)
-          const data: Match = documentSnapshot.data()
-          matchCollection.push({
-            ...data,
-            id: documentSnapshot.id
-          });
-        });
+        const matchCollection = querySnapshot.docs.map<Match>(
+          documentSnapshot => ({
+            ...(documentSnapshot.data() as FirestoreMatch),
+            id: documentSnapshot.id,
+          })
+        )
 
         // band-aid for a bug...
         if (!matchCollection.length) { return }
@@ -97,7 +83,7 @@ export default function Multiplayer(props: any) {
         winner: null,
         round: 0,
         status: MATCH_STATES.MATCHMAKING
-      })
+      } as FirestoreMatch)
       .then((result) => {
         props.navigation.navigate('Matchmaking', {
           matchId: result.id
@@ -105,14 +91,14 @@ export default function Multiplayer(props: any) {
       });
   }
 
-  const joinMatch = (match: any) => {
+  const joinMatch = (match: Match) => {
     // add the user to the match.players array
     firestore()
       .collection('matches')
       .doc(match.id)
       .update({
         players: [...match.players, user]
-      })
+      } as Partial<FirestoreMatch>)
       .then(() => {
         console.log('Match updated!');
         props.navigation.navigate('Matchmaking', {
@@ -184,7 +170,7 @@ export default function Multiplayer(props: any) {
                   item.players.length < 4 && /* There is an empty space in [players] */
                   (item.players && !item.players.find(p => p.id === user?.id)) && /* I haven't already joined */
                   (
-                    <JoinButton title="Join" onPress={() => joinMatch(item)}>
+                    <JoinButton onPress={() => joinMatch(item)}>
                       <JoinButtonText>Join</JoinButtonText>
                     </JoinButton>
                   )
@@ -207,6 +193,8 @@ export default function Multiplayer(props: any) {
     </SafeAreaView>
   )
 }
+
+export default Multiplayer
 
 const styles = StyleSheet.create({
   container: {
