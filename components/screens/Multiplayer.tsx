@@ -68,7 +68,11 @@ const Multiplayer: FunctionComponent<Props> = props => {
       .add({
         host: { uid: user?.id, username: user?.name },
         name: '',
-        players: [],
+        players: [{
+          uid: user?.id,
+          name: user?.name,
+          host: true
+        }],
         rounds: {
           1: { word: null, winner: null, started_at: null, timeRemaining: null, score: 0 },
           2: { word: null, winner: null, started_at: null, timeRemaining: null, score: 0 },
