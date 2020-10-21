@@ -66,7 +66,6 @@ const Multiplayer: FunctionComponent<Props> = props => {
     firestore()
       .collection('matches')
       .add({
-        host: { uid: user?.id, username: user?.name },
         name: '',
         players: [{
           uid: user?.id,
@@ -175,7 +174,6 @@ const Multiplayer: FunctionComponent<Props> = props => {
                 </View>
                 
                 { /* I can join the match if: */
-                  item.host.uid !== user?.id && /* I'm not the host */
                   item.players.length < 4 && /* There is an empty space in [players] */
                   (item.players && !item.players.find(p => p.id === user?.id)) && /* I haven't already joined */
                   (
@@ -185,9 +183,8 @@ const Multiplayer: FunctionComponent<Props> = props => {
                   )
                 }
 
-                { /* I can enter the Match Lobby directly if */
-                  item.host.uid === user?.id || /* if I'm the host */
-                  (item.players && item.players.find(p => p.id === user?.id)) ? /* I've already joined */
+                { /* I can enter the Match Lobby directly if I've already joined (I'm in 'players') */
+                  (item.players && item.players.find(p => p.id === user?.id)) ? 
                   (
                     <JoinButton onPress={() => props.navigation.navigate('Matchmaking', { matchId: item.id })} >
                       <JoinButtonText>Enter</JoinButtonText>
