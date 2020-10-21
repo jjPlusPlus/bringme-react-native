@@ -53,7 +53,7 @@ const Multiplayer: FunctionComponent<Props> = props => {
       })
     })
 
-    const hosting = matches?.find(m => m.host.uid === user?.id)
+    const hosting = matches?.find(m => m.createdBy.uid === user?.id)
 
     if (playing || hosting) {
       setCommitted(true)
@@ -82,8 +82,13 @@ const Multiplayer: FunctionComponent<Props> = props => {
         ended_at: null,
         winner: null,
         round: 0,
-        status: MATCH_STATES.MATCHMAKING
+        status: MATCH_STATES.MATCHMAKING,
+        createdBy: {
+          uid: user?.id,
+          username: user?.name
+        },
       } as FirestoreMatch)
+        
       .then((result) => {
         props.navigation.navigate('Matchmaking', {
           matchId: result.id
@@ -155,7 +160,7 @@ const Multiplayer: FunctionComponent<Props> = props => {
             return (
               <MatchCard>
                 <View style={[t.p4, t.pB2]}>
-                  <Text style={[t.fontBold, t.textLg]}>{item.host?.username}'s game</Text>
+                  <Text style={[t.fontBold, t.textLg]}>{item.createdBy?.username}'s game</Text>
                   <View style={[t.flexRow, t.mT1 ]}>
                     <Text style={[ t.flex1, t.italic ]}>{item.status === MATCH_STATES.STARTED ? item.status : "waiting for players..."}</Text>
                     {

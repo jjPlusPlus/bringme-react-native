@@ -9,7 +9,7 @@ interface FirestoreUser {
 type User = FirestoreUser & { id: string }
 
 interface FirestoreMatch {
-  host: { uid: string; username: string }
+  createdBy: { uid: string; username: string }
   name?: string,
   players: Array<User & { score?: number }>
   rounds: {

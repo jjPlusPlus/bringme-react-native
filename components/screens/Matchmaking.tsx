@@ -95,7 +95,8 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
     <View style={styles.container}>
       <Text>Match Info</Text>
       <Text>Match Id: {match?.id}</Text>
-      <Text>Host: {match?.host?.username}</Text>
+
+      <Text>Created By: {match?.createdBy.username}</Text>
 
       <Text>Players</Text>
       <Text>1. {match?.players[0] ? match.players[0].name : "Waiting for player"} </Text>
@@ -104,7 +105,7 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
       <Text>4. {match?.players[3] ? match.players[3].name : "Waiting for player"}</Text>
 
       {/* If I'm the host, I should be able to start the match if all of the players are present */}
-      {match?.host?.uid === user?.id && match?.status !== MATCH_STATES.STARTED && (
+      {match?.createdBy.uid === user?.id && match?.status !== MATCH_STATES.STARTED && (
         <Button onPress={startMatch} disabled={match?.players?.length !== 4} title="Start Match" />
       )}
 
