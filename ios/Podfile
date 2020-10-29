@@ -88,6 +88,13 @@ target 'bringMeNative' do
   pod 'Firebase/MLVisionLabelModel'
   pod 'Firebase/Performance'
 
+  pod 'react-native-camera', path: '../node_modules/react-native-camera/', subspecs: [
+    'TextDetector',
+    'FaceDetectorMLKit',
+    'BarcodeDetectorMLKit',
+    'LabelDetectorMLKit'
+  ]
+
   use_unimodules!
   use_native_modules!
 

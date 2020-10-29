@@ -458,6 +458,20 @@ PODS:
     - nanopb (~> 1.30905.0)
   - GoogleDataTransport (7.0.0):
     - nanopb (~> 1.30905.0)
+  - GoogleMLKit/BarcodeScanning (0.64.0):
+    - GoogleMLKit/MLKitCore
+    - MLKitBarcodeScanning (~> 0.64.0)
+  - GoogleMLKit/FaceDetection (0.64.0):
+    - GoogleMLKit/MLKitCore
+    - MLKitFaceDetection (~> 0.64.0)
+  - GoogleMLKit/ImageLabeling (0.64.0):
+    - GoogleMLKit/MLKitCore
+    - MLKitImageLabeling (~> 0.64.0)
+  - GoogleMLKit/MLKitCore (0.64.0):
+    - MLKitCommon (~> 0.64.0)
+  - GoogleMLKit/TextRecognition (0.64.0):
+    - GoogleMLKit/MLKitCore
+    - MLKitTextRecognition (~> 0.64.0)
   - GoogleToolboxForMac/DebugUtils (2.2.2):
     - GoogleToolboxForMac/Defines (= 2.2.2)
   - GoogleToolboxForMac/Defines (2.2.2)
@@ -490,6 +504,8 @@ PODS:
     - GoogleUtilities/Logger
   - GoogleUtilities/UserDefaults (6.7.1):
     - GoogleUtilities/Logger
+  - GoogleUtilitiesComponents (1.0.0):
+    - GoogleUtilities/Logger
   - "gRPC-C++ (1.28.2)":
     - "gRPC-C++/Implementation (= 1.28.2)"
     - "gRPC-C++/Interface (= 1.28.2)"
@@ -520,6 +536,46 @@ PODS:
   - GTMSessionFetcher/Full (1.4.0):
     - GTMSessionFetcher/Core (= 1.4.0)
   - leveldb-library (1.22)
+  - MLKitBarcodeScanning (0.64.0):
+    - MLKitCommon (~> 0.64)
+    - MLKitVision (~> 0.64)
+  - MLKitCommon (0.64.0):
+    - GoogleDataTransport (~> 7.0)
+    - GoogleToolboxForMac/Logger (~> 2.1)
+    - "GoogleToolboxForMac/NSData+zlib (~> 2.1)"
+    - "GoogleToolboxForMac/NSDictionary+URLArguments (~> 2.1)"
+    - GoogleUtilities/UserDefaults (~> 6.0)
+    - GoogleUtilitiesComponents (~> 1.0)
+    - GTMSessionFetcher/Core (~> 1.1)
+    - Protobuf (~> 3.12)
+  - MLKitFaceDetection (0.64.0):
+    - MLKitCommon (~> 0.64)
+    - MLKitVision (~> 0.64)
+  - MLKitImageLabeling (0.64.0):
+    - MLKitCommon (~> 0.64)
+    - MLKitImageLabelingCommon (~> 0.64)
+    - MLKitVision (~> 0.64)
+    - MLKitVisionKit (~> 0.64)
+  - MLKitImageLabelingCommon (0.64.0):
+    - MLKitCommon (~> 0.64)
+    - MLKitVision (~> 0.64)
+  - MLKitObjectDetectionCommon (0.64.0):
+    - MLKitCommon (~> 0.64)
+    - MLKitVision (~> 0.64)
+  - MLKitTextRecognition (0.64.0):
+    - MLKitCommon (~> 0.64)
+    - MLKitVision (~> 0.64)
+  - MLKitVision (0.64.0):
+    - GoogleToolboxForMac/Logger (~> 2.1)
+    - "GoogleToolboxForMac/NSData+zlib (~> 2.1)"
+    - GTMSessionFetcher/Core (~> 1.1)
+    - MLKitCommon (~> 0.64)
+    - Protobuf (~> 3.12)
+  - MLKitVisionKit (0.64.0):
+    - MLKitCommon (~> 0.64)
+    - MLKitImageLabelingCommon (~> 0.64)
+    - MLKitObjectDetectionCommon (~> 0.64)
+    - MLKitVision (~> 0.64)
   - nanopb (1.30905.0):
     - nanopb/decode (= 1.30905.0)
     - nanopb/encode (= 1.30905.0)
@@ -693,14 +749,30 @@ PODS:
     - React-cxxreact (= 0.62.2)
     - React-jsi (= 0.62.2)
   - React-jsinspector (0.62.2)
-  - react-native-camera (3.35.0):
+  - react-native-camera/BarcodeDetectorMLKit (3.35.0):
+    - GoogleMLKit/BarcodeScanning
     - React
-    - react-native-camera/RCT (= 3.35.0)
-    - react-native-camera/RN (= 3.35.0)
+    - react-native-camera/RCT
+    - react-native-camera/RN
+  - react-native-camera/FaceDetectorMLKit (3.35.0):
+    - GoogleMLKit/FaceDetection
+    - React
+    - react-native-camera/RCT
+    - react-native-camera/RN
+  - react-native-camera/LabelDetectorMLKit (3.35.0):
+    - GoogleMLKit/ImageLabeling
+    - React
+    - react-native-camera/RCT
+    - react-native-camera/RN
   - react-native-camera/RCT (3.35.0):
     - React
   - react-native-camera/RN (3.35.0):
     - React
+  - react-native-camera/TextDetector (3.35.0):
+    - GoogleMLKit/TextRecognition
+    - React
+    - react-native-camera/RCT
+    - react-native-camera/RN
   - react-native-safe-area-context (3.1.1):
     - React
   - React-RCTActionSheet (0.62.2):
@@ -864,7 +936,10 @@ DEPENDENCIES:
   - React-jsi (from `../node_modules/react-native/ReactCommon/jsi`)
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
-  - react-native-camera (from `../node_modules/react-native-camera`)
+  - react-native-camera/BarcodeDetectorMLKit (from `../node_modules/react-native-camera/`)
+  - react-native-camera/FaceDetectorMLKit (from `../node_modules/react-native-camera/`)
+  - react-native-camera/LabelDetectorMLKit (from `../node_modules/react-native-camera/`)
+  - react-native-camera/TextDetector (from `../node_modules/react-native-camera/`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
@@ -934,12 +1009,23 @@ SPEC REPOS:
     - GoogleAPIClientForREST
     - GoogleAppMeasurement
     - GoogleDataTransport
+    - GoogleMLKit
     - GoogleToolboxForMac
     - GoogleUtilities
+    - GoogleUtilitiesComponents
     - "gRPC-C++"
     - gRPC-Core
     - GTMSessionFetcher
     - leveldb-library
+    - MLKitBarcodeScanning
+    - MLKitCommon
+    - MLKitFaceDetection
+    - MLKitImageLabeling
+    - MLKitImageLabelingCommon
+    - MLKitObjectDetectionCommon
+    - MLKitTextRecognition
+    - MLKitVision
+    - MLKitVisionKit
     - nanopb
     - OpenSSL-Universal
     - PromisesObjC
@@ -1000,7 +1086,7 @@ EXTERNAL SOURCES:
   React-jsinspector:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
   react-native-camera:
-    :path: "../node_modules/react-native-camera"
+    :path: "../node_modules/react-native-camera/"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   React-RCTActionSheet:
@@ -1118,12 +1204,23 @@ SPEC CHECKSUMS:
   GoogleAPIClientForREST: 9f49df9fac7867b459187e687fed3066b2be049a
   GoogleAppMeasurement: 8cd1f289d60e629cf16ab03363b9e89c776b9651
   GoogleDataTransport: 8a40cb194ad242b6f6dfe72c14fe40fc67c4dcd7
+  GoogleMLKit: 3c1f895592d95625eb57b8e66d4f13a5d36f9b49
   GoogleToolboxForMac: 800648f8b3127618c1b59c7f97684427630c5ea3
   GoogleUtilities: e121a3867449ce16b0e35ddf1797ea7a389ffdf2
+  GoogleUtilitiesComponents: a69c0b3b369ba443e988141e75ef49d9010b1c80
   "gRPC-C++": 13d8ccef97d5c3c441b7e3c529ef28ebee86fad2
   gRPC-Core: 4afa11bfbedf7cdecd04de535a9e046893404ed5
   GTMSessionFetcher: 6f5c8abbab8a9bce4bb3f057e317728ec6182b10
   leveldb-library: 55d93ee664b4007aac644a782d11da33fba316f7
+  MLKitBarcodeScanning: 7b380e25719fb194292063e217c1ddbb0edbb506
+  MLKitCommon: dc2909c96dbf7f5a75b86a3d2fa1b92ff3f6a30b
+  MLKitFaceDetection: 502256dbfd3bad005f974dd022bc74a817fcd618
+  MLKitImageLabeling: 5dec4c267a107f91685e0eea1f0309fa14732be5
+  MLKitImageLabelingCommon: d19331b35951dadfb90e399f528ffff49a53ab28
+  MLKitObjectDetectionCommon: a1ae0ecf0f850f105b3e5b0d3fc50b580a27d9b9
+  MLKitTextRecognition: 3ca1c65117899a7538d1f3c012c916ac1483698d
+  MLKitVision: bd96ec12ea19d589435523c914766538da259161
+  MLKitVisionKit: e1d6787e39fe1ebc1382761c8bcdc67e46b361f4
   nanopb: c43f40fadfe79e8b8db116583945847910cbabc9
   OpenSSL-Universal: 8b48cc0d10c1b2923617dfe5c178aa9ed2689355
   PromisesObjC: b48e0338dbbac2207e611750777895f7a5811b75
@@ -1137,7 +1234,7 @@ SPEC CHECKSUMS:
   React-jsi: b6dc94a6a12ff98e8877287a0b7620d365201161
   React-jsiexecutor: 1540d1c01bb493ae3124ed83351b1b6a155db7da
   React-jsinspector: 512e560d0e985d0e8c479a54a4e5c147a9c83493
-  react-native-camera: 9dd96065b956306de03ef2a2efc3583019f95941
+  react-native-camera: 9542202bd73676d4066d1255f7da003a070ef2ca
   react-native-safe-area-context: 4c3249e4840225c61fcd215b136af0a737bccb79
   React-RCTActionSheet: f41ea8a811aac770e0cc6e0ad6b270c644ea8b7c
   React-RCTAnimation: 49ab98b1c1ff4445148b72a3d61554138565bad0
@@ -1173,6 +1270,6 @@ SPEC CHECKSUMS:
   Yoga: 3ebccbdd559724312790e7742142d062476b698e
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: 5ee16fe14531336297e8475282999f457594a8db
+PODFILE CHECKSUM: 04fa0cb22401bf500dfc356e333afcfa35eb070c
 
-COCOAPODS: 1.8.4
+COCOAPODS: 1.9.3

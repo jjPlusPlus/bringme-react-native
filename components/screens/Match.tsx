@@ -109,4 +109,17 @@ const Match: FunctionComponent<Props> = (props) => {
   )
 }
 
-export default Match
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: 'column',
+    backgroundColor: '#000',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+  },
+  preview: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+})
