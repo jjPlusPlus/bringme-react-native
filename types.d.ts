@@ -19,6 +19,7 @@ interface FirestoreMatch {
       started_at: string | null
       timeRemaining: string | null
       score: number
+      status: string | null
     }
   }
   created_at: FieldValue
