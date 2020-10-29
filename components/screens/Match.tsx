@@ -59,15 +59,16 @@ const Match: FunctionComponent<Props> = (props) => {
       })
   }, [])
 
-  const setRoundWord = (round:number, word:string) => {
+
   useEffect(() => {
     return setHost(match?.players[match?.round % match?.players?.length])
   }, [match?.round])
+  const setRoundWord = (word:string) => {
     if (!match) {
       throw new Error('No match set. Cannot set round')
     }
     let updated = match.rounds
-    updated[round].word = word
+    updated[match.round + 1].word = word
 
     firestore()
       .collection('matches')
@@ -75,17 +76,33 @@ const Match: FunctionComponent<Props> = (props) => {
       .update('rounds', updated)
       .then(() => {
         console.log('Match Round Word updated!');
-      });  
-
+      })
   }
+
 
   const startRound = () => {
+    if (!match) {
+      throw new Error('No match set. Cannot set round')
+    }
 
+    let updated = match.rounds
+    updated[match.round + 1].status = 'started'
+    updated[match.round + 1].started_at = new Date()
+
+    firestore()
+      .collection('matches')
+      .doc(matchId)
+      .update('rounds', updated)
+      .then(() => {
+        console.log('Match Round status updated!');
+      })
   }
   
+
   const submitWord = () => {
 
   }
+
 
   if (!match) {
     return <View><Text>Loading</Text></View>
