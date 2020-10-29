@@ -11,6 +11,7 @@ import Login from './components/screens/Login'
 import Registration from './components/screens/Registration'
 import Home from './components/screens/Home'
 import Settings from './components/screens/Settings'
+import SinglePlayer from './components/screens/SinglePlayer'
 import Multiplayer from './components/screens/Multiplayer'
 import Matchmaking from './components/screens/Matchmaking'
 import Match from './components/screens/Match'
@@ -22,6 +23,7 @@ export type RootStackParamList = {
   Auth: undefined
   Home: undefined
   Settings: undefined
+  SinglePlayer: undefined
   Multiplayer: undefined
   Matchmaking: undefined
   Match: undefined
@@ -67,6 +69,10 @@ export default function App() {
 
             <Stack.Screen name="Match" options={{ title: 'Match' }} >
               {props => <Match {...props} user={user} />}
+            </Stack.Screen>
+
+            <Stack.Screen name="SinglePlayer" options={{ title: 'Single Player' }} >
+              {props => <SinglePlayer {...props} user={user} />}
             </Stack.Screen>
           </>
         ) : (
