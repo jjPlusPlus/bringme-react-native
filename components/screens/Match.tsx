@@ -9,21 +9,15 @@ import MatchPlayerView from '../MatchPlayerView'
 import { RootStackParamList } from '../../App'
 
 /* To Do: 
- * On load, Check if the user is a Host or Player, kick user if they are not either one
- * Then, show the user the MatchPlayerView or the MatchHostView
- * 
- * Either: 
- *  - declare all actions on the Match object here, or
- *  - pass down the Match ref() to the Views
- * 
- * Actions that can happen:
- *   setRoundWord
- *   startRound
- *   submitWord
- *   endMatchEarly
- *   leaveMatch (player quits match)
- *   (future) voteToSkip
-*/ 
+ * [x] On load, Check if the user is the creator or a player, and kick the user back to the Multiplayer screen if they are neither
+ * [x] If the player is the current 'host', show the MatchHostView
+ * [x] Otherwise, show the MatchPlayerView
+ * [ ] Write logic to discern who is the current 'host'
+ * [ ] Show the actual round word
+ * [ ] Use the actual player's score 
+ * [ ] Set up a countdown timer for the Round
+ * [ ] 
+*/
 
 interface Props {
   user: User

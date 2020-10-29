@@ -22,7 +22,9 @@ const Multiplayer: FunctionComponent<Props> = props => {
   /* 
     Get a manicured list of collections
     Sorted by newest-first, limit of 100
-    Only games that are in matchmaking or in progress
+
+    TODO: Sort by matches where I'm a player first
+    TODO: (blocked by firestore bug): Only games that are in matchmaking or in progress
   */
   useEffect(() => {
     firestore()
@@ -123,7 +125,6 @@ const Multiplayer: FunctionComponent<Props> = props => {
           <Text style={[ t.fontBold, t.textCenter, t.textXl ]}>Aw, no one's playing.</Text>
           <Text style={[ t.fontBold, t.textCenter, t.textXl ]}>Go start a match!</Text>
         </View>
-        
       </View>
     )
   }

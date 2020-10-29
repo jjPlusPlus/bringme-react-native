@@ -2,21 +2,8 @@ import React, { FunctionComponent, useState } from 'react'
 
 import { StyleSheet, Text, TextInput, Button, View } from 'react-native'
 
-/* To Do: 
- * list of Rounds: round #, word, winner, winning image 
- * Based on game state:
- *   If the previous round is over:  
- *     round setup: word-selection input 
- *     "start round" button
- * In the slideout drawer:
- *   "End Match Early" Action
-*/
-
 /* This view will receive from props:
  * a reference to the firestore match (for easy updating)
- * Rounds 
- * Players 
- * 
  * setRoundWord [ round (int, key 1-6), word (string) ]
  * startNextRound
  * endMatchEarly 
