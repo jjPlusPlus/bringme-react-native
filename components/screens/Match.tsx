@@ -39,6 +39,7 @@ const Match: FunctionComponent<Props> = (props) => {
   }
 
   const [match, setMatch] = useState<Match>()
+  const [host, setHost] = useState<any>(null)
 
   // get match by ID passed in with props
   useEffect(() => {
@@ -59,6 +60,9 @@ const Match: FunctionComponent<Props> = (props) => {
   }, [])
 
   const setRoundWord = (round:number, word:string) => {
+  useEffect(() => {
+    return setHost(match?.players[match?.round % match?.players?.length])
+  }, [match?.round])
     if (!match) {
       throw new Error('No match set. Cannot set round')
     }
@@ -87,7 +91,7 @@ const Match: FunctionComponent<Props> = (props) => {
     return <View><Text>Loading</Text></View>
   }
 
-  return user.id === match?.host?.uid ? (
+  return host?.id === user.id ? (
     <MatchHostView match={match} setRoundWord={setRoundWord} startRound={startRound}/>
   ) : (
     <MatchPlayerView match={match} submitWord={submitWord} />
