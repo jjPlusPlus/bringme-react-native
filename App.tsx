@@ -87,7 +87,7 @@ export default function App() {
               {props => <Matchmaking {...props} user={user} />}
             </Stack.Screen>
 
-            <Stack.Screen name="Match" options={{ title: 'Match' }} >
+            <Stack.Screen name="Match" options={{ title: 'Match', headerShown: false }} >
               {props => <Match {...props} user={user} />}
             </Stack.Screen>
 
