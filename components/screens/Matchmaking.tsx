@@ -19,6 +19,7 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
 
   const [match, setMatch] = useState<Match>()
 
+  // on mount, get the full Match object
   useEffect(() => {
     firestore()
       .collection('matches')
@@ -35,10 +36,11 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
         setMatch(withId)
       })
 
+    // Remove players from the match if they back out of the lobby
     props.navigation.addListener('beforeRemove', (e) => {
       e.preventDefault();
       Alert.alert(
-        'Leave the Match?',
+        'Leave the Lobby?',
         'Going back will remove you from this match',
         [
           { text: "Don't leave", style: 'cancel', onPress: () => { } },
@@ -46,7 +48,7 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
             text: 'Leave',
             style: 'destructive',
             onPress: () => {
-              // remove the player from the match
+
               const players = match?.players?.filter(p => p.id !== user.id)
               firestore()
                 .collection('matches')
@@ -66,6 +68,7 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
     })
   }, [])
 
+  // Forward the user to the Match if the game has started
   useEffect(() => {
     if (match?.status === MATCH_STATES.STARTED) {
       props.navigation.navigate('Match', {
@@ -109,7 +112,7 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
         <Button onPress={startMatch} disabled={match?.players?.length !== 4} title="Start Match" />
       )}
 
-      {/* If the match is started and I somehow managed to get here */}
+      {/* If the match is started and I somehow managed to get here AND the useEffect didn't already re-route me*/}
       {match?.status === MATCH_STATES.STARTED && (
         <Button 
           onPress={() => props.navigation.navigate('Match', { matchId: match?.id })} 
