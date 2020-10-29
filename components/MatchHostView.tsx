@@ -24,51 +24,47 @@ import { StyleSheet, Text, TextInput, Button, View } from 'react-native'
 
 interface Props {
   match: Match
-  setRoundWord: (round: number, word: string) => void
-  startRound: (round: number) => void
+  setRoundWord: (word: string) => void
+  startRound: () => void
 }
 
 const MatchHostView: FunctionComponent<Props> = ({ match, setRoundWord, startRound }) => {
 
   const { rounds, players } = match
+  const round = rounds[match.round + 1]
   const [word, setWord] = useState("")
+
+  const needsWord = !round?.word
 
   return (
     <View style={styles.container}>
-      <Text>Rounds</Text>
-      {rounds && Object.keys(rounds).map(roundKey => {
-        const round = parseInt(roundKey, 10);
+      <Text>Round {match.round + 1}</Text>
 
-        const noWordYet = !rounds[round].word
-        const isNextRound = round == (match.round + 1)
-        const needsWord = noWordYet && isNextRound
+      {needsWord ? (
+        <>
+        <TextInput
+          style={{ height: 40 }}
+          placeholder="The next word will be..."
+          onChangeText={text => {
+            setWord(text)
+          }}
+          defaultValue={word}
+        />
+        <Button onPress={() => setRoundWord(word)} title="Set"/>
+        </>
+      ) : (
+        <Text>Word: { round.word || "..." }</Text>
+      )}
 
-        return <View>
-          <Text>Round {round}</Text>
-          {needsWord ? (
-            <>
-            <TextInput
-              style={{ height: 40 }}
-              placeholder="The next word will be..."
-              onChangeText={text => {
-                setWord(text)
-              }}
-              defaultValue={word}
-            />
-            <Button onPress={() => setRoundWord(round, word)} title="Set"/>
-            </>
-          ) : (
-            <Text>Word: { rounds[round].word || "..." }</Text>
-          )}
-          { !noWordYet && isNextRound && (
-            <Button onPress={() => startRound(round)} title="Start Round" />
-          )}
-          {rounds[round].winner && (
-            <Text>Winner: {rounds[round].winner}</Text>
-          )}
-          
-        </View>
-      })}
+      {/* Show Start round button if the word has been selected and the round hasn't started */}
+      { !needsWord && (
+        <Button onPress={startRound} title="Start Round" />
+      )}
+
+      {/* Show the winner if there is one */}
+      {round?.winner && (
+        <Text>Winner: {round?.winner}</Text>
+      )}
 
       <Text>Scoreboard</Text>
       {players?.map(player => (
