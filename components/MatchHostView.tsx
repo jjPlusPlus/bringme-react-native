@@ -1,6 +1,7 @@
 import React, { FunctionComponent, useState } from 'react'
 
-import { StyleSheet, Text, TextInput, Button, View } from 'react-native'
+import { Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { t } from 'react-native-tailwindcss'
 
 /* This view will receive from props:
  * a reference to the firestore match (for easy updating)
@@ -12,10 +13,12 @@ import { StyleSheet, Text, TextInput, Button, View } from 'react-native'
 interface Props {
   match: Match
   setRoundWord: (word: string) => void
-  startRound: () => void
+}
+interface ScoreboardProps {
+  players: FirestoreMatch["players"]
 }
 
-const MatchHostView: FunctionComponent<Props> = ({ match, setRoundWord, startRound }) => {
+const MatchHostView: FunctionComponent<Props> = ({ match, setRoundWord }) => {
 
   const { rounds, players } = match
   const round = rounds[match.round + 1]
@@ -24,38 +27,43 @@ const MatchHostView: FunctionComponent<Props> = ({ match, setRoundWord, startRou
   const needsWord = !round?.word
 
   return (
-    <View style={styles.container}>
-      <Text>Round {match.round + 1}</Text>
+    <View style={[t.bgWhite, t.flex1, t.itemsCenter, t.justifyCenter, t.mT10, t.p4 ]}>
+      <Text style={[t.text2xl, { fontFamily: 'LuckiestGuy-Regular', color: '#2568EF' }]}>Round {match.round + 1}</Text>
 
       {needsWord ? (
         <>
-        <TextInput
-          style={{ height: 40 }}
-          placeholder="The next word will be..."
-          onChangeText={text => {
-            setWord(text)
-          }}
-          defaultValue={word}
-        />
-        <Button onPress={() => setRoundWord(word)} title="Set"/>
+          <TextInput
+            style={[t.bgGray200, t.m3, t.p4, t.roundedLg, t.wFull]}
+            placeholder="The next word will be..."
+            onChangeText={text => {
+              setWord(text)
+            }}
+            defaultValue={word}
+          />
+          <TouchableOpacity style={[t.p2, t.roundedLg, t.m3, t.w1_2, { backgroundColor: '#FFE8E7'}]} onPress={() => setRoundWord(word)}>
+            <Text style={[t.fontBold,t.pT2, t.textCenter, t.textXl, { color: '#2568EF', fontFamily: 'LuckiestGuy-Regular'}]}>Set</Text>
+          </TouchableOpacity>
         </>
       ) : (
-        <Text>Word: { round.word || "..." }</Text>
-      )}
-
-      {/* Show Start round button if the word has been selected and the round hasn't started */}
-      { !needsWord && (
-        <Button onPress={startRound} title="Start Round" />
-      )}
-
-      {/* Show the winner if there is one */}
-      {round?.winner && (
-        <Text>Winner: {round?.winner}</Text>
-      )}
-
-      <Text>Scoreboard</Text>
-      {players?.map(player => (
         <View>
+          <Text>Word: { round.word || "..." }</Text>
+          <Scoreboard players={match.players}/>
+            {/* Show the winner if there is one */}
+            { round?.winner && (
+              <Text>Winner: {round?.winner}</Text>
+            )}
+        </View>
+      )}
+    </View>
+  )
+}
+
+const Scoreboard: FunctionComponent<ScoreboardProps> = ( { players } ) => {
+  return (
+    <View>
+      <Text>Scoreboard</Text>
+      { players?.map(player => (
+        <View style={[t.flexRow]}>
           <Text>{player.name}</Text>
           <Text>{player.score ? player.score : "0"}</Text>
         </View>
@@ -65,12 +73,3 @@ const MatchHostView: FunctionComponent<Props> = ({ match, setRoundWord, startRou
 }
 
 export default MatchHostView
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: 'column',
-    backgroundColor: '#efefef',
-    alignItems: 'center',
-  }
-})

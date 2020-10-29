@@ -57,12 +57,15 @@ const Match: FunctionComponent<Props> = (props) => {
   useEffect(() => {
     return setHost(match?.players[match?.round % match?.players?.length])
   }, [match?.round])
+
   const setRoundWord = (word:string) => {
     if (!match) {
       throw new Error('No match set. Cannot set round')
     }
     let updated = match.rounds
     updated[match.round + 1].word = word
+    updated[match.round + 1].status = 'started'
+    updated[match.round + 1].started_at = Date.now().toString()
 
     firestore()
       .collection('matches')
@@ -71,27 +74,7 @@ const Match: FunctionComponent<Props> = (props) => {
       .then(() => {
         console.log('Match Round Word updated!');
       })
-  }
-
-
-  const startRound = () => {
-    if (!match) {
-      throw new Error('No match set. Cannot set round')
-    }
-
-    let updated = match.rounds
-    updated[match.round + 1].status = 'started'
-    updated[match.round + 1].started_at = new Date()
-
-    firestore()
-      .collection('matches')
-      .doc(matchId)
-      .update('rounds', updated)
-      .then(() => {
-        console.log('Match Round status updated!');
-      })
-  }
-  
+  }  
 
   const submitWord = () => {
 
@@ -103,11 +86,13 @@ const Match: FunctionComponent<Props> = (props) => {
   }
 
   return host?.id === user.id ? (
-    <MatchHostView match={match} setRoundWord={setRoundWord} startRound={startRound}/>
+    <MatchHostView match={match} setRoundWord={setRoundWord} />
   ) : (
     <MatchPlayerView match={match} submitWord={submitWord} />
   )
 }
+
+export default Match
 
 const styles = StyleSheet.create({
   container: {
