@@ -28,10 +28,12 @@ import { t } from 'react-native-tailwindcss'
 
 interface Props {
   match: Match
+  user: User
+  host: User
   submitWord: (word: string) => void
 }
 
-const MatchPlayerView: FunctionComponent<Props> = () => {
+const MatchPlayerView: FunctionComponent<Props> = ({match, user, host, submitWord}) => {
   let camera = useRef<RNCamera | null>(null)
   const [labels, setLabels] = useState([])
   const [camType, setCamType] = useState(RNCamera.Constants.Type.back)
@@ -43,6 +45,10 @@ const MatchPlayerView: FunctionComponent<Props> = () => {
       setCamType(RNCamera.Constants.Type.back);
     }
   }
+
+  const { rounds, players } = match
+  const round = rounds[match.round + 1]
+  const player = players.find(p => p.id === user.id)
 
   return (
     <View style={[t.flex1, t.flexCol]}>
