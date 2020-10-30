@@ -16,3 +16,11 @@ export const MATCH_STATES = {
   ARCHIVED: 'archived'
 }
 
+export const ROUND_STATES = {
+  CREATED: 'created',
+  STARTING: 'starting',
+  STARTED: 'started',
+  TIMED_OUT: 'timeout',
+  COMPLETE: 'complete'
+}
+
