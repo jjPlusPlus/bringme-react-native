@@ -4,6 +4,7 @@ import { Ionicons, MaterialIcons, MaterialCommunityIcons } from '@expo/vector-ic
 
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { t } from 'react-native-tailwindcss'
+import { ROUND_STATES } from './screens/constants';
 
 /* To Do: 
  * Top Bar

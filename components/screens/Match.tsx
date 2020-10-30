@@ -88,7 +88,7 @@ const Match: FunctionComponent<Props> = (props) => {
   return host?.id === user.id ? (
     <MatchHostView match={match} setRoundWord={setRoundWord} />
   ) : (
-    <MatchPlayerView match={match} submitWord={submitWord} />
+    <MatchPlayerView match={match} user={user} host={host} submitWord={submitWord} />
   )
 }
 
