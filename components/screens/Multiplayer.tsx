@@ -2,7 +2,7 @@ import React, { useState, useEffect, FunctionComponent } from 'react'
 import { ActivityIndicator, FlatList, Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import firestore from '@react-native-firebase/firestore'
 
-import { MATCH_STATES } from './constants'
+import { MATCH_STATES, ROUND_STATES } from './constants'
 
 import { t } from 'react-native-tailwindcss'
 import styled from 'styled-components/native'
@@ -70,17 +70,18 @@ const Multiplayer: FunctionComponent<Props> = props => {
       .add({
         name: '',
         players: [{
-          uid: user?.id,
+          id: user?.id,
           name: user?.name,
-          host: true
+          email: user?.email,
+          score: 0,
         }],
         rounds: {
-          1: { word: null, winner: null, started_at: null, timeRemaining: null, score: 0 },
-          2: { word: null, winner: null, started_at: null, timeRemaining: null, score: 0 },
-          3: { word: null, winner: null, started_at: null, timeRemaining: null, score: 0 },
-          4: { word: null, winner: null, started_at: null, timeRemaining: null, score: 0 },
-          5: { word: null, winner: null, started_at: null, timeRemaining: null, score: 0 },
-          6: { word: null, winner: null, started_at: null, timeRemaining: null, score: 0 },
+          1: { status: ROUND_STATES.CREATED, word: null, winner: null, started_at: null, timeRemaining: null, score: 0 },
+          2: { status: ROUND_STATES.CREATED, word: null, winner: null, started_at: null, timeRemaining: null, score: 0 },
+          3: { status: ROUND_STATES.CREATED, word: null, winner: null, started_at: null, timeRemaining: null, score: 0 },
+          4: { status: ROUND_STATES.CREATED, word: null, winner: null, started_at: null, timeRemaining: null, score: 0 },
+          5: { status: ROUND_STATES.CREATED, word: null, winner: null, started_at: null, timeRemaining: null, score: 0 },
+          6: { status: ROUND_STATES.CREATED, word: null, winner: null, started_at: null, timeRemaining: null, score: 0 },
         },
         created_at: firestore.FieldValue.serverTimestamp(),
         started_at: null,
