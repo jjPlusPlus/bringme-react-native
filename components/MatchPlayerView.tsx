@@ -35,6 +35,11 @@ interface Props {
   submitWord: (word: string) => void
 }
 
+interface Label {
+  text: string,
+  confidence: number
+}
+
 const MatchPlayerView: FunctionComponent<Props> = ({match, user, host, submitWord}) => {
   let camera = useRef<RNCamera | null>(null)
   const [labels, setLabels] = useState([])
