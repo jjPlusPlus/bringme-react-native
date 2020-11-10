@@ -63,12 +63,28 @@ const Scoreboard: FunctionComponent<ScoreboardProps> = ( { players } ) => {
   return (
     <View>
       <Text>Scoreboard</Text>
-      { players?.map(player => (
-        <View style={[t.flexRow]}>
-          <Text>{player.name}</Text>
-          <Text>{player.score ? player.score : "0"}</Text>
-        </View>
-      ))}
+      { players?.map(player => {
+        return (
+          <View style={[t.flexRow]}>
+            <Text>{player.name}</Text>
+            <Text>{player.score ? player.score : "0"}</Text>
+            {player.submission && (
+              <Image 
+                style={{
+                  width: 51,
+                  height: 51,
+                  resizeMode: 'contain'
+                }}
+                
+                source={{ 
+                  uri: 
+                    `data:image/jpg;base64,${player.submission}` 
+                }}
+              />
+            )}
+          </View>
+        )
+      })}
     </View>
   )
 }
