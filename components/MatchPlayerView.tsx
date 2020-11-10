@@ -67,13 +67,8 @@ const MatchPlayerView: FunctionComponent<Props> = ({match, user, host, submitWor
     if (submissionHasMatch) {
       
       // update the round 'winner' and timeRemaining 
-      // roundsCopy[match.round + 1].winner = player
-      roundsCopy = rounds.map((r, i) => {
-        if (i === match.round + 1) {
-          r.winner = player
-        }
-        return r
-      })
+      roundsCopy = JSON.parse(JSON.stringify(rounds));
+      roundsCopy[match.round + 1].winner = player
     
       // set the player submission and increase score by 100
       playersCopy = players.map(p => {
