@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useState } from 'react'
 
-import { Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Text, TextInput, TouchableOpacity, View, Image } from 'react-native'
 import { t } from 'react-native-tailwindcss'
 
 /* This view will receive from props:
