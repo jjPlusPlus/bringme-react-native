@@ -48,10 +48,11 @@ const MatchHostView: FunctionComponent<Props> = ({ match, setRoundWord }) => {
         <View>
           <Text>Word: { round.word || "..." }</Text>
           <Scoreboard players={match.players}/>
-            {/* Show the winner if there is one */}
-            { round?.winner && (
-              <Text>Winner: {round?.winner}</Text>
-            )}
+
+          {/* Show the winner if there is one */}
+          { round?.winner && (
+            <Text>Winner: {round?.winner.name}</Text>
+          )}
         </View>
       )}
     </View>
