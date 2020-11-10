@@ -120,11 +120,24 @@ const MatchPlayerView: FunctionComponent<Props> = ({match, user, host, submitWor
   return (
     <View style={[t.flex1, t.flexCol]}>
       <View style={[t.p4, t.flexRow, t.itemsCenter, { backgroundColor: '#FFE8E7', height: 80 }]}>
-        <Text style={[t.flex1, t.fontBold, t.textXl]}>Current Word</Text>
+        
+        <Text style={[t.flex1, t.fontBold, t.textXl]}>
+          {round.status === ROUND_STATES.CREATED && !round.word && `${host?.name} is picking a word`}
+          {round.status === ROUND_STATES.STARTED && round.word && `Bring me a... ${round.word}`}
+        </Text>
+
         <View style={[t.flexRow, t.itemsCenter]}>
           <MaterialIcons name="timer" size={24} color="black" />
-          <Text style={[t.pL1, t.textXl]}>{new Date().getSeconds()}s</Text>
+          <Text style={[t.pL1, t.textXl]}>
+            { round.status === ROUND_STATES.STARTED ? (
+              `${new Date().getSeconds()}s`
+            ) : (
+              `NaNs`
+            )}
+            
+          </Text>
         </View>
+
       </View>
       <View style={[t.flex1, t.relative]}>
         <RNCamera
@@ -148,16 +161,19 @@ const MatchPlayerView: FunctionComponent<Props> = ({match, user, host, submitWor
           }}
           onLabelsDetected={({ labels = [] }) => setLabels(labels)}
         />
+
         <View style={[t.absolute, t.m4]}>
           {
             labels?.sort((a, b) => b.confidence - a.confidence).map(label => (
               <Text style={[t.p2, t.textWhite, { backgroundColor: 'rgba(0,0,0,0.5)' }]}>{label.text}: {label.confidence}</Text>
             ))
           }
-
         </View>
+
       </View>
+
       <View style={[t.bgBlack, t.pB6, t.pT3, t.pX4, t.flexRow, t.itemsCenter, t.justifyEnd]}>
+
         <View style={[t.flex1]}></View>
 
         <TouchableOpacity style={[t.flex1, t.itemsCenter]} onPress={() => attemptMatch()}>
