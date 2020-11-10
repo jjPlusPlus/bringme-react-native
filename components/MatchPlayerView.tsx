@@ -1,6 +1,7 @@
 import React, { FunctionComponent, useState, useRef } from 'react'
 import { RNCamera } from 'react-native-camera'
 import { Ionicons, MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
+import firestore from '@react-native-firebase/firestore'
 
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { t } from 'react-native-tailwindcss'
@@ -39,6 +40,10 @@ const MatchPlayerView: FunctionComponent<Props> = ({match, user, host, submitWor
   const [labels, setLabels] = useState([])
   const [camType, setCamType] = useState(RNCamera.Constants.Type.back)
 
+  const { rounds, players } = match
+  const round = rounds[match.round + 1]
+  const player = players.find(p => p.id === user.id)
+
   const switchCamera = () => {
     if (camType === RNCamera.Constants.Type.back) {
       setCamType(RNCamera.Constants.Type.front);
@@ -47,9 +52,10 @@ const MatchPlayerView: FunctionComponent<Props> = ({match, user, host, submitWor
     }
   }
 
-  const { rounds, players } = match
-  const round = rounds[match.round + 1]
-  const player = players.find(p => p.id === user.id)
+  const attemptMatch = async () => {
+    // check if round word equals one of the current labels 
+    const submissionHasMatch = labels.find((l:Label) => l.text === round.word)
+  }
 
   return (
     <View style={[t.flex1, t.flexCol]}>
@@ -93,12 +99,15 @@ const MatchPlayerView: FunctionComponent<Props> = ({match, user, host, submitWor
       </View>
       <View style={[t.bgBlack, t.pB6, t.pT3, t.pX4, t.flexRow, t.itemsCenter, t.justifyEnd]}>
         <View style={[t.flex1]}></View>
-        <TouchableOpacity style={[t.flex1, t.itemsCenter]}>
+
+        <TouchableOpacity style={[t.flex1, t.itemsCenter]} onPress={() => attemptMatch()}>
           <Ionicons name="ios-radio-button-on" size={50} color="white" />
         </TouchableOpacity>
+
         <TouchableOpacity style={[t.flex1, t.itemsEnd]} onPress={() => switchCamera()}>
           <Ionicons name="ios-reverse-camera" size={40} color="white" />
         </TouchableOpacity>
+
       </View>
     </View>
   )
