@@ -3,7 +3,7 @@ type FieldValue = import('@react-native-firebase/firestore').FirebaseFirestoreTy
 interface FirestoreUser {
   name: string,
   email: string
-  user: string,
+  user?: string,
 }
 
 type User = FirestoreUser & { id: string }
