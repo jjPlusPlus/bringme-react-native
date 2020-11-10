@@ -11,7 +11,7 @@ type User = FirestoreUser & { id: string }
 interface FirestoreMatch {
   createdBy: { uid: string; username: string }
   name?: string,
-  players: Array<User & { score?: number }>
+  players: Array<User & { score?: number, submission?: string }>
   rounds: {
     [k: string]: {
       word: string | null
