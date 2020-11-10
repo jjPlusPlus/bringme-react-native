@@ -63,6 +63,58 @@ const MatchPlayerView: FunctionComponent<Props> = ({match, user, host, submitWor
     // take a picture and convert it to base64 
     const submission = await camera.takePictureAsync({ quality: 0.05, base64: true })
 
+    let roundsCopy, playersCopy
+    if (submissionHasMatch) {
+      
+      // update the round 'winner' and timeRemaining 
+      // roundsCopy[match.round + 1].winner = player
+      roundsCopy = rounds.map((r, i) => {
+        if (i === match.round + 1) {
+          r.winner = player
+        }
+        return r
+      })
+    
+      // set the player submission and increase score by 100
+      playersCopy = players.map(p => {
+        if (p.id === player.id) {
+          p.score = (p.score || 0) + 100
+          p.submission = submission.base64
+        }
+        return p
+      })
+
+      firestore()
+        .collection('matches')
+        .doc(match.id)
+        .update({
+          rounds: roundsCopy,
+          players: playersCopy,
+
+        } as Partial<FirestoreMatch>)
+        .then(() => {
+          console.log('Match updated!');
+        });  
+    } else {
+      
+      // only set the player's current submission
+      playersCopy = players.map(p => {
+        if (p.id === player.id) {
+          p.submission = submission.base64
+        }
+        return p
+      })
+
+      firestore()
+        .collection('matches')
+        .doc(match.id)
+        .update({
+          players: playersCopy,
+        } as Partial<FirestoreMatch>)
+        .then(() => {
+          console.log('Match updated!');
+        });  
+    }
   }
 
   return (
