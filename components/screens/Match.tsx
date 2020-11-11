@@ -9,14 +9,17 @@ import MatchPlayerView from '../MatchPlayerView'
 import { RootStackParamList } from '../../App'
 
 /* To Do: 
- * [x] On load, Check if the user is the creator or a player, and kick the user back to the Multiplayer screen if they are neither
- * [x] If the player is the current 'host', show the MatchHostView
- * [x] Otherwise, show the MatchPlayerView
- * [ ] Write logic to discern who is the current 'host'
- * [ ] Show the actual round word
- * [ ] Use the actual player's score 
- * [ ] Set up a countdown timer for the Round
- * [ ] 
+ * [ ] Wire up the countdown timer for the Round
+ * [ ] Style the Match Host View and Match Player View 
+ * [ ] Show a notification when a player has won a round 
+ * [ ] Show the confidence score for the Winner
+ * [ ] Winner score should be based on 100 points + confidence + time remaining
+ * [ ] Confidence threshold to win a round 
+ * [ ] Show a notification when the game ends, with a 'go back' button 
+ * [ ] Slide-out drawer with 'leave match' button and scoreboard 
+ * [ ] Hints for selecting a word or submitting a capture
+ * [ ] Presence indicator for users (high LOE, requires firebase rtdb ugh)
+ * - We can do time last because it's not essential 
 */
 
 interface Props {
