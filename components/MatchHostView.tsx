@@ -12,13 +12,15 @@ import { t } from 'react-native-tailwindcss'
 
 interface Props {
   match: Match
+  host: User
   setRoundWord: (word: string) => void
 }
 interface ScoreboardProps {
   players: FirestoreMatch["players"]
+  host: User
 }
 
-const MatchHostView: FunctionComponent<Props> = ({ match, setRoundWord }) => {
+const MatchHostView: FunctionComponent<Props> = ({ match, setRoundWord, host }) => {
 
   const { rounds, players } = match
   const round = rounds[match.round + 1]
@@ -27,8 +29,8 @@ const MatchHostView: FunctionComponent<Props> = ({ match, setRoundWord }) => {
   const needsWord = !round?.word
 
   return (
-    <View style={[t.bgWhite, t.flex1, t.itemsCenter, t.justifyCenter, t.mT10, t.p4 ]}>
-      <Text style={[t.text2xl, { fontFamily: 'LuckiestGuy-Regular', color: '#2568EF' }]}>Round {match.round + 1}</Text>
+    <View style={[t.bgWhite, t.flex1, t.itemsCenter, t.mT10, t.p4 ]}>
+      <Text style={[t.text4xl, { fontFamily: 'LuckiestGuy-Regular', color: '#2568EF' }]}>Round {match.round + 1}</Text>
 
       {needsWord ? (
         <>
@@ -46,8 +48,10 @@ const MatchHostView: FunctionComponent<Props> = ({ match, setRoundWord }) => {
         </>
       ) : (
         <View>
-          <Text>Word: { round.word || "..." }</Text>
-          <Scoreboard players={match.players}/>
+          <View style={[t.border4, t.itemsCenter, t.p2, t.roundedLg, { borderColor: '#2568EF', borderRadius: 20} ]}>
+            <Text style={[t.text2xl]}> { round.word || "..." }</Text>
+          </View>
+          <Scoreboard players={match.players} host={host}/>
 
           {/* Show the winner if there is one */}
           { round?.winner && (
@@ -59,32 +63,54 @@ const MatchHostView: FunctionComponent<Props> = ({ match, setRoundWord }) => {
   )
 }
 
-const Scoreboard: FunctionComponent<ScoreboardProps> = ( { players } ) => {
+const Scoreboard: FunctionComponent<ScoreboardProps> = ({ host, players } ) => {
   return (
-    <View>
-      <Text>Scoreboard</Text>
-      { players?.map(player => {
-        return (
-          <View style={[t.flexRow]}>
-            <Text>{player.name}</Text>
-            <Text>{player.score ? player.score : "0"}</Text>
-            {player.submission && (
-              <Image 
-                style={{
-                  width: 51,
-                  height: 51,
-                  resizeMode: 'contain'
-                }}
-                
-                source={{ 
-                  uri: 
-                    `data:image/jpg;base64,${player.submission}` 
-                }}
-              />
-            )}
-          </View>
-        )
-      })}
+    <View style={[t.pY4]}>
+      <Text style={[t.textGray800, t.textXl, { fontFamily: 'LuckiestGuy-Regular'}]}>Players</Text>
+      <View style={[t.flexRow, t.flexWrap]}>
+        { players?.map(player => {
+          return (
+            <View style={[t.p1, t.w1_2, t.flexGrow]}>
+              <View style={[t.bgRed100, t.p4, t.roundedLg, { minHeight: 250 }]}>
+                <Text style={[t.fontBold, t.textLg]}>{player.name}</Text>
+                <Text>{player.score ? player.score : "0"}</Text>
+                {player.submission ? (
+                  <Image 
+                    style={[t.h40, t.mY2, t.w32, t.rounded, {
+                      resizeMode: 'cover'
+                    }]}
+                    source={{ 
+                      uri: 
+                        `data:image/jpg;base64,${player.submission}` 
+                    }}
+                  />
+                ) : (
+                  <View>
+                    {
+                      player.name === host.name ? (
+                        <View style={[t.bgRed200, t.h24, t.mY4, t.roundedFull, t.selfCenter, t.w24]}>
+                          <Image 
+                            source={require('../assets/current-host.png')} 
+                            style={[t.objectContain, t.h24, t.w24]} 
+                          />
+                          <Text style={[t.fontBold, t.pY4, t.uppercase]}>ROUND HOST</Text>
+                        </View>
+                      ) : (
+                        <Image 
+                          style={[t.h40, t.mY2, t.w32, t.rounded, {
+                            resizeMode: 'contain'
+                          }]}
+                          source={require('../assets/loading.png')} 
+                        />
+                      )
+                    }
+                  </View>
+                )}
+              </View>
+            </View>
+          )
+        })}
+      </View>
     </View>
   )
 }
