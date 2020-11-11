@@ -83,8 +83,8 @@ const MatchPlayerView: FunctionComponent<Props> = ({match, user, host, submitWor
       playersCopy = players.map(p => {
         if (p.id === player.id) {
           p.score = (p.score || 0) + 100
-          p.submission = submission.base64
         }
+        p.submission = undefined
         return p
       })
 
@@ -97,8 +97,8 @@ const MatchPlayerView: FunctionComponent<Props> = ({match, user, host, submitWor
           round: match.round + 1
         } as Partial<FirestoreMatch>)
         .then(() => {
-          console.log('Match updated!');
-        });  
+          console.log('Match updated!')
+        }) 
     } else {
       
       // only set the player's current submission
@@ -116,8 +116,8 @@ const MatchPlayerView: FunctionComponent<Props> = ({match, user, host, submitWor
           players: playersCopy,
         } as Partial<FirestoreMatch>)
         .then(() => {
-          console.log('Match updated!');
-        });  
+          console.log('Match updated!')
+        })  
     }
   }
 
