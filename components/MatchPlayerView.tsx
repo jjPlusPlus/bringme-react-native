@@ -66,9 +66,18 @@ const MatchPlayerView: FunctionComponent<Props> = ({match, user, host, submitWor
     let roundsCopy, playersCopy
     if (submissionHasMatch) {
       
+      const timeRemaining = 60; // TODO: use actual time remaining 
+      const confidence = parseInt(submissionHasMatch.confidence * 100)
+      const score = 100 + timeRemaining + confidence
+
       // update the round 'winner' and timeRemaining 
-      roundsCopy = JSON.parse(JSON.stringify(rounds));
-      roundsCopy[match.round + 1].winner = player
+      roundsCopy = JSON.parse(JSON.stringify(rounds))
+      roundsCopy[match.round + 1].winner = {
+        player: player.user, // refers to the player's uid in the 'users' collection
+        name: player.name,
+        score: score,
+        submission: submission.base64
+      }
     
       // set the player submission and increase score by 100
       playersCopy = players.map(p => {
