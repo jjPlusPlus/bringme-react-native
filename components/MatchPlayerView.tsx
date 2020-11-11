@@ -85,7 +85,7 @@ const MatchPlayerView: FunctionComponent<Props> = ({match, user, host, submitWor
         .update({
           rounds: roundsCopy,
           players: playersCopy,
-
+          round: match.round + 1
         } as Partial<FirestoreMatch>)
         .then(() => {
           console.log('Match updated!');
