@@ -61,7 +61,7 @@ const MatchPlayerView: FunctionComponent<Props> = ({match, user, host, submitWor
     // check if round word equals one of the current labels 
     const submissionHasMatch = labels.find((l:Label) => l.text === round.word)
     // take a picture and convert it to base64 
-    const submission = await camera.takePictureAsync({ quality: 0.05, base64: true })
+    const submission = await camera.takePictureAsync({ quality: 0.25, width: '200', base64: true })
 
     let roundsCopy, playersCopy
     if (submissionHasMatch) {
