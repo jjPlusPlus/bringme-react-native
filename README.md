@@ -11,7 +11,7 @@ To start working locally, you will need a Firebase project with ios/android enab
 
 Clone this repo, run `npm install`, and then `pod install` inside the /ios directory. You will then need a copy of the `GoogleService-Info.plist` file from your Firebase project to link in Xcode before running the project.
 
-### Dependencies worth mentioning 
+### Major Dependencies
 [ExpoKit (Bare Workflow)](https://docs.expo.io/expokit/eject/)
 [react-native-firebase](https://rnfirebase.io/)  
 [react-native-camera](https://react-native-community.github.io/react-native-camera/docs/rncamera)  
