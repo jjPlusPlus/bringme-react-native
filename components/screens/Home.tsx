@@ -19,8 +19,8 @@ const Home: FunctionComponent<Props> = (props) => {
 
   return (
     <View style={styles.container}>
-      <View style={[]}>
-        <Image source={require('../../assets/logo.png')} style={[{ width: '80%', height: '50%', backgroundColor: "#000"  }]} />
+      <View style={[t.mT4, t.pL8, t.pR4, t.wFull]}>
+        <Image source={require('../../assets/logo.png')} style={[t.objectContain, t.selfEnd, { width: '80%' }]} />
       </View>
       <View style={[t.flex1, t.wFull]}>
         <Image source={require('../../assets/list.png')} style={[ t.objectContain, t.wFull, { height: 350 } ]} />
@@ -49,7 +49,9 @@ export default Home
 
 const styles = StyleSheet.create({
   container: {
-    
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
   },
 })
 
