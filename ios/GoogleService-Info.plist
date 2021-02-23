@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>304690382602-vlclfd5n2955b3j9nrnjiq0mos1h4vn6.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.304690382602-vlclfd5n2955b3j9nrnjiq0mos1h4vn6</string>
+	<key>API_KEY</key>
+	<string>AIzaSyANEgB_bpwK0b0D0ATlDqZxpqbOR3ipawI</string>
+	<key>GCM_SENDER_ID</key>
+	<string>304690382602</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>org.name.bringMeNative</string>
+	<key>PROJECT_ID</key>
+	<string>bringme-d9ab1</string>
+	<key>STORAGE_BUCKET</key>
+	<string>bringme-d9ab1.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:304690382602:ios:906bbea6c029c5800c5cf3</string>
+	<key>DATABASE_URL</key>
+	<string>https://bringme-d9ab1.firebaseio.com</string>
+</dict>
+</plist>
