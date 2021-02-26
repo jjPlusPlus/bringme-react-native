@@ -5,7 +5,8 @@ const functions = require("firebase-functions");
 //   return null;
 // });
 
-/* START ROUND TIMER
+/* END ROUND
+ * Ends a round after 60s
  * We want to ONLY act when a round in a match 
  * has it's 'status' change from [anything but 'started'] to 'started'
  * This function will run ANY TIME a match is updated
@@ -13,7 +14,6 @@ const functions = require("firebase-functions");
  * And we want to ignore all of those, and ONLY run when the match.rounds.[round].status changes > "started" 
 */
 
-/*
 exports.startRoundTimer = functions.firestore
   .document('matches/{matchId}')
   .onUpdate((change, context) => {
@@ -26,30 +26,16 @@ exports.startRoundTimer = functions.firestore
 
     if (isStartedNow && wasntStartedBefore) {
       // we can assume that the round status JUST changed to 'started'
-      // set the timeRemaining to 60s
-      let time = 60
-      change.after.ref.set({
-        timeRemaining: time
-      }, { merge: true })
-
-      const timer = setInterval(() => {
-        if (time === 0) {
-          clearInterval(timer)
-        }
-        time = time - 1 
+      setTimeout(() => {
         change.after.ref.set({
           rounds: {
             ...after.rounds,
             [after.round + 1]: {
               ...after.rounds[after.round + 1],
-              timeRemaining: time
+              status: 'timeout'
             }
           }
         }, { merge: true })
-      }, 1000)
-      return console.log('okay, run it')
-    } else {
-      return console.log('dont run it')
+      }, 60000)
     }
   })
-  */
