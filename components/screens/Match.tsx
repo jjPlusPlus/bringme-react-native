@@ -1,12 +1,19 @@
 import React, { FunctionComponent, useEffect, useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import { RouteProp } from '@react-navigation/native'
+import { createDrawerNavigator } from '@react-navigation/drawer';
 
 import firestore from '@react-native-firebase/firestore'
 
+import styled from 'styled-components/native'
+import { t } from 'react-native-tailwindcss'
+
 import MatchHostView from '../MatchHostView'
 import MatchPlayerView from '../MatchPlayerView'
+import Scoreboard from '../Scoreboard'
 import { RootStackParamList } from '../../App'
+
+import { Dimensions } from 'react-native'
 
 /* To Do: 
  * [ ] Wire up the countdown timer for the Round
@@ -26,6 +33,8 @@ interface Props {
   user: User
   route: RouteProp<RootStackParamList, 'Match'>
 }
+
+const Drawer = createDrawerNavigator();
 
 const Match: FunctionComponent<Props> = (props) => {
   const { user } = props
@@ -79,20 +88,45 @@ const Match: FunctionComponent<Props> = (props) => {
       })
   }  
 
+  const leaveMatch = () => {
+    if (!match) {
+      throw new Error('No match set. Cannot leave match')
+    }
+  }
+
   const submitWord = () => {
 
   }
-
 
   if (!match) {
     return <View><Text>Loading</Text></View>
   }
 
+  const { width, height } = Dimensions.get('screen');
+
   return host?.id === user.id ? (
-    <MatchHostView match={match} setRoundWord={setRoundWord} host={host}/>
+    <Drawer.Navigator drawerStyle={{width: '80%'}} drawerPosition="right" drawerContent={() => <DrawerContent match={match} leaveMatch={leaveMatch} host={host}/>}>
+      <Drawer.Screen name="MatchHostView" component={() => <MatchHostView match={match} setRoundWord={setRoundWord} host={host} />} />
+    </Drawer.Navigator>
   ) : (
-    <MatchPlayerView match={match} user={user} host={host} submitWord={submitWord} />
+    <Drawer.Navigator drawerStyle={{width: '80%'}} drawerPosition="right" drawerContent={() => <DrawerContent match={match} leaveMatch={leaveMatch} host={host}/>}>
+      <Drawer.Screen name="MatchPlayerView" component={() => <MatchPlayerView match={match} user={user} host={host} submitWord={submitWord} />} />
+    </Drawer.Navigator>
   )
+}
+
+function DrawerContent(match, host, leaveMatch) {
+  return <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+    <View style={[ t.pT10, t.p2, t.flexGrow ]}>
+      <Text style={[ t.fontBold, t.textCenter, t.textXl, t.p2 ]}>Player Scores</Text>
+      <Scoreboard players={match.match.players} host={host}/>
+    </View>
+    <View style={[ t.pB10 ]}>
+      <QuitButton onPress={() => leaveMatch()}>
+        <QuitButtonText>Quit Match</QuitButtonText>
+      </QuitButton>
+    </View>
+  </View>
 }
 
 export default Match
@@ -111,3 +145,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 })
+
+const QuitButton = styled(TouchableOpacity)`
+  ${[ t.p2, t.m2, t.roundedLg, { background: '#ff0000'} ]}
+`;
+
+const QuitButtonText = styled(Text)`
+  ${[ t.fontBold, t.textCenter, t.textLg, t.textWhite, t.uppercase, { fontFamily: 'LuckiestGuy-Regular' } ]}
+`;
