@@ -7,6 +7,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { t } from 'react-native-tailwindcss'
 import { ROUND_STATES } from './screens/constants';
 
+import RoundTimer from './RoundTimer'
 /* To Do: 
  * Top Bar
  *   current word (from Round)
@@ -133,12 +134,7 @@ const MatchPlayerView: FunctionComponent<Props> = ({match, user, host, submitWor
         <View style={[t.flexRow, t.itemsCenter]}>
           <MaterialIcons name="timer" size={24} color="black" />
           <Text style={[t.pL1, t.textXl]}>
-            { round.status === ROUND_STATES.STARTED ? (
-              `${new Date().getSeconds()}s`
-            ) : (
-              `NaNs`
-            )}
-            
+            <RoundTimer round={round}/>
           </Text>
         </View>
 
