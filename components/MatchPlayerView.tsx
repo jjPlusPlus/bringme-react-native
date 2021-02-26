@@ -164,8 +164,8 @@ const MatchPlayerView: FunctionComponent<Props> = ({match, user, host, submitWor
 
         <View style={[t.absolute, t.m4]}>
           {
-            labels?.sort((a, b) => b.confidence - a.confidence).map(label => (
-              <Text style={[t.p2, t.textWhite, { backgroundColor: 'rgba(0,0,0,0.5)' }]}>{label.text}: {label.confidence}</Text>
+            labels?.sort((a, b) => b.confidence - a.confidence).map((label, labelIndex) => (
+              <Text key={labelIndex} style={[t.p2, t.textWhite, { backgroundColor: 'rgba(0,0,0,0.5)' }]}>{label.text}: {label.confidence}</Text>
             ))
           }
         </View>
