@@ -98,7 +98,7 @@ const Match: FunctionComponent<Props> = (props) => {
 
   }
 
-  if (!match) {
+  if (!match || !host) {
     return <View><Text>Loading</Text></View>
   }
 
