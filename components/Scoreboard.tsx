@@ -33,7 +33,7 @@ const Scoreboard: FunctionComponent<ScoreboardProps> = ({ host, players } ) => {
                 ) : (
                   <View>
                     {
-                      player.name === host.name ? (
+                      player.id === host.id ? (
                         <View style={[t.bgRed200, t.h24, t.mY4, t.roundedFull, t.selfCenter, t.w24]}>
                           <Image 
                             source={require('../assets/current-host.png')} 
