@@ -16,7 +16,7 @@ const Scoreboard: FunctionComponent<ScoreboardProps> = ({ host, players } ) => {
       <View style={[t.flexRow, t.flexWrap]}>
         { players?.map(player => {
           return (
-            <View style={[t.p1, t.w1_2, t.flexGrow]}>
+            <View style={[t.p1, t.w1_2, t.flexGrow]} key={player.id}>
               <View style={[t.bgRed100, t.p4, t.roundedLg, { minHeight: 250 }]}>
                 <Text style={[t.fontBold, t.textXs]}>{player.name}</Text>
                 <Text style={[t.textXs]}>{player.score ? player.score : "0"} Points</Text>
