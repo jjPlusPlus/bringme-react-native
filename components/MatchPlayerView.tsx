@@ -2,6 +2,7 @@ import React, { FunctionComponent, useState, useRef } from 'react'
 import { RNCamera } from 'react-native-camera'
 import { Ionicons, MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import firestore from '@react-native-firebase/firestore'
+import functions from '@react-native-firebase/functions';
 
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { t } from 'react-native-tailwindcss'
@@ -66,40 +67,12 @@ const MatchPlayerView: FunctionComponent<Props> = ({match, user, host, submitWor
 
     let roundsCopy, playersCopy
     if (submissionHasMatch) {
-      
-      const timeRemaining = 60; // TODO: use actual time remaining 
-      const confidence = parseInt(submissionHasMatch.confidence * 100)
-      const score = 100 + timeRemaining + confidence
-
-      // update the round 'winner' and timeRemaining 
-      roundsCopy = JSON.parse(JSON.stringify(rounds))
-      roundsCopy[match.round + 1].winner = {
-        player: player.user, // refers to the player's uid in the 'users' collection
-        name: player.name,
-        score: score,
-        submission: submission.base64
-      }
-    
-      // set the player submission and increase score by 100
-      playersCopy = players.map(p => {
-        if (p.id === player.id) {
-          p.score = (p.score || 0) + 100
-        }
-        p.submission = undefined
-        return p
+      var playerScored = functions().httpsCallable('playerScored')
+      playerScored({ 
+        confidence: parseInt(submissionHasMatch.confidence * 100),
+        player: { name: player.name, id: player.user },
+        submission: submission.base64,
       })
-
-      firestore()
-        .collection('matches')
-        .doc(match.id)
-        .update({
-          rounds: roundsCopy,
-          players: playersCopy,
-          round: match.round + 1
-        } as Partial<FirestoreMatch>)
-        .then(() => {
-          console.log('Match updated!')
-        }) 
     } else {
       
       // only set the player's current submission

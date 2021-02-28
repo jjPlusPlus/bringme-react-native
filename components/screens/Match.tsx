@@ -106,7 +106,9 @@ const Match: FunctionComponent<Props> = (props) => {
 
   return host?.id === user.id ? (
     <Drawer.Navigator drawerStyle={{width: '80%'}} drawerPosition="right" drawerContent={() => <DrawerContent match={match} leaveMatch={leaveMatch} host={host}/>}>
-      <Drawer.Screen name="MatchHostView" component={() => <MatchHostView match={match} setRoundWord={setRoundWord} host={host} />} />
+      <Drawer.Screen name="MatchHostView" >
+        {() => <MatchHostView match={match} setRoundWord={setRoundWord} host={host} />}
+      </Drawer.Screen>
     </Drawer.Navigator>
   ) : (
     <Drawer.Navigator drawerStyle={{width: '80%'}} drawerPosition="right" drawerContent={() => <DrawerContent match={match} leaveMatch={leaveMatch} host={host}/>}>
