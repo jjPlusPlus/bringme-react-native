@@ -58,7 +58,6 @@ const MatchPlayerView: FunctionComponent<Props> = ({match, user, host, submitWor
       setCamType(RNCamera.Constants.Type.back);
     }
   }
-
   const attemptMatch = async () => {
     // check if round word equals one of the current labels 
     const submissionHasMatch = labels.find((l:Label) => l.text === round.word)
@@ -68,7 +67,9 @@ const MatchPlayerView: FunctionComponent<Props> = ({match, user, host, submitWor
     let roundsCopy, playersCopy
     if (submissionHasMatch) {
       var playerScored = functions().httpsCallable('playerScored')
+      
       playerScored({ 
+        match: match,
         confidence: parseInt(submissionHasMatch.confidence * 100),
         player: { name: player.name, id: player.user },
         submission: submission.base64,
