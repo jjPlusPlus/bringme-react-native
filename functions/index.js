@@ -2,7 +2,6 @@ const functions = require("firebase-functions");
 const admin = require('firebase-admin');
 admin.initializeApp();
 
-// url is https://us-central1-bringme-d9ab1.cloudfunctions.net/playerScored
 exports.playerScored = functions.https.onCall((data, context) => {
   console.log('a player scored')
   let { match, confidence, player, submission } = data
@@ -12,7 +11,7 @@ exports.playerScored = functions.https.onCall((data, context) => {
   const rounds = JSON.parse(JSON.stringify(match.rounds))
   const startedAt = rounds[match.round + 1].started_at
   const timeRemaining = 60 - Math.round( (Date.now() - startedAt) / 1000 )
-  const score = 100 + timeRemaining + Math.floor(confidence * 10)
+  const score = 100 + timeRemaining + Math.floor(confidence)
 
   rounds[match.round + 1].winner = {
     player: player.id, 

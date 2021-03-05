@@ -70,8 +70,8 @@ const MatchPlayerView: FunctionComponent<Props> = ({match, user, host, submitWor
       
       playerScored({ 
         match: match,
-        confidence: parseInt(submissionHasMatch.confidence * 100),
-        player: { name: player.name, id: player.user },
+        confidence: parseInt(submissionHasMatch.confidence * 10),
+        player: { name: player.name, id: player.id },
         submission: submission.base64,
       })
     } else {
