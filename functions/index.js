@@ -70,17 +70,36 @@ exports.startRoundTimer = functions.firestore
     if (isStartedNow && wasntStartedBefore) {
       // we can assume that the round status JUST changed to 'started'
       setTimeout(() => {
-        // is there already a winner? if status is complete, bail.
-        
-        change.after.ref.set({
-          rounds: {
-            ...after.rounds,
-            [after.round + 1]: {
-              ...after.rounds[after.round + 1],
-              status: 'timeout'
+
+        admin.firestore().collection('matches').doc(before.id).get().then((doc) => {
+          if (doc.exists) {
+            const matchDoc = doc.data()
+            const rounds = JSON.parse(JSON.stringify(matchDoc.rounds))
+            const roundObject = rounds[before.round]
+            
+            if (roundObject.status !== 'complete') {
+              change.after.ref.set({
+                rounds: {
+                  ...after.rounds,
+                  [after.round + 1]: {
+                    ...after.rounds[after.round + 1],
+                    status: 'timeout'
+                  }
+                }
+              }, { merge: true })
+            } else {
+              console.log('The match has a winner and is "complete"- don\'t overwrite status')
             }
+          } else {
+            console.log('couldn\'t find match document after startRoundTimer clock ran out')
           }
-        }, { merge: true })
+        })
+
+
       }, 60000)
+
+
+
+
     }
   })
