@@ -9,26 +9,6 @@ import { t } from 'react-native-tailwindcss'
 import { ROUND_STATES } from './screens/constants';
 
 import RoundTimer from './RoundTimer'
-/* To Do: 
- * Top Bar
- *   current word (from Round)
- *   current score (from Players)
- *   time remaining (based on Round.started_at)
- * Camera 
- *   action button "recognize!"
- *   recognition loading state, success notification
- *   realtime word matches overlay
- * Bottom Bar
- *   Contextual information depending on game state:
- *   If the round is over:
- *    '[host.name] is picking the next word'    
- *   If the round is in progress:
- *     show 4 top words that came back from a match
- * Slideout
- *   Players/scores
- *   "Pass" buttons
- *   Leave Match
-*/
 
 interface Props {
   match: Match
