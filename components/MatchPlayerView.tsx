@@ -1,8 +1,8 @@
 import React, { FunctionComponent, useState, useRef } from 'react'
-import { RNCamera } from 'react-native-camera'
+// import { RNCamera } from 'react-native-camera'
 import { Ionicons, MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
-import firestore from '@react-native-firebase/firestore'
-import functions from '@react-native-firebase/functions';
+// import firestore from '@react-native-firebase/firestore'
+// import functions from '@react-native-firebase/functions';
 
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { t } from 'react-native-tailwindcss'
@@ -23,56 +23,58 @@ interface Label {
 }
 
 const MatchPlayerView: FunctionComponent<Props> = ({match, user, host, submitWord}) => {
-  let camera = useRef<RNCamera | null>(null)
+  // let camera = useRef<RNCamera | null>(null)
   const [labels, setLabels] = useState([])
-  const [camType, setCamType] = useState(RNCamera.Constants.Type.back)
+  // const [camType, setCamType] = useState(RNCamera.Constants.Type.back)
+  const [camType, setCamType] = useState(null)
+
 
   const { rounds, players } = match
   const round = rounds[match.round + 1]
   const player = players.find(p => p.id === user.id)
 
   const switchCamera = () => {
-    if (camType === RNCamera.Constants.Type.back) {
-      setCamType(RNCamera.Constants.Type.front);
-    } else {
-      setCamType(RNCamera.Constants.Type.back);
-    }
+    // if (camType === RNCamera.Constants.Type.back) {
+    //   setCamType(RNCamera.Constants.Type.front);
+    // } else {
+    //   setCamType(RNCamera.Constants.Type.back);
+    // }
   }
   const attemptMatch = async () => {
     // check if round word equals one of the current labels 
     const submissionHasMatch = labels.find((l:Label) => l.text === round.word)
     // take a picture and convert it to base64 
-    const submission = await camera.takePictureAsync({ quality: 0.25, width: '200', base64: true })
-
+    // const submission = await camera.takePictureAsync({ quality: 0.25, width: '200', base64: true })
+    let submission;
     let roundsCopy, playersCopy
     if (submissionHasMatch) {
-      var playerScored = functions().httpsCallable('playerScored')
+      // var playerScored = functions().httpsCallable('playerScored')
       
-      playerScored({ 
-        match: match,
-        confidence: parseInt(submissionHasMatch.confidence * 10),
-        player: { name: player.name, id: player.id },
-        submission: submission.base64,
-      })
+      // playerScored({ 
+      //   match: match,
+      //   confidence: parseInt(submissionHasMatch.confidence * 10),
+      //   player: { name: player.name, id: player.id },
+      //   submission: submission.base64,
+      // })
     } else {
       
       // only set the player's current submission
       playersCopy = players.map(p => {
         if (p.id === player.id) {
-          p.submission = submission.base64
+          p.submission = submission?.base64
         }
         return p
       })
 
-      firestore()
-        .collection('matches')
-        .doc(match.id)
-        .update({
-          players: playersCopy,
-        } as Partial<FirestoreMatch>)
-        .then(() => {
-          console.log('Match updated!')
-        })  
+      // firestore()
+      //   .collection('matches')
+      //   .doc(match.id)
+      //   .update({
+      //     players: playersCopy,
+      //   } as Partial<FirestoreMatch>)
+      //   .then(() => {
+      //     console.log('Match updated!')
+      //   })  
     }
   }
 
@@ -94,7 +96,7 @@ const MatchPlayerView: FunctionComponent<Props> = ({match, user, host, submitWor
 
       </View>
       <View style={[t.flex1, t.relative]}>
-        <RNCamera
+        {/* <RNCamera
           ref={ref => {
             camera = ref;
           }}
@@ -114,7 +116,7 @@ const MatchPlayerView: FunctionComponent<Props> = ({match, user, host, submitWor
             buttonNegative: 'Cancel',
           }}
           onLabelsDetected={({ labels = [] }) => setLabels(labels)}
-        />
+        /> */}
 
         <View style={[t.absolute, t.m4]}>
           {

@@ -2,7 +2,7 @@ import React, { useState, useEffect, FunctionComponent } from 'react'
 import { RouteProp } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { StyleSheet, Text, View, Alert, Button } from 'react-native'
-import firestore from '@react-native-firebase/firestore'
+// import firestore from '@react-native-firebase/firestore'
 
 import { MATCH_STATES } from './constants'
 import { RootStackParamList } from '../../App'
@@ -21,20 +21,20 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
 
   // on mount, get the full Match object
   useEffect(() => {
-    firestore()
-      .collection('matches')
-      .doc(matchId)
-      .onSnapshot(documentSnapshot => {
-        if (!documentSnapshot) {
-          return
-        }
-        const data = documentSnapshot.data() as FirestoreMatch
-        const withId = {
-          ...data,
-          id: documentSnapshot.id
-        }
-        setMatch(withId)
-      })
+    // firestore()
+    //   .collection('matches')
+    //   .doc(matchId)
+    //   .onSnapshot(documentSnapshot => {
+    //     if (!documentSnapshot) {
+    //       return
+    //     }
+    //     const data = documentSnapshot.data() as FirestoreMatch
+    //     const withId = {
+    //       ...data,
+    //       id: documentSnapshot.id
+    //     }
+    //     setMatch(withId)
+    //   })
 
     // Remove players from the match if they back out of the lobby
     props.navigation.addListener('beforeRemove', (e) => {
@@ -50,16 +50,16 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
             onPress: () => {
 
               const players = match?.players?.filter(p => p.id !== user.id)
-              firestore()
-                .collection('matches')
-                .doc(matchId)
-                .update({
-                  players: players || []
-                } as Partial<FirestoreMatch>)
-                .then(() => {
-                  console.log('Player removed');
-                  props.navigation.dispatch(e.data.action)
-                });  
+              // firestore()
+              //   .collection('matches')
+              //   .doc(matchId)
+              //   .update({
+              //     players: players || []
+              //   } as Partial<FirestoreMatch>)
+              //   .then(() => {
+              //     console.log('Player removed');
+              //     props.navigation.dispatch(e.data.action)
+              //   });  
               
             },
           },
@@ -82,16 +82,16 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
   }
 
   const startMatch = () => {
-    firestore()
-      .collection('matches')
-      .doc(match.id)
-      .update('status', MATCH_STATES.STARTED)
-      .then(() => {
-        console.log('Match updated!');
-        props.navigation.navigate('Match', {
-          matchId: match.id
-        })
-      });  
+    // firestore()
+    //   .collection('matches')
+    //   .doc(match.id)
+    //   .update('status', MATCH_STATES.STARTED)
+    //   .then(() => {
+    //     console.log('Match updated!');
+    //     props.navigation.navigate('Match', {
+    //       matchId: match.id
+    //     })
+    //   });  
   }
 
   return (

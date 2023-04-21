@@ -2,8 +2,8 @@ import React, { useState, useEffect, FunctionComponent } from 'react'
 
 import {Button, Image, StyleSheet, Text, TextInput, View  } from 'react-native'
 
-import auth from '@react-native-firebase/auth'
-import firestore from '@react-native-firebase/firestore'
+// import auth from '@react-native-firebase/auth'
+// import firestore from '@react-native-firebase/firestore'
 import { t } from 'react-native-tailwindcss'
 import styled from 'styled-components/native'
 
@@ -36,30 +36,30 @@ const Settings: FunctionComponent<Props> = (props) => {
       return 
     }
     /* Faking uniqueness*/
-    firestore()
-      .collection('users')
-      .where('name', '==', userName)
-      .get()
-      .then(querySnapshot => {
-        if (!querySnapshot) {
-          return console.error('update failed while looking for duplicates')
-        }
-        const existing = querySnapshot.docs.length
-        if (existing) {
-          return setError({userName: "That username is taken"})
-        }
-        // if it hasn't been found, update the username
-        firestore()
-          .collection('users')
-          .doc(user.id)
-          .update({
-            name: userName
-          } as Partial<FirestoreUser>)
-          .then(() => {
-            console.log('Username updated!');
-            // some sort of nice notification here
-          });  
-      })
+    // firestore()
+    //   .collection('users')
+    //   .where('name', '==', userName)
+    //   .get()
+    //   .then(querySnapshot => {
+    //     if (!querySnapshot) {
+    //       return console.error('update failed while looking for duplicates')
+    //     }
+    //     const existing = querySnapshot.docs.length
+    //     if (existing) {
+    //       return setError({userName: "That username is taken"})
+    //     }
+    //     // if it hasn't been found, update the username
+    //     firestore()
+    //       .collection('users')
+    //       .doc(user.id)
+    //       .update({
+    //         name: userName
+    //       } as Partial<FirestoreUser>)
+    //       .then(() => {
+    //         console.log('Username updated!');
+    //         // some sort of nice notification here
+    //       });  
+    //   })
   }
 
   if (!user) {
@@ -78,7 +78,13 @@ const Settings: FunctionComponent<Props> = (props) => {
       />
       {error.userName && <Text>{error.userName}</Text>}
       <Button onPress={saveUsername} title="Save" />
-      <Button onPress={() => auth().signOut().then(() => console.log('User signed out!'))} title="Sign Out" />
+      <Button 
+        title="Sign Out" 
+        onPress={() => {
+          // auth().signOut().then(() => console.log('User signed out!'))
+        }} 
+        
+      />
     </View>
   )
 }

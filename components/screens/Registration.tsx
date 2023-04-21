@@ -3,7 +3,7 @@ import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth'
 
 import { StyleSheet, Text, TextInput, TouchableOpacity, Button, View } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import firestore from '@react-native-firebase/firestore'
+// import firestore from '@react-native-firebase/firestore'
 
 import { RootStackParamList } from '../../App'
 import { StackNavigationProp } from '@react-navigation/stack'
@@ -28,44 +28,44 @@ export default function Register({ navigation }: Props) {
     // if it's unique, then try to create the new auth account
     setError({})
 
-    await firestore()
-      .collection('users')
-      .where('name', '==', username)
-      .get()
-      .then(querySnapshot => {
-        // querySnapshot.empty still true if size is 0...?
-        if (querySnapshot.size > 0) {
-          return setError({userName: 'That username is taken!'})
-        }
-        auth()
-          .createUserWithEmailAndPassword(email, password)
-          .then((user: FirebaseAuthTypes.UserCredential) => {
-            // this will automatically send the user to /Lobby
-            // now try to connec the auth account to a User record
-            firestore()
-              .collection('users')
-              .add({
-                name: username,
-                email: email,
-                user: user.user.uid,
-              } as FirestoreUser)
-              .then(() => {
-                console.log('User added!')
-              }).catch((err) => {
-                console.log(err)
-                // todo
-              })
-            console.log('User account created & signed in!')
-          })
-          .catch(error => {
-            if (error.code === 'auth/email-already-in-use') {
-              setError({email: 'That email address is already in use!'})
-            }
-            if (error.code === 'auth/invalid-email') {
-              setError({email: 'That email address is invalid!'})
-            }
-          })
-      })
+    // await firestore()
+    //   .collection('users')
+    //   .where('name', '==', username)
+    //   .get()
+    //   .then(querySnapshot => {
+    //     // querySnapshot.empty still true if size is 0...?
+    //     if (querySnapshot.size > 0) {
+    //       return setError({userName: 'That username is taken!'})
+    //     }
+    //     auth()
+    //       .createUserWithEmailAndPassword(email, password)
+    //       .then((user: FirebaseAuthTypes.UserCredential) => {
+    //         // this will automatically send the user to /Lobby
+    //         // now try to connec the auth account to a User record
+    //         firestore()
+    //           .collection('users')
+    //           .add({
+    //             name: username,
+    //             email: email,
+    //             user: user.user.uid,
+    //           } as FirestoreUser)
+    //           .then(() => {
+    //             console.log('User added!')
+    //           }).catch((err) => {
+    //             console.log(err)
+    //             // todo
+    //           })
+    //         console.log('User account created & signed in!')
+    //       })
+    //       .catch(error => {
+    //         if (error.code === 'auth/email-already-in-use') {
+    //           setError({email: 'That email address is already in use!'})
+    //         }
+    //         if (error.code === 'auth/invalid-email') {
+    //           setError({email: 'That email address is invalid!'})
+    //         }
+    //       })
+    //   })
   }
 
   const validateUsername = () => {

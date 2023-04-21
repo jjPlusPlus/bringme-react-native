@@ -1,6 +1,6 @@
 import React, { useState, useEffect, FunctionComponent } from 'react'
 import { ActivityIndicator, FlatList, Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import firestore from '@react-native-firebase/firestore'
+// import firestore from '@react-native-firebase/firestore'
 
 import { MATCH_STATES, ROUND_STATES } from './constants'
 
@@ -27,24 +27,24 @@ const Multiplayer: FunctionComponent<Props> = props => {
     TODO: (blocked by firestore bug): Only games that are in matchmaking or in progress
   */
   useEffect(() => {
-    firestore()
-      .collection('matches')
-      // .where('status', 'in', ['matchmaking', 'in-progress'])
-      .orderBy('created_at', 'desc')
-      .limit(100)
-      .onSnapshot(querySnapshot => {
-        const matchCollection = querySnapshot.docs.map<Match>(
-          documentSnapshot => ({
-            ...(documentSnapshot.data() as FirestoreMatch),
-            id: documentSnapshot.id,
-          })
-        )
+    // firestore()
+    //   .collection('matches')
+    //   // .where('status', 'in', ['matchmaking', 'in-progress'])
+    //   .orderBy('created_at', 'desc')
+    //   .limit(100)
+    //   .onSnapshot(querySnapshot => {
+    //     const matchCollection = querySnapshot.docs.map<Match>(
+    //       documentSnapshot => ({
+    //         ...(documentSnapshot.data() as FirestoreMatch),
+    //         id: documentSnapshot.id,
+    //       })
+    //     )
 
         // band-aid for a bug...
-        if (!matchCollection.length) { return }
+        // if (!matchCollection.length) { return }
 
-        setMatches(matchCollection)
-      })
+        // setMatches(matchCollection)
+      // })
   }, [])
 
   /* Check matches to see if user is a host or player already */
@@ -65,57 +65,57 @@ const Multiplayer: FunctionComponent<Props> = props => {
   }, [matches])
 
   const createNewLobby = () => {
-    firestore()
-      .collection('matches')
-      .add({
-        name: '',
-        players: [{
-          id: user?.id,
-          name: user?.name,
-          email: user?.email,
-          score: 0,
-        }],
-        rounds: {
-          1: { status: ROUND_STATES.CREATED, word: null, winner: null, started_at: null, timeRemaining: null, score: 0 },
-          2: { status: ROUND_STATES.CREATED, word: null, winner: null, started_at: null, timeRemaining: null, score: 0 },
-          3: { status: ROUND_STATES.CREATED, word: null, winner: null, started_at: null, timeRemaining: null, score: 0 },
-          4: { status: ROUND_STATES.CREATED, word: null, winner: null, started_at: null, timeRemaining: null, score: 0 },
-          5: { status: ROUND_STATES.CREATED, word: null, winner: null, started_at: null, timeRemaining: null, score: 0 },
-          6: { status: ROUND_STATES.CREATED, word: null, winner: null, started_at: null, timeRemaining: null, score: 0 },
-        },
-        created_at: firestore.FieldValue.serverTimestamp(),
-        started_at: null,
-        ended_at: null,
-        winner: null,
-        round: 0,
-        status: MATCH_STATES.MATCHMAKING,
-        createdBy: {
-          uid: user?.id,
-          username: user?.name
-        },
-      } as FirestoreMatch)
+    // firestore()
+    //   .collection('matches')
+    //   .add({
+    //     name: '',
+    //     players: [{
+    //       id: user?.id,
+    //       name: user?.name,
+    //       email: user?.email,
+    //       score: 0,
+    //     }],
+    //     rounds: {
+    //       1: { status: ROUND_STATES.CREATED, word: null, winner: null, started_at: null, timeRemaining: null, score: 0 },
+    //       2: { status: ROUND_STATES.CREATED, word: null, winner: null, started_at: null, timeRemaining: null, score: 0 },
+    //       3: { status: ROUND_STATES.CREATED, word: null, winner: null, started_at: null, timeRemaining: null, score: 0 },
+    //       4: { status: ROUND_STATES.CREATED, word: null, winner: null, started_at: null, timeRemaining: null, score: 0 },
+    //       5: { status: ROUND_STATES.CREATED, word: null, winner: null, started_at: null, timeRemaining: null, score: 0 },
+    //       6: { status: ROUND_STATES.CREATED, word: null, winner: null, started_at: null, timeRemaining: null, score: 0 },
+    //     },
+    //     created_at: firestore.FieldValue.serverTimestamp(),
+    //     started_at: null,
+    //     ended_at: null,
+    //     winner: null,
+    //     round: 0,
+    //     status: MATCH_STATES.MATCHMAKING,
+    //     createdBy: {
+    //       uid: user?.id,
+    //       username: user?.name
+    //     },
+    //   } as FirestoreMatch)
         
-      .then((result) => {
-        props.navigation.navigate('Matchmaking', {
-          matchId: result.id
-        })
-      });
+    //   .then((result) => {
+    //     props.navigation.navigate('Matchmaking', {
+    //       matchId: result.id
+    //     })
+    //   });
   }
 
   const joinMatch = (match: Match) => {
     // add the user to the match.players array
-    firestore()
-      .collection('matches')
-      .doc(match.id)
-      .update({
-        players: [...match.players, user]
-      } as Partial<FirestoreMatch>)
-      .then(() => {
-        console.log('Match updated!');
-        props.navigation.navigate('Matchmaking', {
-          matchId: match.id
-        })
-      });  
+    // firestore()
+    //   .collection('matches')
+    //   .doc(match.id)
+    //   .update({
+    //     players: [...match.players, user]
+    //   } as Partial<FirestoreMatch>)
+    //   .then(() => {
+    //     console.log('Match updated!');
+    //     props.navigation.navigate('Matchmaking', {
+    //       matchId: match.id
+    //     })
+    //   });  
   }
 
   const EmptyMatches = () => {

@@ -4,8 +4,8 @@ import { StyleSheet, Text, View } from 'react-native'
 import 'react-native-gesture-handler'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack';
-import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth'
-import firestore from '@react-native-firebase/firestore'
+// import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth'
+// import firestore from '@react-native-firebase/firestore'
 
 import Login from './components/screens/Login'
 import Registration from './components/screens/Registration'
@@ -15,7 +15,6 @@ import SinglePlayer from './components/screens/SinglePlayer'
 import Multiplayer from './components/screens/Multiplayer'
 import Matchmaking from './components/screens/Matchmaking'
 import Match from './components/screens/Match'
-
 
 export type RootStackParamList = {
   Login: undefined
@@ -30,37 +29,37 @@ export type RootStackParamList = {
 }
 
 export default function App() {
-  const [loading, setLoading] = useState<boolean>(true)
+  const [loading, setLoading] = useState<boolean>(false)
   const [user, setUser] = useState<User | null>(null)
 
-  useEffect(() => {
-    auth().onAuthStateChanged(userState => {
-      // get the full current user document
-      if (userState?.uid) {
-        firestore()
-          .collection('users')
-          .where('user', '==', userState.uid)
-          .get()
-          .then(querySnapshot => {
-            if (!querySnapshot) {
-              return console.error('users query failed')
-            }
-            const data = querySnapshot.docs[0].data() as FirestoreUser
-            const withId = {
-              ...data,
-              id: querySnapshot.docs[0].id
-            }
-            if (loading) {
-              setLoading(false)
-            }
-            return setUser(withId)
-          })
-      } else {
-        setUser(null)
-        setLoading(false)
-      }
-    })
-  }, [])
+  // useEffect(() => {
+  //   auth().onAuthStateChanged(userState => {
+  //     // get the full current user document
+  //     if (userState?.uid) {
+  //       firestore()
+  //         .collection('users')
+  //         .where('user', '==', userState.uid)
+  //         .get()
+  //         .then(querySnapshot => {
+  //           if (!querySnapshot) {
+  //             return console.error('users query failed')
+  //           }
+  //           const data = querySnapshot.docs[0].data() as FirestoreUser
+  //           const withId = {
+  //             ...data,
+  //             id: querySnapshot.docs[0].id
+  //           }
+  //           if (loading) {
+  //             setLoading(false)
+  //           }
+  //           return setUser(withId)
+  //         })
+  //     } else {
+  //       setUser(null)
+  //       setLoading(false)
+  //     }
+  //   })
+  // }, [])
 
   const Stack = createStackNavigator<RootStackParamList>();
 

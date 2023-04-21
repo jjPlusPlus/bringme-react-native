@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import auth from '@react-native-firebase/auth'
+// import auth from '@react-native-firebase/auth'
 
 import { Image, ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity, Button, View } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
@@ -20,7 +20,7 @@ export default function Login({ navigation }: Props) {
   const [password, setPassword] = useState("")
 
   const logIn = () => {
-    auth().signInWithEmailAndPassword(email, password)
+    // auth().signInWithEmailAndPassword(email, password)
   }
 
   return (

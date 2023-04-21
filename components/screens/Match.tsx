@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import { RouteProp } from '@react-navigation/native'
 import { createDrawerNavigator } from '@react-navigation/drawer';
 
-import firestore from '@react-native-firebase/firestore'
+// import firestore from '@react-native-firebase/firestore'
 
 import styled from 'styled-components/native'
 import { t } from 'react-native-tailwindcss'
@@ -49,20 +49,20 @@ const Match: FunctionComponent<Props> = (props) => {
 
   // get match by ID passed in with props
   useEffect(() => {
-    firestore()
-      .collection('matches')
-      .doc(matchId)
-      .onSnapshot(documentSnapshot => {
-        if (!documentSnapshot) {
-          return
-        }
-        const data = documentSnapshot.data() as FirestoreMatch
-        const withId = {
-          ...data,
-          id: documentSnapshot.id
-        }
-        setMatch(withId)
-      })
+    // firestore()
+    //   .collection('matches')
+    //   .doc(matchId)
+    //   .onSnapshot(documentSnapshot => {
+    //     if (!documentSnapshot) {
+    //       return
+    //     }
+    //     const data = documentSnapshot.data() as FirestoreMatch
+    //     const withId = {
+    //       ...data,
+    //       id: documentSnapshot.id
+    //     }
+    //     setMatch(withId)
+    //   })
   }, [])
 
 
@@ -79,13 +79,13 @@ const Match: FunctionComponent<Props> = (props) => {
     updated[match.round + 1].status = 'started'
     updated[match.round + 1].started_at = Date.now().toString()
 
-    firestore()
-      .collection('matches')
-      .doc(matchId)
-      .update('rounds', updated)
-      .then(() => {
-        console.log('Match Round Word updated!');
-      })
+    // firestore()
+    //   .collection('matches')
+    //   .doc(matchId)
+    //   .update('rounds', updated)
+    //   .then(() => {
+    //     console.log('Match Round Word updated!');
+    //   })
   }  
 
   const leaveMatch = () => {
