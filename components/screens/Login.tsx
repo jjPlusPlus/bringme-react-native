@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { supabase } from '../../supabase/init'
 
-import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View, Alert } from 'react-native'
+import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View, Alert, Linking } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 import { RootStackParamList } from '../../App'
@@ -37,6 +37,19 @@ export default function Login({ navigation }: Props) {
         { cancelable: true }
       )
     }
+  }
+  const SUPABASE_URL = 'https://<your-project>.supabase.co'
+  const googleAuthUrl = `${SUPABASE_URL}/auth/v1/authorize?provider=google&redirect_to=myapp://auth`
+  const signInWithGoogle = async () => {
+    /*
+      // The path recommended by Supabase; does not work in React Native
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+      })
+    */
+
+    // Redirect the user to the OAuth provider
+    Linking.openURL(googleAuthUrl)
   }
 
   return (
@@ -81,6 +94,16 @@ export default function Login({ navigation }: Props) {
             Sign In
           </StyledButtonText>
         </StyledButton>
+
+        <StyledButton 
+          onPress={() => signInWithGoogle()}
+          disabled={loading}
+        >
+          <StyledButtonText>
+            Sign In With Google
+          </StyledButtonText>
+        </StyledButton>
+
         <View style={styles.footer}>
           <Text style={styles.signUpText}>
             Don't have an account? <Text style={{color: '#2568EF'}} onPress={() => navigation.navigate('Register')}>Sign Up</Text>
