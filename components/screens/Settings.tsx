@@ -1,6 +1,7 @@
 import React, { useState, useEffect, FunctionComponent } from 'react'
 
 import {Button, Image, StyleSheet, Text, TextInput, View  } from 'react-native'
+import { supabase } from '../../supabase/init'
 
 // import auth from '@react-native-firebase/auth'
 // import firestore from '@react-native-firebase/firestore'
@@ -80,8 +81,8 @@ const Settings: FunctionComponent<Props> = (props) => {
       <Button onPress={saveUsername} title="Save" />
       <Button 
         title="Sign Out" 
-        onPress={() => {
-          // auth().signOut().then(() => console.log('User signed out!'))
+        onPress={async () => {
+          await supabase.auth.signOut()
         }} 
         
       />

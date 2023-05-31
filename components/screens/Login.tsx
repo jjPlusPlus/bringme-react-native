@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react'
-// import auth from '@react-native-firebase/auth'
+import React, { useState } from 'react'
+import { supabase } from '../../supabase/init'
 
-import { Image, ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity, Button, View } from 'react-native'
+import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 import { RootStackParamList } from '../../App'
@@ -19,8 +19,15 @@ export default function Login({ navigation }: Props) {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
 
-  const logIn = () => {
-    // auth().signInWithEmailAndPassword(email, password)
+  const logIn = async () => {
+    const { error } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: password,
+    })
+
+    if (error) {
+      console.log(error) 
+    }
   }
 
   return (

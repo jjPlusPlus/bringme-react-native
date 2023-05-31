@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet } from 'react-native'
 
 import 'react-native-gesture-handler'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack';
-// import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth'
-// import firestore from '@react-native-firebase/firestore'
+
+import { Session } from '@supabase/supabase-js'
+import { supabase } from './supabase/init'
+import { useFonts } from 'expo-font'
 
 import Login from './components/screens/Login'
 import Registration from './components/screens/Registration'
@@ -30,78 +32,70 @@ export type RootStackParamList = {
 
 export default function App() {
   const [loading, setLoading] = useState<boolean>(false)
-  const [user, setUser] = useState<User | null>(null)
+  const [session, setSession] = useState<Session | null>(null)
 
-  // useEffect(() => {
-  //   auth().onAuthStateChanged(userState => {
-  //     // get the full current user document
-  //     if (userState?.uid) {
-  //       firestore()
-  //         .collection('users')
-  //         .where('user', '==', userState.uid)
-  //         .get()
-  //         .then(querySnapshot => {
-  //           if (!querySnapshot) {
-  //             return console.error('users query failed')
-  //           }
-  //           const data = querySnapshot.docs[0].data() as FirestoreUser
-  //           const withId = {
-  //             ...data,
-  //             id: querySnapshot.docs[0].id
-  //           }
-  //           if (loading) {
-  //             setLoading(false)
-  //           }
-  //           return setUser(withId)
-  //         })
-  //     } else {
-  //       setUser(null)
-  //       setLoading(false)
-  //     }
-  //   })
-  // }, [])
+  const [fontsLoaded] = useFonts({
+    'LuckiestGuy-Regular': require('./assets/fonts/LuckiestGuy-Regular.ttf'),
+  })
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session)
+    })
+
+    supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session)
+    })
+  }, [])
+  const user = session?.user
+
+  /* Todo:
+   * In the Firestore implementation, we would fetch the actual User document from the database
+   * once we got the auth record. 
+   * We are also not showing a loader right now for the auth check, so we should do that.
+  */
 
   const Stack = createStackNavigator<RootStackParamList>();
 
-  return loading ? (
+  return loading || !fontsLoaded ? (
     null
   ) : (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
-        {user ? (
-          <>
-            <Stack.Screen name="Home" options={{ title: 'Home', headerShown: false }}>
-              {props => <Home {...props} user={user} />}
-            </Stack.Screen>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Login">
+          {user ? (
+            <>
+              <Stack.Screen name="Home" options={{ title: 'Home', headerShown: false }}>
+                {props => <Home {...props} user={user} />}
+              </Stack.Screen>
 
-            <Stack.Screen name="Settings" options={{ title: 'Settings' }} >
-              {props => <Settings {...props} user={user} />}
-            </Stack.Screen>
+              <Stack.Screen name="Settings" options={{ title: 'Settings' }} >
+                {props => <Settings {...props} user={user} />}
+              </Stack.Screen>
 
-            <Stack.Screen name="Multiplayer" options={{ title: 'Multiplayer' }} >
-              {props => <Multiplayer {...props} user={user} />}
-            </Stack.Screen>
+              <Stack.Screen name="Multiplayer" options={{ title: 'Multiplayer' }} >
+                {props => <Multiplayer {...props} user={user} />}
+              </Stack.Screen>
 
-            <Stack.Screen name="Matchmaking" options={{ title: 'Matchmaking' }} >
-              {props => <Matchmaking {...props} user={user} />}
-            </Stack.Screen>
+              <Stack.Screen name="Matchmaking" options={{ title: 'Matchmaking' }} >
+                {props => <Matchmaking {...props} user={user} />}
+              </Stack.Screen>
 
-            <Stack.Screen name="Match" options={{ title: 'Match', headerShown: false }} >
-              {props => <Match {...props} user={user} />}
-            </Stack.Screen>
+              <Stack.Screen name="Match" options={{ title: 'Match', headerShown: false }} >
+                {props => <Match {...props} user={user} />}
+              </Stack.Screen>
 
-            <Stack.Screen name="SinglePlayer" options={{ title: 'Single Player' }} >
-              {props => <SinglePlayer {...props} user={user} />}
-            </Stack.Screen>
-          </>
-        ) : (
-          <>
-            <Stack.Screen name="Login" component={Login} options={{ title: 'Sign In', headerShown: false }} />
-            <Stack.Screen name="Register" component={Registration} options={{ title: 'Sign Up' }} />
-          </>
-        )}
-      </Stack.Navigator>
-    </NavigationContainer>    
+              <Stack.Screen name="SinglePlayer" options={{ title: 'Single Player' }} >
+                {props => <SinglePlayer {...props} user={user} />}
+              </Stack.Screen>
+            </>
+          ) : (
+            <>
+              <Stack.Screen name="Login" component={Login} options={{ title: 'Sign In', headerShown: false }} />
+              <Stack.Screen name="Register" component={Registration} options={{ title: 'Sign Up' }} />
+            </>
+          )}
+        </Stack.Navigator>
+      </NavigationContainer> 
   )
 }
 

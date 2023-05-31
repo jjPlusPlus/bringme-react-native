@@ -4,10 +4,10 @@ import { Button, Image, TouchableOpacity, StyleSheet, Text, View,} from 'react-n
 
 // import firestore from '@react-native-firebase/firestore'
 
-import { t } from 'react-native-tailwindcss';
-import styled from 'styled-components/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../../App';
+import { t } from 'react-native-tailwindcss'
+import styled from 'styled-components/native'
+import { StackNavigationProp } from '@react-navigation/stack'
+import { RootStackParamList } from '../../App'
 
 interface Props {
   navigation: StackNavigationProp<RootStackParamList>

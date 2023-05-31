@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth'
+import { supabase } from '../../supabase/init'
 
 import { StyleSheet, Text, TextInput, TouchableOpacity, Button, View } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-// import firestore from '@react-native-firebase/firestore'
 
 import { RootStackParamList } from '../../App'
 import { StackNavigationProp } from '@react-navigation/stack'
@@ -27,6 +26,15 @@ export default function Register({ navigation }: Props) {
     // first, check that the username is unique
     // if it's unique, then try to create the new auth account
     setError({})
+    const { error } = await supabase.auth.signUp({
+      email: email,
+      password: password,
+    })
+
+    if (error) {
+      // setError(error)
+      console.log(error)
+    }
 
     // await firestore()
     //   .collection('users')
