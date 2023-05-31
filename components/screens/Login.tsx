@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { supabase } from '../../supabase/init'
 
-import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View, Alert } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 import { RootStackParamList } from '../../App'
@@ -18,6 +18,7 @@ type Props = {
 export default function Login({ navigation }: Props) {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [loading, isLoading] = useState(false)
 
   const logIn = async () => {
     const { error } = await supabase.auth.signInWithPassword({
@@ -26,7 +27,15 @@ export default function Login({ navigation }: Props) {
     })
 
     if (error) {
-      console.log(error) 
+      //function to make simple alert
+      Alert.alert(
+        'Login failed', // alert title
+        error.message, // alert body
+        [
+          { text: 'OK', onPress: () => console.log('OK Pressed') } // button with NO onPress function
+        ],
+        { cancelable: true }
+      )
     }
   }
 
@@ -50,7 +59,8 @@ export default function Login({ navigation }: Props) {
           value={email}
           underlineColorAndroid="transparent"
           autoCapitalize="none"
-          onChangeText={value => setEmail(value)}
+          disabled={loading}
+          onChangeText={(value: string) => setEmail(value)}
         />
         <StyledInput
           placeholder="Password"
@@ -60,11 +70,12 @@ export default function Login({ navigation }: Props) {
           secureTextEntry={true}
           underlineColorAndroid="transparent"
           autoCapitalize="none"
-
-          onChangeText={value => setPassword(value)}
+          disabled={loading}
+          onChangeText={(value: string) => setPassword(value)}
         />
         <StyledButton 
           onPress={() => logIn()}
+          disabled={loading}
         >
           <StyledButtonText>
             Sign In

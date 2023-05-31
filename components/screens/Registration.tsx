@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { supabase } from '../../supabase/init'
 
-import { StyleSheet, Text, TextInput, TouchableOpacity, Button, View } from 'react-native'
+import { StyleSheet, Text, TextInput, TouchableOpacity, View, Alert } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 import { RootStackParamList } from '../../App'
@@ -32,8 +32,25 @@ export default function Register({ navigation }: Props) {
     })
 
     if (error) {
-      // setError(error)
-      console.log(error)
+      //function to make simple alert
+      Alert.alert(
+        'Login failed', // alert title
+        error.message, // alert body
+        [
+          { text: 'OK', onPress: () => console.log('OK Pressed') }
+        ],
+        { cancelable: true }
+      )
+    } else {
+      //function to make simple alert
+      Alert.alert(
+        'Success', // alert title
+        'Please check your email to verify your account before logging in', // alert body
+        [
+          { text: 'OK', onPress: () => navigation.navigate('Login')}
+        ],
+        { cancelable: true }
+      )
     }
 
     // await firestore()
