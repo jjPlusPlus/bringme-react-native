@@ -1,58 +1,30 @@
-import React, { useState, useEffect } from 'react'
-
+import React, { useState, useEffect, FunctionComponent } from 'react'
 import { ActivityIndicator, FlatList, Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-
 import firestore from '@react-native-firebase/firestore'
-import { t } from 'react-native-tailwindcss';
-import styled from 'styled-components/native';
 
-interface User {
-  uid?: string,
-  email?: string,
-  name?: string,
+import { MATCH_STATES, ROUND_STATES } from './constants'
+
+import { t } from 'react-native-tailwindcss'
+import styled from 'styled-components/native'
+import { StackNavigationProp } from '@react-navigation/stack'
+import { RootStackParamList } from '../../App'
+
+interface Props {
+  navigation: StackNavigationProp<RootStackParamList>
+  user: User
 }
 
-interface Match {
-  id: string,
-  host: string,
-  name?: string,
-  players: string,
-  created_at: string,
-  started_at?: string,
-  ended_at?: string,
-  winner?: string,
-  status: string 
-}
-
-export default function Multiplayer(props: any) {
-  const [user, setUser] = useState<User | null>(null)
-  const [matches, setMatches] = useState([])
+const Multiplayer: FunctionComponent<Props> = props => {
+  const { user } = props
+  const [matches, setMatches] = useState<Match[]>([])
   const [committed, setCommitted] = useState(true)
-
-  useEffect(() => {
-    // get the full current user document
-    firestore()
-      .collection('users')
-      .where('user', '==', props.user.uid)
-      .get()
-      .then(querySnapshot => {
-        if (!querySnapshot) {
-          return console.error('users query failed')
-        }
-        const data = querySnapshot.docs[0].data()
-        const withId = {
-          ...data,
-          id: querySnapshot.docs[0].id
-        }
-        return setUser(withId)
-      })
-  }, [props.user])
-
 
   /* 
     Get a manicured list of collections
     Sorted by newest-first, limit of 100
-    Only games that are in matchmaking or in progress
+
+    TODO: Sort by matches where I'm a player first
+    TODO: (blocked by firestore bug): Only games that are in matchmaking or in progress
   */
   useEffect(() => {
     firestore()
@@ -61,15 +33,12 @@ export default function Multiplayer(props: any) {
       .orderBy('created_at', 'desc')
       .limit(100)
       .onSnapshot(querySnapshot => {
-        const matchCollection: Match[] = [];
-        querySnapshot?.forEach((documentSnapshot: any) => {
-          // console.log(documentSnapshot)
-          const data: Match = documentSnapshot.data()
-          matchCollection.push({
-            ...data,
-            id: documentSnapshot.id
-          });
-        });
+        const matchCollection = querySnapshot.docs.map<Match>(
+          documentSnapshot => ({
+            ...(documentSnapshot.data() as FirestoreMatch),
+            id: documentSnapshot.id,
+          })
+        )
 
         // band-aid for a bug...
         if (!matchCollection.length) { return }
@@ -86,7 +55,7 @@ export default function Multiplayer(props: any) {
       })
     })
 
-    const hosting = matches?.find(m => m.host.uid === user?.id)
+    const hosting = matches?.find(m => m.createdBy.uid === user?.id)
 
     if (playing || hosting) {
       setCommitted(true)
@@ -99,15 +68,33 @@ export default function Multiplayer(props: any) {
     firestore()
       .collection('matches')
       .add({
-        host: { uid: user?.id, username: user?.name },
         name: '',
-        players: [],
+        players: [{
+          id: user?.id,
+          name: user?.name,
+          email: user?.email,
+          score: 0,
+        }],
+        rounds: {
+          1: { status: ROUND_STATES.CREATED, word: null, winner: null, started_at: null, timeRemaining: null, score: 0 },
+          2: { status: ROUND_STATES.CREATED, word: null, winner: null, started_at: null, timeRemaining: null, score: 0 },
+          3: { status: ROUND_STATES.CREATED, word: null, winner: null, started_at: null, timeRemaining: null, score: 0 },
+          4: { status: ROUND_STATES.CREATED, word: null, winner: null, started_at: null, timeRemaining: null, score: 0 },
+          5: { status: ROUND_STATES.CREATED, word: null, winner: null, started_at: null, timeRemaining: null, score: 0 },
+          6: { status: ROUND_STATES.CREATED, word: null, winner: null, started_at: null, timeRemaining: null, score: 0 },
+        },
         created_at: firestore.FieldValue.serverTimestamp(),
         started_at: null,
         ended_at: null,
         winner: null,
-        status: 'matchmaking' 
-      })
+        round: 0,
+        status: MATCH_STATES.MATCHMAKING,
+        createdBy: {
+          uid: user?.id,
+          username: user?.name
+        },
+      } as FirestoreMatch)
+        
       .then((result) => {
         props.navigation.navigate('Matchmaking', {
           matchId: result.id
@@ -115,14 +102,14 @@ export default function Multiplayer(props: any) {
       });
   }
 
-  const joinMatch = (match: any) => {
+  const joinMatch = (match: Match) => {
     // add the user to the match.players array
     firestore()
       .collection('matches')
       .doc(match.id)
       .update({
         players: [...match.players, user]
-      })
+      } as Partial<FirestoreMatch>)
       .then(() => {
         console.log('Match updated!');
         props.navigation.navigate('Matchmaking', {
@@ -139,7 +126,6 @@ export default function Multiplayer(props: any) {
           <Text style={[ t.fontBold, t.textCenter, t.textXl ]}>Aw, no one's playing.</Text>
           <Text style={[ t.fontBold, t.textCenter, t.textXl ]}>Go start a match!</Text>
         </View>
-        
       </View>
     )
   }
@@ -179,9 +165,9 @@ export default function Multiplayer(props: any) {
             return (
               <MatchCard>
                 <View style={[t.p4, t.pB2]}>
-                  <Text style={[t.fontBold, t.textLg]}>{item.host?.username}'s game</Text>
+                  <Text style={[t.fontBold, t.textLg]}>{item.createdBy?.username}'s game</Text>
                   <View style={[t.flexRow, t.mT1 ]}>
-                    <Text style={[ t.flex1, t.italic ]}>{item.status === 'in-progress' ? item.status : "waiting for players..."}</Text>
+                    <Text style={[ t.flex1, t.italic ]}>{item.status === MATCH_STATES.STARTED ? item.status : "waiting for players..."}</Text>
                     {
                       item.status === 'matchmaking' && <ActivityIndicator />
                     }
@@ -190,19 +176,17 @@ export default function Multiplayer(props: any) {
                 </View>
                 
                 { /* I can join the match if: */
-                  item.host.uid !== user?.id && /* I'm not the host */
                   item.players.length < 4 && /* There is an empty space in [players] */
                   (item.players && !item.players.find(p => p.id === user?.id)) && /* I haven't already joined */
                   (
-                    <JoinButton title="Join" onPress={() => joinMatch(item)}>
+                    <JoinButton onPress={() => joinMatch(item)}>
                       <JoinButtonText>Join</JoinButtonText>
                     </JoinButton>
                   )
                 }
 
-                { /* I can enter the Match Lobby directly if */
-                  item.host.uid === user?.id || /* if I'm the host */
-                  (item.players && item.players.find(p => p.id === user?.id)) ? /* I've already joined */
+                { /* I can enter the Match Lobby directly if I've already joined (I'm in 'players') */
+                  (item.players && item.players.find(p => p.id === user?.id)) ? 
                   (
                     <JoinButton onPress={() => props.navigation.navigate('Matchmaking', { matchId: item.id })} >
                       <JoinButtonText>Enter</JoinButtonText>
@@ -217,6 +201,8 @@ export default function Multiplayer(props: any) {
     </SafeAreaView>
   )
 }
+
+export default Multiplayer
 
 const styles = StyleSheet.create({
   container: {

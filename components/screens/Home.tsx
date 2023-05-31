@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, FunctionComponent } from 'react'
 
 import { Button, Image, TouchableOpacity, StyleSheet, Text, View,} from 'react-native'
 
@@ -6,25 +6,16 @@ import firestore from '@react-native-firebase/firestore'
 
 import { t } from 'react-native-tailwindcss';
 import styled from 'styled-components/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../../App';
 
-interface User {
-  name: string,
-  uid: string,
-  email: string
+interface Props {
+  navigation: StackNavigationProp<RootStackParamList>
+  user: User
 }
 
-export default function Home(props:any) {
-  const [user, setUser] = useState<User | null>(null)
-
-  useEffect(() => {
-    firestore()
-      .collection('users')
-      .where('user', '==', props.user.uid)
-      .get()
-      .then(querySnapshot => {
-        return setUser(querySnapshot.docs[0].data())
-      })
-  }, [props.user])
+const Home: FunctionComponent<Props> = (props) => {
+  const { user } = props
 
   return (
     <View style={styles.container}>
@@ -53,6 +44,8 @@ export default function Home(props:any) {
     </View>
   )
 }
+
+export default Home
 
 const styles = StyleSheet.create({
   container: {

@@ -1,16 +1,17 @@
+import React, { useState, useEffect } from 'react'
+import { StyleSheet, Text, View } from 'react-native'
+
 import 'react-native-gesture-handler'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack';
-
-import React, { useState, useEffect } from 'react'
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth'
-
-import { StyleSheet, Text, View } from 'react-native'
+import firestore from '@react-native-firebase/firestore'
 
 import Login from './components/screens/Login'
 import Registration from './components/screens/Registration'
 import Home from './components/screens/Home'
 import Settings from './components/screens/Settings'
+import SinglePlayer from './components/screens/SinglePlayer'
 import Multiplayer from './components/screens/Multiplayer'
 import Matchmaking from './components/screens/Matchmaking'
 import Match from './components/screens/Match'
@@ -22,19 +23,40 @@ export type RootStackParamList = {
   Auth: undefined
   Home: undefined
   Settings: undefined
+  SinglePlayer: undefined
   Multiplayer: undefined
-  Matchmaking: undefined
-  Match: undefined
+  Matchmaking: { matchId: string }
+  Match: { matchId: string } | undefined
 }
 
 export default function App() {
   const [loading, setLoading] = useState<boolean>(true)
-  const [user, setUser] = useState<FirebaseAuthTypes.User | null>(null)
+  const [user, setUser] = useState<User | null>(null)
 
   useEffect(() => {
     auth().onAuthStateChanged(userState => {
-      setUser(userState)
-      if (loading) {
+      // get the full current user document
+      if (userState?.uid) {
+        firestore()
+          .collection('users')
+          .where('user', '==', userState.uid)
+          .get()
+          .then(querySnapshot => {
+            if (!querySnapshot) {
+              return console.error('users query failed')
+            }
+            const data = querySnapshot.docs[0].data() as FirestoreUser
+            const withId = {
+              ...data,
+              id: querySnapshot.docs[0].id
+            }
+            if (loading) {
+              setLoading(false)
+            }
+            return setUser(withId)
+          })
+      } else {
+        setUser(null)
         setLoading(false)
       }
     })
@@ -65,8 +87,12 @@ export default function App() {
               {props => <Matchmaking {...props} user={user} />}
             </Stack.Screen>
 
-            <Stack.Screen name="Match" options={{ title: 'Match' }} >
+            <Stack.Screen name="Match" options={{ title: 'Match', headerShown: false }} >
               {props => <Match {...props} user={user} />}
+            </Stack.Screen>
+
+            <Stack.Screen name="SinglePlayer" options={{ title: 'Single Player' }} >
+              {props => <SinglePlayer {...props} user={user} />}
             </Stack.Screen>
           </>
         ) : (
