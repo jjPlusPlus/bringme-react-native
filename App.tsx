@@ -51,6 +51,7 @@ export default function App() {
     Linking.addEventListener('url', (event) => {
       let urlString = event.url
       // This is a hack to convert the returned url to a query string where we can use URLSearchParams
+      // See here https://github.com/orgs/supabase/discussions/1717
       if (event.url.includes('authRedirectHandler#')) {
         urlString = event.url.replace(
           'authRedirectHandler#',
