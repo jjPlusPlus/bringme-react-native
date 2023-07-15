@@ -1,21 +1,25 @@
 import React, { useRef, useState } from 'react'
-import { RNCamera } from 'react-native-camera'
+// import { RNCamera } from 'react-native-camera'
 import { Ionicons, MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { t } from 'react-native-tailwindcss'
 
 export default function SinglePlayer() {
-  let camera = useRef<RNCamera | null>(null)
+  // let camera = useRef<RNCamera | null>(null)
+  let camera = useRef(null)
   const [labels, setLabels] = useState([])
-  const [camType, setCamType] = useState(RNCamera.Constants.Type.back)
+  // const [camType, setCamType] = useState(RNCamera.Constants.Type.back)
+  const [camType, setCamType] = useState(null)
+
+
 
   const switchCamera = () => {
-    if (camType === RNCamera.Constants.Type.back) {
-      setCamType(RNCamera.Constants.Type.front);
-    } else {
-      setCamType(RNCamera.Constants.Type.back);
-    }
+    // if (camType === RNCamera.Constants.Type.back) {
+    //   setCamType(RNCamera.Constants.Type.front);
+    // } else {
+    //   setCamType(RNCamera.Constants.Type.back);
+    // }
   }
   return (
     <View style={[t.flex1, t.flexCol]}>
@@ -27,7 +31,7 @@ export default function SinglePlayer() {
         </View>
       </View>
       <View style={[t.flex1, t.relative]}>
-        <RNCamera
+        {/* <RNCamera
           ref={ref => {
             camera = ref;
           }}
@@ -47,7 +51,7 @@ export default function SinglePlayer() {
             buttonNegative: 'Cancel',
           }}
           onLabelsDetected={({ labels = [] }) => setLabels(labels)}
-        />
+        /> */}
         <View style={[t.absolute, t.m4]}>
           {
             labels?.sort((a, b) => b.confidence - a.confidence).map(label => (

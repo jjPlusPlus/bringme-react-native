@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react'
-import auth from '@react-native-firebase/auth'
+import React, { useState } from 'react'
+import { supabase } from '../../supabase/init'
 
-import { Image, ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity, Button, View } from 'react-native'
+import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View, Alert, Linking } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 import { RootStackParamList } from '../../App'
@@ -18,9 +18,38 @@ type Props = {
 export default function Login({ navigation }: Props) {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [loading, isLoading] = useState(false)
 
-  const logIn = () => {
-    auth().signInWithEmailAndPassword(email, password)
+  const logIn = async () => {
+    const { error } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: password,
+    })
+
+    if (error) {
+      //function to make simple alert
+      Alert.alert(
+        'Login failed', // alert title
+        error.message, // alert body
+        [
+          { text: 'OK', onPress: () => console.log('OK Pressed') } // button with NO onPress function
+        ],
+        { cancelable: true }
+      )
+    }
+  }
+  const SUPABASE_URL = 'https://<your-project>.supabase.co'
+  const googleAuthUrl = `${SUPABASE_URL}/auth/v1/authorize?provider=google&redirect_to=myapp://auth`
+  const signInWithGoogle = async () => {
+    /*
+      // The path recommended by Supabase; does not work in React Native
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+      })
+    */
+
+    // Redirect the user to the OAuth provider
+    Linking.openURL(googleAuthUrl)
   }
 
   return (
@@ -43,7 +72,8 @@ export default function Login({ navigation }: Props) {
           value={email}
           underlineColorAndroid="transparent"
           autoCapitalize="none"
-          onChangeText={value => setEmail(value)}
+          disabled={loading}
+          onChangeText={(value: string) => setEmail(value)}
         />
         <StyledInput
           placeholder="Password"
@@ -53,16 +83,27 @@ export default function Login({ navigation }: Props) {
           secureTextEntry={true}
           underlineColorAndroid="transparent"
           autoCapitalize="none"
-
-          onChangeText={value => setPassword(value)}
+          disabled={loading}
+          onChangeText={(value: string) => setPassword(value)}
         />
         <StyledButton 
           onPress={() => logIn()}
+          disabled={loading}
         >
           <StyledButtonText>
             Sign In
           </StyledButtonText>
         </StyledButton>
+
+        <StyledButton 
+          onPress={() => signInWithGoogle()}
+          disabled={loading}
+        >
+          <StyledButtonText>
+            Sign In With Google
+          </StyledButtonText>
+        </StyledButton>
+
         <View style={styles.footer}>
           <Text style={styles.signUpText}>
             Don't have an account? <Text style={{color: '#2568EF'}} onPress={() => navigation.navigate('Register')}>Sign Up</Text>
