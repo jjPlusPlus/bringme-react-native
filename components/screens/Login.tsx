@@ -6,8 +6,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 
 import { RootStackParamList } from '../../App'
 import { StackNavigationProp } from '@react-navigation/stack'
-import { t } from 'react-native-tailwindcss'
-import styled from 'styled-components/native'
+import { styled } from "nativewind"
 
 type AuthScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Auth'>
 
@@ -38,7 +37,7 @@ export default function Login({ navigation }: Props) {
       )
     }
   }
-  const SUPABASE_URL = 'https://<your-project>.supabase.co'
+  const SUPABASE_URL = 'https://sbpcfajrdufyvkfirvnx.supabase.co'
   const googleAuthUrl = `${SUPABASE_URL}/auth/v1/authorize?provider=google&redirect_to=myapp://auth`
   const signInWithGoogle = async () => {
     /*
@@ -54,62 +53,71 @@ export default function Login({ navigation }: Props) {
 
   return (
     <View style={styles.container}>
-      <View style={[t.mT4, t.pL8, t.pR4, t.wFull]}>
-        <Image source={require('../../assets/logo.png')} style={[t.objectContain, t.selfEnd, { width: '80%' }]} />
+      <View className="mt-4 pr-4 w-full">
+        <Image
+          source={require('../../assets/logo.png')}
+          className="object-contain self-end w-[250px]"
+          resizeMode="contain"
+        />
       </View>
       <KeyboardAwareScrollView
-        contentContainerStyle={styles.scrollView}
-        keyboardShouldPersistTaps="always">
-        <View style={[t.p4]}>
-          <Image source={require('../../assets/nature.png')} style={[t.objectContain, t.selfCenter, { height: 250 } ]} />
-          <Text style={[t.p4, t.textCenter]}>
-            A fun description about Bring Me here.
-          </Text>
+        className="flex-1"
+        keyboardShouldPersistTaps="always"
+      >
+        <View className="p-4">
+          <Image
+            source={require('../../assets/hero.png')}
+            className="self-center h-[250px]"
+            resizeMode="contain"
+          />
         </View>
-        <StyledInput
-          placeholder="Email"
-          placeholderTextColor="#aaaaaa"
-          value={email}
-          underlineColorAndroid="transparent"
-          autoCapitalize="none"
-          disabled={loading}
-          onChangeText={(value: string) => setEmail(value)}
-        />
-        <StyledInput
-          placeholder="Password"
-          placeholderTextColor="#aaaaaa"
-          value={password}
-          maxLength={15}
-          secureTextEntry={true}
-          underlineColorAndroid="transparent"
-          autoCapitalize="none"
-          disabled={loading}
-          onChangeText={(value: string) => setPassword(value)}
-        />
-        <StyledButton 
-          onPress={() => logIn()}
-          disabled={loading}
-        >
-          <StyledButtonText>
-            Sign In
-          </StyledButtonText>
-        </StyledButton>
+        <View className="gap-6 p-2">
+          <StyledInput
+            placeholder="Email"
+            placeholderTextColor="#aaaaaa"
+            value={email}
+            underlineColorAndroid="transparent"
+            autoCapitalize="none"
+            disabled={loading}
+            onChangeText={(value: string) => setEmail(value)}
+          />
+          <StyledInput
+            placeholder="Password"
+            placeholderTextColor="#aaaaaa"
+            value={password}
+            maxLength={15}
+            secureTextEntry={true}
+            underlineColorAndroid="transparent"
+            autoCapitalize="none"
+            disabled={loading}
+            onChangeText={(value: string) => setPassword(value)}
+          />
+        </View>
+        <View className="gap-3 p-3">
+          <StyledButton
+            onPress={() => logIn()}
+            disabled={loading}
+          >
+            <StyledButtonText>
+              Sign In
+            </StyledButtonText>
+          </StyledButton>
 
-        <StyledButton 
-          onPress={() => signInWithGoogle()}
-          disabled={loading}
-        >
-          <StyledButtonText>
-            Sign In With Google
-          </StyledButtonText>
-        </StyledButton>
-
+          <StyledButton
+            onPress={() => signInWithGoogle()}
+            disabled={loading}
+          >
+            <StyledButtonText>
+              Sign In With Google
+            </StyledButtonText>
+          </StyledButton>
+        </View>
         <View style={styles.footer}>
           <Text style={styles.signUpText}>
-            Don't have an account? <Text style={{color: '#2568EF'}} onPress={() => navigation.navigate('Register')}>Sign Up</Text>
+            Don't have an account? <Text style={{ color: '#2568EF' }} onPress={() => navigation.navigate('Register')}>Sign Up</Text>
           </Text>
         </View>
-        
+
       </KeyboardAwareScrollView>
     </View>
   )
@@ -121,11 +129,6 @@ const styles = StyleSheet.create({
     width: '100%',
     flex: 1,
     backgroundColor: '#fff'
-  },
-  scrollView: { 
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'center',
   },
   authInput: {
     height: 48,
@@ -168,14 +171,6 @@ const styles = StyleSheet.create({
   }
 })
 
-const StyledInput = styled(TextInput)`
-  ${[t.border4, t.m3, t.p4, { borderColor: '#2568EF', borderRadius: 20 }]}
-`;
-
-const StyledButton = styled(TouchableOpacity)`
-  ${[t.p4, t.m3, { backgroundColor: '#FFE8E7', borderRadius: 20 }]}
-`;
-
-const StyledButtonText = styled(Text)`
-  ${[t.fontBold,t.pT2, t.textCenter, t.textXl, { color: '#2568EF', fontFamily: 'LuckiestGuy-Regular'}]}
-`;
+const StyledInput = styled(TextInput, 'border-bmBlue border-4 rounded-[20px] p-4');
+const StyledButton = styled(TouchableOpacity, 'bg-bmPeach p-3 rounded-[20px]');
+const StyledButtonText = styled(Text, 'color-bmBlue font-bold pt-2 text-center text-xl uppercase');
