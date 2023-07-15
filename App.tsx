@@ -18,6 +18,12 @@ import Multiplayer from './components/screens/Multiplayer'
 import Matchmaking from './components/screens/Matchmaking'
 import Match from './components/screens/Match'
 
+import { NativeWindStyleSheet } from "nativewind";
+
+NativeWindStyleSheet.setOutput({
+  default: "native",
+});
+
 export type RootStackParamList = {
   Login: undefined
   Register: undefined
@@ -76,7 +82,7 @@ export default function App() {
             refresh_token: refreshToken,
             access_token: accessToken,
           })
-          .catch(err => console.log({err}))
+          .catch(err => console.log({ err }))
       }
     })
 
@@ -96,42 +102,42 @@ export default function App() {
   return loading || !fontsLoaded ? (
     null
   ) : (
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName="Login">
-          {user ? (
-            <>
-              <Stack.Screen name="Home" options={{ title: 'Home', headerShown: false }}>
-                {props => <Home {...props} user={user} />}
-              </Stack.Screen>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Login">
+        {user ? (
+          <>
+            <Stack.Screen name="Home" options={{ title: 'Home', headerShown: false }}>
+              {props => <Home {...props} user={user} />}
+            </Stack.Screen>
 
-              <Stack.Screen name="Settings" options={{ title: 'Settings' }} >
-                {props => <Settings {...props} user={user} />}
-              </Stack.Screen>
+            <Stack.Screen name="Settings" options={{ title: 'Settings' }} >
+              {props => <Settings {...props} user={user} />}
+            </Stack.Screen>
 
-              <Stack.Screen name="Multiplayer" options={{ title: 'Multiplayer' }} >
-                {props => <Multiplayer {...props} user={user} />}
-              </Stack.Screen>
+            <Stack.Screen name="Multiplayer" options={{ title: 'Multiplayer' }} >
+              {props => <Multiplayer {...props} user={user} />}
+            </Stack.Screen>
 
-              <Stack.Screen name="Matchmaking" options={{ title: 'Matchmaking' }} >
-                {props => <Matchmaking {...props} user={user} />}
-              </Stack.Screen>
+            <Stack.Screen name="Matchmaking" options={{ title: 'Matchmaking' }} >
+              {props => <Matchmaking {...props} user={user} />}
+            </Stack.Screen>
 
-              <Stack.Screen name="Match" options={{ title: 'Match', headerShown: false }} >
-                {props => <Match {...props} user={user} />}
-              </Stack.Screen>
+            <Stack.Screen name="Match" options={{ title: 'Match', headerShown: false }} >
+              {props => <Match {...props} user={user} />}
+            </Stack.Screen>
 
-              <Stack.Screen name="SinglePlayer" options={{ title: 'Single Player' }} >
-                {props => <SinglePlayer {...props} user={user} />}
-              </Stack.Screen>
-            </>
-          ) : (
-            <>
-              <Stack.Screen name="Login" component={Login} options={{ title: 'Sign In', headerShown: false }} />
-              <Stack.Screen name="Register" component={Registration} options={{ title: 'Sign Up' }} />
-            </>
-          )}
-        </Stack.Navigator>
-      </NavigationContainer> 
+            <Stack.Screen name="SinglePlayer" options={{ title: 'Single Player' }} >
+              {props => <SinglePlayer {...props} user={user} />}
+            </Stack.Screen>
+          </>
+        ) : (
+          <>
+            <Stack.Screen name="Login" component={Login} options={{ title: 'Sign In', headerShown: false }} />
+            <Stack.Screen name="Register" component={Registration} options={{ title: 'Sign Up' }} />
+          </>
+        )}
+      </Stack.Navigator>
+    </NavigationContainer>
   )
 }
 
