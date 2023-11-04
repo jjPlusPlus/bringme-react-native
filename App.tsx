@@ -48,6 +48,7 @@ export default function App() {
       setSession(session)
     })
 
+    /* REDIRECT USERS FROM AUTH PROVIDER LOGIN FLOW */
     Linking.addEventListener('url', (event) => {
       let urlString = event.url
       // This is a hack to convert the returned url to a query string where we can use URLSearchParams

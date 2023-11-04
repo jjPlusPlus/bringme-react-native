@@ -38,7 +38,7 @@ export default function Login({ navigation }: Props) {
       )
     }
   }
-  const SUPABASE_URL = 'https://<your-project>.supabase.co'
+  const SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL
   const googleAuthUrl = `${SUPABASE_URL}/auth/v1/authorize?provider=google&redirect_to=myapp://auth`
   const signInWithGoogle = async () => {
     /*
