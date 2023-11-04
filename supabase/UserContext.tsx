@@ -11,7 +11,6 @@ export const UserContextProvider = (props: any) => {
   const [session, setSession] = useState<any | null>(null)
   const [user, setUser] = useState<User | null>(null)
 
-  // a useeffect hook that gets the supabase auth session and stores it in the user variable 
   const getSession = async () => {
     const session = await supabase.auth.getSession()
     setSession(session)
