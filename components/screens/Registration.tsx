@@ -26,13 +26,12 @@ export default function Register({ navigation }: Props) {
     // first, check that the username is unique
     // if it's unique, then try to create the new auth account
     setError({})
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email: email,
       password: password,
     })
 
     if (error) {
-      //function to make simple alert
       Alert.alert(
         'Login failed', // alert title
         error.message, // alert body
@@ -42,7 +41,11 @@ export default function Register({ navigation }: Props) {
         { cancelable: true }
       )
     } else {
-      //function to make simple alert
+      // add user record (email and auth ID) to the supabase database
+      const insertUser = await supabase.from('users').insert([
+        { email: email, auth_id: data?.user?.id }
+      ])
+
       Alert.alert(
         'Success', // alert title
         'Please check your email to verify your account before logging in', // alert body
