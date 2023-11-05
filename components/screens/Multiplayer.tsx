@@ -16,8 +16,8 @@ interface Props {
 
 const Multiplayer: FunctionComponent<Props> = props => {
   const { user } = props
-  const [matches, setMatches] = useState<Match[]>([])
-  const [committed, setCommitted] = useState(true)
+  // const [matches, setMatches] = useState<Match[]>([])
+  // const [committed, setCommitted] = useState(true)
 
   /* 
     Get a manicured list of collections
@@ -49,20 +49,20 @@ const Multiplayer: FunctionComponent<Props> = props => {
 
   /* Check matches to see if user is a host or player already */
   useEffect(() => {
-    const playing = matches?.find(m => {
-      return m.players?.find(p => {
-        return p.id === user?.id
-      })
-    })
+    // const playing = matches?.find(m => {
+    //   return m.players?.find(p => {
+    //     return p.id === user?.id
+    //   })
+    // })
 
-    const hosting = matches?.find(m => m.createdBy.uid === user?.id)
+    // const hosting = matches?.find(m => m.createdBy.uid === user?.id)
 
-    if (playing || hosting) {
-      setCommitted(true)
-    } else {
-      setCommitted(false)
-    }
-  }, [matches])
+    // if (playing || hosting) {
+    //   setCommitted(true)
+    // } else {
+    //   setCommitted(false)
+    // }
+  }, [])
 
   const createNewLobby = () => {
     // firestore()
@@ -118,7 +118,19 @@ const Multiplayer: FunctionComponent<Props> = props => {
     //   });  
   }
 
-  const EmptyMatches = () => {
+  // const EmptyMatches = () => {
+  //   return (
+  //     <View style={[ t.flexGrow, t.hFull, t.justifyCenter]}>
+  //       <Image source={require('../../assets/empty-matches.png')} style={[ t.h64, t.objectContain, t.wFull]}/>
+  //       <View>
+  //         <Text style={[ t.fontBold, t.textCenter, t.textXl ]}>Aw, no one's playing.</Text>
+  //         <Text style={[ t.fontBold, t.textCenter, t.textXl ]}>Go start a match!</Text>
+  //       </View>
+  //     </View>
+  //   )
+  // }
+
+  const ListEmptyState = () => {
     return (
       <View style={[ t.flexGrow, t.hFull, t.justifyCenter]}>
         <Image source={require('../../assets/empty-matches.png')} style={[ t.h64, t.objectContain, t.wFull]}/>

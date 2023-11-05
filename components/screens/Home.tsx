@@ -2,13 +2,19 @@ import React, { useState, useEffect, FunctionComponent } from 'react'
 
 import { Button, Image, TouchableOpacity, StyleSheet, Text, View,} from 'react-native'
 
-// import firestore from '@react-native-firebase/firestore'
-
 import { t } from 'react-native-tailwindcss'
 import styled from 'styled-components/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { RootStackParamList } from '../../App'
 
+interface User {
+  id: string
+  username: string
+  email: string
+  auth_uuid: string
+  created_at: string
+  updated_at: string
+}
 interface Props {
   navigation: StackNavigationProp<RootStackParamList>
   user: User
@@ -26,16 +32,13 @@ const Home: FunctionComponent<Props> = (props) => {
         <Image source={require('../../assets/list.png')} style={[ t.objectContain, t.wFull, { height: 350 } ]} />
         <View style={[t.p4]}>
           <Text style={[t.text3xl]}>
-            Hey,<Text style={[t.fontBold, { color: '#FF564F'} ]}> {user?.name || "..."}</Text>
+            Hey,<Text style={[t.fontBold, { color: '#FF564F'} ]}> {user?.username || "..."}</Text>
           </Text>
-        </View>
+        </View>        
       </View>
       <View style={[t.mB8, t.pR8, t.selfStart, t.wFull]}>
         <StyledButton onPress={() => props.navigation.navigate('Multiplayer')}>
           <StyledButtonText>Multiplayer</StyledButtonText>
-        </StyledButton>
-        <StyledButton onPress={() => props.navigation.navigate('Match')}>
-          <StyledButtonText>Single Player</StyledButtonText>
         </StyledButton>
         <StyledButton onPress={() => props.navigation.navigate('Settings')}>
           <StyledButtonText>Settings</StyledButtonText>

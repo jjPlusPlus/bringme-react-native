@@ -24,26 +24,29 @@ export default function Register({ navigation }: Props) {
 
   const register = async () => {
     // first, check that the username is unique
-    // if it's unique, then try to create the new auth account
+    // before trying to create the new auth account
     setError({})
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email: email,
       password: password,
     })
 
     if (error) {
-      //function to make simple alert
-      Alert.alert(
+      return Alert.alert(
         'Login failed', // alert title
         error.message, // alert body
         [
-          { text: 'OK', onPress: () => console.log('OK Pressed') }
+          { text: 'OK', onPress: () => console.log('TODO') }
         ],
         { cancelable: true }
       )
     } else {
-      //function to make simple alert
-      Alert.alert(
+      // add user record (email and auth ID) to the supabase database
+      const addUser = await supabase.from('Users').insert([
+        { username: username, email: email, auth_uuid: data?.user?.id }
+      ])
+      
+      return Alert.alert(
         'Success', // alert title
         'Please check your email to verify your account before logging in', // alert body
         [
@@ -52,45 +55,6 @@ export default function Register({ navigation }: Props) {
         { cancelable: true }
       )
     }
-
-    // await firestore()
-    //   .collection('users')
-    //   .where('name', '==', username)
-    //   .get()
-    //   .then(querySnapshot => {
-    //     // querySnapshot.empty still true if size is 0...?
-    //     if (querySnapshot.size > 0) {
-    //       return setError({userName: 'That username is taken!'})
-    //     }
-    //     auth()
-    //       .createUserWithEmailAndPassword(email, password)
-    //       .then((user: FirebaseAuthTypes.UserCredential) => {
-    //         // this will automatically send the user to /Lobby
-    //         // now try to connec the auth account to a User record
-    //         firestore()
-    //           .collection('users')
-    //           .add({
-    //             name: username,
-    //             email: email,
-    //             user: user.user.uid,
-    //           } as FirestoreUser)
-    //           .then(() => {
-    //             console.log('User added!')
-    //           }).catch((err) => {
-    //             console.log(err)
-    //             // todo
-    //           })
-    //         console.log('User account created & signed in!')
-    //       })
-    //       .catch(error => {
-    //         if (error.code === 'auth/email-already-in-use') {
-    //           setError({email: 'That email address is already in use!'})
-    //         }
-    //         if (error.code === 'auth/invalid-email') {
-    //           setError({email: 'That email address is invalid!'})
-    //         }
-    //       })
-    //   })
   }
 
   const validateUsername = () => {

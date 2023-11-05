@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { StyleSheet, Linking } from 'react-native'
 
-import 'react-native-gesture-handler'
+// import 'react-native-gesture-handler'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 
@@ -30,10 +30,19 @@ export type RootStackParamList = {
   Match: { matchId: string } | undefined
 }
 
+interface User {
+  id: string
+  username: string
+  email: string
+  auth_uuid: string
+  created_at: string
+  updated_at: string
+}
+
 export default function App() {
   const [loading, setLoading] = useState<boolean>(false)
   const [session, setSession] = useState<Session | null>(null)
-  const user = session?.user
+  const [user, setUser] = useState<User | null>(null)
 
   const [fontsLoaded] = useFonts({
     'LuckiestGuy-Regular': require('./assets/fonts/LuckiestGuy-Regular.ttf'),
@@ -42,15 +51,19 @@ export default function App() {
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session)
+      getUserData(session?.user?.id || '')
     })
 
     supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session)
+      getUserData(session?.user?.id || '')
     })
 
+    /* REDIRECT USERS FROM AUTH PROVIDER LOGIN FLOW */
     Linking.addEventListener('url', (event) => {
       let urlString = event.url
       // This is a hack to convert the returned url to a query string where we can use URLSearchParams
+      // See here https://github.com/orgs/supabase/discussions/1717
       if (event.url.includes('authRedirectHandler#')) {
         urlString = event.url.replace(
           'authRedirectHandler#',
@@ -85,11 +98,17 @@ export default function App() {
     }
   }, [])
 
-  /* Todo:
-   * In the Firestore implementation, we would fetch the actual User document from the database
-   * once we got the auth record. 
-   * We are also not showing a loader right now for the auth check, so we should do that.
-  */
+  const getUserData = async (user_id: string) => {
+    let { data: Users, error } = await supabase
+      .from('Users')
+      .select("*")
+      .eq('auth_uuid', user_id)
+    if (error || !Users) {
+      console.log('failed to fetch user data')
+    } else {
+      setUser(Users[0])
+    }
+  }
 
   const Stack = createStackNavigator<RootStackParamList>();
 
@@ -101,27 +120,27 @@ export default function App() {
           {user ? (
             <>
               <Stack.Screen name="Home" options={{ title: 'Home', headerShown: false }}>
-                {props => <Home {...props} user={user} />}
+                {(props: any) => <Home {...props} user={user} />}
               </Stack.Screen>
 
               <Stack.Screen name="Settings" options={{ title: 'Settings' }} >
-                {props => <Settings {...props} user={user} />}
+                {(props: any) => <Settings {...props} user={user} />}
               </Stack.Screen>
 
               <Stack.Screen name="Multiplayer" options={{ title: 'Multiplayer' }} >
-                {props => <Multiplayer {...props} user={user} />}
+                {(props: any) => <Multiplayer {...props} user={user} />}
               </Stack.Screen>
 
               <Stack.Screen name="Matchmaking" options={{ title: 'Matchmaking' }} >
-                {props => <Matchmaking {...props} user={user} />}
+                {(props: any) => <Matchmaking {...props} user={user} />}
               </Stack.Screen>
 
               <Stack.Screen name="Match" options={{ title: 'Match', headerShown: false }} >
-                {props => <Match {...props} user={user} />}
+                {(props: any) => <Match {...props} user={user} />}
               </Stack.Screen>
 
               <Stack.Screen name="SinglePlayer" options={{ title: 'Single Player' }} >
-                {props => <SinglePlayer {...props} user={user} />}
+                {(props: any) => <SinglePlayer {...props} user={user} />}
               </Stack.Screen>
             </>
           ) : (

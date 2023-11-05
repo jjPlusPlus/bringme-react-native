@@ -32,13 +32,13 @@ export default function Login({ navigation }: Props) {
         'Login failed', // alert title
         error.message, // alert body
         [
-          { text: 'OK', onPress: () => console.log('OK Pressed') } // button with NO onPress function
+          { text: 'OK', onPress: () => console.log('TODO') } // button with NO onPress function
         ],
         { cancelable: true }
       )
     }
   }
-  const SUPABASE_URL = 'https://<your-project>.supabase.co'
+  const SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL
   const googleAuthUrl = `${SUPABASE_URL}/auth/v1/authorize?provider=google&redirect_to=myapp://auth`
   const signInWithGoogle = async () => {
     /*
