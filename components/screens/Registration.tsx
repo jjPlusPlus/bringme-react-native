@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { supabase } from '../../supabase/init'
 
-import { StyleSheet, Text, TextInput, TouchableOpacity, View, Alert } from 'react-native'
+import { StyleSheet, Text, TextInput, TouchableOpacity, View, Alert, Image } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+
+import { styled } from 'nativewind'
+import pen from '../../assets/register.png'
 
 import { RootStackParamList } from '../../App'
 import { StackNavigationProp } from '@react-navigation/stack'
@@ -45,12 +48,12 @@ export default function Register({ navigation }: Props) {
       const addUser = await supabase.from('Users').insert([
         { username: username, email: email, auth_uuid: data?.user?.id }
       ])
-      
+
       return Alert.alert(
         'Success', // alert title
         'Please check your email to verify your account before logging in', // alert body
         [
-          { text: 'OK', onPress: () => navigation.navigate('Login')}
+          { text: 'OK', onPress: () => navigation.navigate('Login') }
         ],
         { cancelable: true }
       )
@@ -68,119 +71,71 @@ export default function Register({ navigation }: Props) {
   }
 
   return (
-    <View style={styles.container}>
+    <View className="bg-white flex-1 w-full">
       <KeyboardAwareScrollView
         contentContainerStyle={styles.scrollView}
-        keyboardShouldPersistTaps="always">
-        <TextInput
+        keyboardShouldPersistTaps="always"
+      >
+        <Image source={pen} className="h-40 m-4 -mt-12 mb-8" resizeMode="contain" />
+        <StyledInput
           placeholder="Username"
           placeholderTextColor="#aaaaaa"
           value={username}
-          style={styles.authInput}
           underlineColorAndroid="transparent"
           autoCapitalize="none"
           onChangeText={value => setUsername(value)}
         />
         {error.userName && (
-          <Text style={styles.error}>{error.userName}</Text>
+          <StyledErrorText>{error.userName}</StyledErrorText>
         )}
-        <TextInput
+        <StyledInput
           placeholder="Email"
           placeholderTextColor="#aaaaaa"
           value={email}
-          style={styles.authInput}
           underlineColorAndroid="transparent"
           autoCapitalize="none"
           onChangeText={value => setEmail(value)}
         />
         {error.email && (
-          <Text style={styles.error}>{error.email}</Text>
+          <StyledErrorText>{error.email}</StyledErrorText>
         )}
-        <TextInput
+        <StyledInput
           placeholder="Password"
           placeholderTextColor="#aaaaaa"
           value={password}
-          style={styles.authInput}
           maxLength={15}
           secureTextEntry={true}
           underlineColorAndroid="transparent"
           autoCapitalize="none"
           onChangeText={value => setPassword(value)}
         />
-        
-        <TouchableOpacity
-          style={styles.button}
+
+        <StyledButton
           onPress={() => register()}
         >
-          <Text style={styles.buttonTitle}>
+          <StyledButtonText>
             Sign Up
-          </Text>
-        </TouchableOpacity>
-        <View style={styles.footer}>
-          <Text style={styles.signUpText}>
-            <Text style={styles.signUpLink} onPress={() => navigation.navigate('Login')}>Sign In</Text>
-          </Text>
+          </StyledButtonText>
+        </StyledButton>
+        <View className="items-center pt-4">
+          <Text className="font-bold text-bmBlue text-xl uppercase" onPress={() => navigation.navigate('Login')}>Sign In</Text>
         </View>
-      </KeyboardAwareScrollView>
-    </View>
+      </KeyboardAwareScrollView >
+    </View >
   )
 
 }
 
 const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    flex: 1,
-    backgroundColor: '#efefef'
-  },
   scrollView: {
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'center',
+    padding: 16
   },
-  authInput: {
-    height: 48,
-    borderRadius: 5,
-    overflow: 'hidden',
-    backgroundColor: 'white',
-    marginTop: 10,
-    marginBottom: 10,
-    marginLeft: 30,
-    marginRight: 30,
-    paddingLeft: 16
-  },
-  error: {
-    fontSize: 12,
-    color: '#cc2222',
-    height: 40,
-    textAlign: "center",
-  },
-  button: {
-    backgroundColor: '#788eec',
-    marginLeft: 30,
-    marginRight: 30,
-    marginTop: 20,
-    height: 48,
-    borderRadius: 5,
-    alignItems: "center",
-    justifyContent: 'center'
-  },
-  buttonTitle: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: "bold"
-  },
-  footer: {
-    marginTop: 20,
-    alignItems: 'center'
-  },
-  signUpText: {
-    fontSize: 16,
-    color: '#2e2e2d'
-  },
-  signUpLink: {
-    color: "#788eec",
-    fontWeight: "bold",
-    fontSize: 16
-  }
 })
+
+const StyledInput = styled(TextInput, 'border-bmBlue border-4 my-2 rounded-[20px] p-4');
+const StyledButton = styled(TouchableOpacity, 'bg-bmBlue items-center justify-center mb-1 mt-4 p-3 rounded-[20px] w-full');
+const StyledButtonText = styled(Text, 'font-bold text-center text-xl text-white uppercase');
+const StyledErrorText = styled(Text, 'pl-2 text-red-600')
