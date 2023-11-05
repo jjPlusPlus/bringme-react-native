@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { StyleSheet, Linking } from 'react-native'
 
-import 'react-native-gesture-handler'
+// import 'react-native-gesture-handler'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 
@@ -103,27 +103,27 @@ export default function App() {
           {user ? (
             <>
               <Stack.Screen name="Home" options={{ title: 'Home', headerShown: false }}>
-                {props => <Home {...props} user={user} />}
+                {(props: any) => <Home {...props} user={user} />}
               </Stack.Screen>
 
               <Stack.Screen name="Settings" options={{ title: 'Settings' }} >
-                {props => <Settings {...props} user={user} />}
+                {(props: any) => <Settings {...props} user={user} />}
               </Stack.Screen>
 
               <Stack.Screen name="Multiplayer" options={{ title: 'Multiplayer' }} >
-                {props => <Multiplayer {...props} user={user} />}
+                {(props: any) => <Multiplayer {...props} user={user} />}
               </Stack.Screen>
 
               <Stack.Screen name="Matchmaking" options={{ title: 'Matchmaking' }} >
-                {props => <Matchmaking {...props} user={user} />}
+                {(props: any) => <Matchmaking {...props} user={user} />}
               </Stack.Screen>
 
               <Stack.Screen name="Match" options={{ title: 'Match', headerShown: false }} >
-                {props => <Match {...props} user={user} />}
+                {(props: any) => <Match {...props} user={user} />}
               </Stack.Screen>
 
               <Stack.Screen name="SinglePlayer" options={{ title: 'Single Player' }} >
-                {props => <SinglePlayer {...props} user={user} />}
+                {(props: any) => <SinglePlayer {...props} user={user} />}
               </Stack.Screen>
             </>
           ) : (

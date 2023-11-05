@@ -1,7 +1,8 @@
 import React, { FunctionComponent, useEffect, useState } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import { RouteProp } from '@react-navigation/native'
-import { createDrawerNavigator } from '@react-navigation/drawer';
+// import { createDrawerNavigator } from '@react-navigation/drawer';
+
 
 // import firestore from '@react-native-firebase/firestore'
 
@@ -34,7 +35,7 @@ interface Props {
   route: RouteProp<RootStackParamList, 'Match'>
 }
 
-const Drawer = createDrawerNavigator();
+// const Drawer = createDrawerNavigator();
 
 const Match: FunctionComponent<Props> = (props) => {
   const { user } = props
@@ -105,15 +106,21 @@ const Match: FunctionComponent<Props> = (props) => {
   const { width, height } = Dimensions.get('screen');
 
   return host?.id === user.id ? (
-    <Drawer.Navigator drawerStyle={{width: '80%'}} drawerPosition="right" drawerContent={() => <DrawerContent match={match} leaveMatch={leaveMatch} host={host}/>}>
-      <Drawer.Screen name="MatchHostView" >
-        {() => <MatchHostView match={match} setRoundWord={setRoundWord} host={host} />}
-      </Drawer.Screen>
-    </Drawer.Navigator>
+    // <Drawer.Navigator drawerStyle={{width: '80%'}} drawerPosition="right" drawerContent={() => <DrawerContent match={match} leaveMatch={leaveMatch} host={host}/>}>
+    //   <Drawer.Screen name="MatchHostView" >
+    //     {() => <MatchHostView match={match} setRoundWord={setRoundWord} host={host} />}
+    //   </Drawer.Screen>
+    // </Drawer.Navigator>
+    <View>
+
+    </View>
   ) : (
-    <Drawer.Navigator drawerStyle={{width: '80%'}} drawerPosition="right" drawerContent={() => <DrawerContent match={match} leaveMatch={leaveMatch} host={host}/>}>
-      <Drawer.Screen name="MatchPlayerView" component={() => <MatchPlayerView match={match} user={user} host={host} submitWord={submitWord} />} />
-    </Drawer.Navigator>
+    // <Drawer.Navigator drawerStyle={{width: '80%'}} drawerPosition="right" drawerContent={() => <DrawerContent match={match} leaveMatch={leaveMatch} host={host}/>}>
+    //   <Drawer.Screen name="MatchPlayerView" component={() => <MatchPlayerView match={match} user={user} host={host} submitWord={submitWord} />} />
+    // </Drawer.Navigator>
+    <View>
+      
+    </View>
   )
 }
 
