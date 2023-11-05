@@ -30,10 +30,19 @@ export type RootStackParamList = {
   Match: { matchId: string } | undefined
 }
 
+interface User {
+  id: string
+  username: string
+  email: string
+  auth_uuid: string
+  created_at: string
+  updated_at: string
+}
+
 export default function App() {
   const [loading, setLoading] = useState<boolean>(false)
   const [session, setSession] = useState<Session | null>(null)
-  const user = session?.user
+  const [user, setUser] = useState<User | null>(null)
 
   const [fontsLoaded] = useFonts({
     'LuckiestGuy-Regular': require('./assets/fonts/LuckiestGuy-Regular.ttf'),
@@ -42,10 +51,12 @@ export default function App() {
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session)
+      getUserData(session?.user?.id || '')
     })
 
     supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session)
+      getUserData(session?.user?.id || '')
     })
 
     /* REDIRECT USERS FROM AUTH PROVIDER LOGIN FLOW */
@@ -87,11 +98,17 @@ export default function App() {
     }
   }, [])
 
-  /* Todo:
-   * In the Firestore implementation, we would fetch the actual User document from the database
-   * once we got the auth record. 
-   * We are also not showing a loader right now for the auth check, so we should do that.
-  */
+  const getUserData = async (user_id: string) => {
+    let { data: Users, error } = await supabase
+      .from('Users')
+      .select("*")
+      .eq('auth_uuid', user_id)
+    if (error || !Users) {
+      console.log('failed to fetch user data')
+    } else {
+      setUser(Users[0])
+    }
+  }
 
   const Stack = createStackNavigator<RootStackParamList>();
 
