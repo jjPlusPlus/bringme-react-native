@@ -32,7 +32,7 @@ export default function Login({ navigation }: Props) {
         'Login failed', // alert title
         error.message, // alert body
         [
-          { text: 'OK', onPress: () => console.log('OK Pressed') } // button with NO onPress function
+          { text: 'OK', onPress: () => console.log('TODO') } // button with NO onPress function
         ],
         { cancelable: true }
       )
