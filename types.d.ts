@@ -31,3 +31,5 @@ interface FirestoreMatch {
 }
 
 type Match = FirestoreMatch & { id: string }
+
+/// <reference types="nativewind/types" />

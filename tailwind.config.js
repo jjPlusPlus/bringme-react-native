@@ -1,12 +1,18 @@
 module.exports = {
+  content: ["./App.{js,jsx,ts,tsx}", "./components/**/*.{js,jsx,ts,tsx}"],
   future: {
     // removeDeprecatedGapUtilities: true,
     // purgeLayersByDefault: true,
   },
-  purge: [],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        bmOrange: "#fe564f",
+        bmBlue: "#2567ee",
+        bmPeach: "#ffe8e6",
+      },
+    },
   },
   variants: {},
   plugins: [],
-}
+};
