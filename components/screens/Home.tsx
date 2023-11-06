@@ -66,13 +66,5 @@ const styles = StyleSheet.create({
   },
 })
 
-// const StyledButton = styled(TouchableOpacity)`
-//   ${[t.justifyCenter, t.h20, t.p4, t.mY2, { backgroundColor: '#FFE8E7', borderTopRightRadius: 20, borderBottomRightRadius: 20 }]}
-// `;
-
-// const StyledButtonText = styled(Text)`
-//   ${[t.fontBold, t.pT2, t.text3xl, { color: '#2568EF', fontFamily: 'LuckiestGuy-Regular' }]}
-// `;
-
 const StyledButton = styled(TouchableOpacity, 'bg-bmPeach h-20  justify-center p-4 my-2 rounded-r-[20px] rounded-l-0 w-full');
 const StyledButtonText = styled(Text, 'font-bold font-lucky pt-2 text-bmBlue text-3xl uppercase');
