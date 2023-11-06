@@ -40,7 +40,7 @@ const Home: FunctionComponent<Props> = (props) => {
         />
         <View className="p-4">
           <Text className="text-3xl">
-            Hey,<Text className="font-bold text-bmOrange"> {user?.username || "..."}</Text>
+            Hey,<Text className="font-bold text-bmOrange"> {user?.username || "..."}</Text>!
           </Text>
         </View>
       </View>
