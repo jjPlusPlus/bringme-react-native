@@ -1,9 +1,9 @@
 import React, { useState, useEffect, FunctionComponent } from 'react'
 
-import { Button, Image, TouchableOpacity, StyleSheet, Text, View,} from 'react-native'
+import { Button, Image, TouchableOpacity, StyleSheet, Text, View, } from 'react-native'
 
 import { t } from 'react-native-tailwindcss'
-import styled from 'styled-components/native'
+import { styled } from 'nativewind'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { RootStackParamList } from '../../App'
 
@@ -24,19 +24,27 @@ const Home: FunctionComponent<Props> = (props) => {
   const { user } = props
 
   return (
-    <View style={styles.container}>
-      <View style={[t.mT4, t.pL8, t.pR4, t.wFull]}>
-        <Image source={require('../../assets/logo.png')} style={[t.objectContain, t.selfEnd, { width: '80%' }]} />
+    <View className="bg-white flex-1 items-center">
+      <View className="mt-4 pl-8 pr-4 w-full">
+        <Image
+          source={require('../../assets/logo.png')}
+          style={{ width: '80%' }}
+          className="self-end"
+          resizeMode="contain"
+        />
       </View>
-      <View style={[t.flex1, t.wFull]}>
-        <Image source={require('../../assets/list.png')} style={[ t.objectContain, t.wFull, { height: 350 } ]} />
-        <View style={[t.p4]}>
-          <Text style={[t.text3xl]}>
-            Hey,<Text style={[t.fontBold, { color: '#FF564F'} ]}> {user?.username || "..."}</Text>
+      <View className="flex-1 w-full">
+        <Image source={require('../../assets/list.png')}
+          className="h-[350] w-full"
+          resizeMode="contain"
+        />
+        <View className="p-4">
+          <Text className="text-3xl">
+            Hey,<Text className="font-bold text-bmOrange"> {user?.username || "..."}</Text>!
           </Text>
-        </View>        
+        </View>
       </View>
-      <View style={[t.mB8, t.pR8, t.selfStart, t.wFull]}>
+      <View className="mb-8 pr-8 self-start w-full">
         <StyledButton onPress={() => props.navigation.navigate('Multiplayer')}>
           <StyledButtonText>Multiplayer</StyledButtonText>
         </StyledButton>
@@ -58,10 +66,5 @@ const styles = StyleSheet.create({
   },
 })
 
-const StyledButton = styled(TouchableOpacity)`
-  ${[t.justifyCenter, t.h20, t.p4, t.mY2, { backgroundColor: '#FFE8E7', borderTopRightRadius: 20, borderBottomRightRadius: 20}]}
-`;
-
-const StyledButtonText = styled(Text)`
-  ${[t.fontBold,t.pT2, t.text3xl, { color: '#2568EF', fontFamily: 'LuckiestGuy-Regular'}]}
-`;
+const StyledButton = styled(TouchableOpacity, 'bg-bmPeach h-20  justify-center p-4 my-2 rounded-r-[20px] rounded-l-0 w-full');
+const StyledButtonText = styled(Text, 'font-bold font-lucky pt-2 text-bmBlue text-3xl uppercase');

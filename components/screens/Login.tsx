@@ -7,7 +7,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { RootStackParamList } from '../../App'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { t } from 'react-native-tailwindcss'
-import styled from 'styled-components/native'
+import { styled } from "nativewind"
 
 type AuthScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Auth'>
 
@@ -54,15 +54,23 @@ export default function Login({ navigation }: Props) {
 
   return (
     <View style={styles.container}>
-      <View style={[t.mT4, t.pL8, t.pR4, t.wFull]}>
-        <Image source={require('../../assets/logo.png')} style={[t.objectContain, t.selfEnd, { width: '80%' }]} />
+      <View className="pt-2 pl-8 pr-4 w-full">
+        <Image
+          source={require('../../assets/logo.png')}
+          className="self-end"
+          style={{ width: '80%' }}
+          resizeMode='contain'
+        />
       </View>
       <KeyboardAwareScrollView
-        contentContainerStyle={styles.scrollView}
         keyboardShouldPersistTaps="always">
-        <View style={[t.p4]}>
-          <Image source={require('../../assets/nature.png')} style={[t.objectContain, t.selfCenter, { height: 250 } ]} />
-          <Text style={[t.p4, t.textCenter]}>
+        <View className="p-4">
+          <Image
+            source={require('../../assets/hero.png')}
+            resizeMode='contain'
+            className="self-center h-[200]"
+          />
+          <Text className="p-4 text-center">
             A fun description about Bring Me here.
           </Text>
         </View>
@@ -86,7 +94,7 @@ export default function Login({ navigation }: Props) {
           disabled={loading}
           onChangeText={(value: string) => setPassword(value)}
         />
-        <StyledButton 
+        <StyledButton
           onPress={() => logIn()}
           disabled={loading}
         >
@@ -95,7 +103,7 @@ export default function Login({ navigation }: Props) {
           </StyledButtonText>
         </StyledButton>
 
-        <StyledButton 
+        <StyledButton
           onPress={() => signInWithGoogle()}
           disabled={loading}
         >
@@ -106,10 +114,10 @@ export default function Login({ navigation }: Props) {
 
         <View style={styles.footer}>
           <Text style={styles.signUpText}>
-            Don't have an account? <Text style={{color: '#2568EF'}} onPress={() => navigation.navigate('Register')}>Sign Up</Text>
+            Don't have an account? <Text style={{ color: '#2568EF' }} onPress={() => navigation.navigate('Register')}>Sign Up</Text>
           </Text>
         </View>
-        
+
       </KeyboardAwareScrollView>
     </View>
   )
@@ -122,7 +130,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff'
   },
-  scrollView: { 
+  scrollView: {
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'center',
@@ -168,14 +176,7 @@ const styles = StyleSheet.create({
   }
 })
 
-const StyledInput = styled(TextInput)`
-  ${[t.border4, t.m3, t.p4, { borderColor: '#2568EF', borderRadius: 20 }]}
-`;
 
-const StyledButton = styled(TouchableOpacity)`
-  ${[t.p4, t.m3, { backgroundColor: '#FFE8E7', borderRadius: 20 }]}
-`;
-
-const StyledButtonText = styled(Text)`
-  ${[t.fontBold,t.pT2, t.textCenter, t.textXl, { color: '#2568EF', fontFamily: 'LuckiestGuy-Regular'}]}
-`;
+const StyledInput = styled(TextInput, 'border-bmBlue border-4 m-3 mb-0 p-4 rounded-[20px]');
+const StyledButton = styled(TouchableOpacity, 'bg-bmPeach items-center justify-center mx-3 mt-4 p-3 rounded-[20px]');
+const StyledButtonText = styled(Text, 'text-bmBlue font-bold text-center text-xl uppercase');
