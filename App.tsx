@@ -105,14 +105,14 @@ export default function App() {
   }, [])
 
   const getUserData = async (user_id: string) => {
-    let { data: Users, error } = await supabase
-      .from('Users')
+    let { data: users, error } = await supabase
+      .from('users')
       .select("*")
       .eq('auth_uuid', user_id)
-    if (error || !Users) {
+    if (error || !users) {
       console.log('failed to fetch user data')
     } else {
-      setUser(Users[0])
+      setUser(users[0])
     }
   }
 
