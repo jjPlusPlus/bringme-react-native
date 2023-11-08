@@ -1,9 +1,10 @@
 import React, { useState, useEffect, FunctionComponent } from 'react'
 import { RouteProp } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
-import { StyleSheet, Text, View, Alert, Button } from 'react-native'
+import { StyleSheet, Text, TextInput, View, Alert, Button } from 'react-native'
 import { MATCH_STATES } from './constants'
 import { RootStackParamList } from '../../App'
+import { styled } from "nativewind"
 import { supabase } from '../../supabase/init'
 
 interface Props {
@@ -16,11 +17,10 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
   const { user } = props
   const room_code = props?.route?.params?.room_code
   const [match, setMatch] = useState<Match>()
+  const [roomCodeInput, setRoomCodeInput] = useState<string>('')
 
   // on mount get the full Match object
   useEffect(() => {
-    getMatchData()
-
     // Remove players from the match if they back out of the lobby
     props.navigation.addListener('beforeRemove', (e) => {
       e.preventDefault();
@@ -39,6 +39,10 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
         ]
       );
     })
+    if (!room_code) {
+      return
+    } 
+    getMatchData()
   }, [])
 
   const getMatchData = async () => {
@@ -68,23 +72,34 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
     }
   }
 
-
-  // Forward the user to the Match screen if the game has started
-
-  if (!match) {
-    return <View style={styles.container}><Text>Match Not Found</Text></View>
+  const joinMatch = async () => {
+    const { data, error } = await supabase.functions.invoke('join-match', {
+      body: { 
+        user: user, 
+        room_code: roomCodeInput
+      },
+    })
+    console.log('in joinMatch: ', data,error)
+    // if match creation fails, show an error message
+    if (error?.message) {
+      alert(error.message)
+      return
+    }
+    // if match successfully joined, navigate to MatchLobby
+    setMatch(data)
   }
-
-  const { players, host, room_code:code } = match
 
   const startMatch = () => {
 
   }
 
-  return (
+  const MIN_PLAYERS = 2
+  const { players, host, room_code:code } = match || {}
+  const isHost = host?.id === user?.id
+  const readyToStart = players?.length >= MIN_PLAYERS
+
+  return match ? (
     <View style={styles.container}>
-      <Text>Match Info</Text>
-      <Text>Match Id: {match?.id}</Text>
       <Text>Room Code: {code}</Text>
       <Text>Hosted By: {host?.username}</Text>
 
@@ -94,15 +109,20 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
           <Text key={i}>{i + 1}. {player.username}</Text>
         )
       })}
-        
-      {/* <Text>1. {match?.players[0] ? match.players[0].name : "Waiting for player"} </Text>
-      <Text>2. {match?.players[1] ? match.players[1].name : "Waiting for player"}</Text>
-      <Text>3. {match?.players[2] ? match.players[2].name : "Waiting for player"}</Text>
-      <Text>4. {match?.players[3] ? match.players[3].name : "Waiting for player"}</Text> */}
 
       {/* If I'm the host, I should be able to start the match if all of the players are present */}
-      {match?.createdBy?.uid === user?.id && match?.status !== MATCH_STATES.STARTED && (
-        <Button onPress={startMatch} disabled={match?.players?.length !== 4} title="Start Match" />
+      {match?.status !== MATCH_STATES.STARTED && (
+        <Button 
+          onPress={startMatch} 
+          disabled={!isHost || match?.players?.length !== 2} 
+          title={
+            readyToStart ? 
+              isHost ? 
+                "Start Match" 
+                : "Waiting for Host" 
+              : "Waiting for Players"
+          } 
+        />
       )}
 
       {/* If the match is started and I somehow managed to get here AND the useEffect didn't already re-route me*/}
@@ -113,6 +133,20 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
         />
       )}
       
+    </View>
+  ) : (
+    <View style={styles.container}>
+      {/* Match not found. Give the user the opportunity to JOIN a match */}
+      <Text>Enter your Room Code to join</Text>
+      <StyledInput
+        onChangeText={text => {
+          setRoomCodeInput(text)
+        }}
+      />
+      <Button 
+        onPress={() => joinMatch()} 
+        title="Join" 
+      />
     </View>
   )
 }
@@ -127,3 +161,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 })
+const StyledInput = styled(TextInput, 'border-bmBlue border-4 my-2 p-4 rounded-[20px] text-black w-full');
+
