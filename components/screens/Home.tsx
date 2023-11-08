@@ -23,11 +23,11 @@ const Home: FunctionComponent<Props> = (props) => {
   const { user } = props
 
   const createMatch = async () => {
-    // send request to server to create a new Matc
+    // send request to server to create a new Match
     const { data, error } = await supabase.functions.invoke('create-match', {
       body: { user: user },
     })
-  
+    console.log('in createMatch: ', data,error)
     // if match creation fails, show an error message
     if (error?.message) {
       alert(error.message)

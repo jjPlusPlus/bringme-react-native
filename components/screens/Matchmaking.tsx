@@ -43,17 +43,19 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
 
   const getMatchData = async () => {
     let { data, error } = await supabase
-      .from('Matches')
+      .from('matches')
       .select(`
         id,
         room_code,
-        Users ( id, username ),
-        host ( id, username )
+        users!players ( id, username )
+        host ( id ,username )
       `)
       .eq('room_code', room_code)
     if (error || !data) {
+      console.log('getMatchData error: ', error)
       console.log('failed to fetch Match data')
     } else {
+      console.log('getMatchData: ', data[0])
       setMatch(data[0])
     }
   }
@@ -65,12 +67,12 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
     return <View style={styles.container}><Text>Match Not Found</Text></View>
   }
 
-  const players = match.Users
-
+  const players = match.players
+  console.log('match.players: ', players)
   const startMatch = () => {
 
   }
-  console.log(players)
+
   return (
     <View style={styles.container}>
       <Text>Match Info</Text>
@@ -79,11 +81,11 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
       <Text>Hosted By: {match?.host?.username}</Text>
 
       <Text>Players</Text>
-      {players && Object.keys(players).map((player_key, i) => {
-        console.log('player_key: ', player_key)
-        console.log('players[player_key]: ', players[player_key])
+      {players && players.map((player, i) => {
+        // console.log('player_key: ', player_key)
+        // console.log('players[player_key]: ', players[player_key])
         return (
-          <Text key={i}>{i + 1}. {players[player_key]}</Text>
+          <Text key={i}>{i + 1}. {player.username}</Text>
         )
       })}
         

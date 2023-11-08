@@ -45,7 +45,7 @@ export default function Register({ navigation }: Props) {
       )
     } else {
       // add user record (email and auth ID) to the supabase database
-      const addUser = await supabase.from('Users').insert([
+      const addUser = await supabase.from('users').insert([
         { username: username, email: email, auth_uuid: data?.user?.id }
       ])
 

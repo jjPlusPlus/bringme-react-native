@@ -15,10 +15,11 @@ Deno.serve(async (req: any) => {
   try {
     const { user } = await req.json() // throws an error
     if (!user) throw new Error("Missing 'user' in request body")
+
     const room_code = await generateRandomRoomCode()
 
     const { data: matchData, error: matchError } = await supabase_client
-      .from('Matches')
+      .from('matches')
       .insert([
         { 
           room_code: room_code,
@@ -28,15 +29,15 @@ Deno.serve(async (req: any) => {
       .select('*')
 
     const { data: playersData, error: playersError } = await supabase_client
-      .from('Players')
+      .from('players')
       .upsert([
         {
           match_id: matchData[0].id,
-          user_id: user.id,
+          user_id: "6708297e-50cf-49a0-b1ab-2d699bb31542",
         },
         {
           match_id: matchData[0].id,
-          user_id: 4
+          user_id: "e7207f5d-b272-4f4b-b692-f588387a9fd7"
         }
       ])
 
@@ -48,6 +49,7 @@ Deno.serve(async (req: any) => {
       },
     )
   } catch (error: any) {
+    console.log(error)
     return new Response(JSON.stringify({ error: error.message }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 400,
@@ -62,7 +64,7 @@ const generateRandomRoomCode = async () => {
   while (!isUnique) {
     roomCode = buildRoomCode()
     const { data, error } = await supabase_client
-      .from('Matches')
+      .from('matches')
       .select()
       .eq('room_code', roomCode)
     if (!error && !data.length) {

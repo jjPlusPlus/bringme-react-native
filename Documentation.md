@@ -4,7 +4,7 @@ A highly non-comprehensive documentation for the application architecture of Bri
 
 ## API Architecture
 
-### Table: Users
+### Table: users
 **id**: index, primary_key
 **username**: string : *unique username, varchar but no spaces or symbols*
 **email**: string : *user email address copied over during registration*
