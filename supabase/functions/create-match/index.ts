@@ -33,11 +33,7 @@ Deno.serve(async (req: any) => {
       .upsert([
         {
           match_id: matchData[0].id,
-          user_id: "6708297e-50cf-49a0-b1ab-2d699bb31542",
-        },
-        {
-          match_id: matchData[0].id,
-          user_id: "e7207f5d-b272-4f4b-b692-f588387a9fd7"
+          user_id: user.id,
         }
       ])
 

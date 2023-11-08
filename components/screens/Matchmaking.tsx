@@ -42,21 +42,29 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
   }, [])
 
   const getMatchData = async () => {
-    let { data, error } = await supabase
+    let { data: matchData, error: matchError } = await supabase
       .from('matches')
       .select(`
         id,
         room_code,
-        users!players ( id, username )
-        host ( id ,username )
+        players:users!players ( id, username )
       `)
       .eq('room_code', room_code)
-    if (error || !data) {
-      console.log('getMatchData error: ', error)
-      console.log('failed to fetch Match data')
+      .single()
+
+    let { data: hostData, error: hostError } = await supabase
+      .from('matches')
+      .select(`
+        host:users!matches_host_fkey ( id, username )
+      `)
+      .eq('room_code', room_code)
+      .single()
+    
+    if (matchError || !matchData || hostError || !hostData) {
+      console.log('getMatchData match error: ', matchError)
+      console.log('getMatchData host error: ', hostError)
     } else {
-      console.log('getMatchData: ', data[0])
-      setMatch(data[0])
+      setMatch({ ...matchData, ...hostData })
     }
   }
 
@@ -67,8 +75,8 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
     return <View style={styles.container}><Text>Match Not Found</Text></View>
   }
 
-  const players = match.players
-  console.log('match.players: ', players)
+  const { players, host, room_code:code } = match
+
   const startMatch = () => {
 
   }
@@ -77,13 +85,11 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
     <View style={styles.container}>
       <Text>Match Info</Text>
       <Text>Match Id: {match?.id}</Text>
-      <Text>Room Code: {match?.room_code}</Text>
-      <Text>Hosted By: {match?.host?.username}</Text>
+      <Text>Room Code: {code}</Text>
+      <Text>Hosted By: {host?.username}</Text>
 
       <Text>Players</Text>
-      {players && players.map((player, i) => {
-        // console.log('player_key: ', player_key)
-        // console.log('players[player_key]: ', players[player_key])
+      {players && players.map((player:any, i) => {
         return (
           <Text key={i}>{i + 1}. {player.username}</Text>
         )
