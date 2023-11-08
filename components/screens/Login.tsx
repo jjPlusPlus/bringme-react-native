@@ -6,7 +6,6 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 
 import { RootStackParamList } from '../../App'
 import { StackNavigationProp } from '@react-navigation/stack'
-import { t } from 'react-native-tailwindcss'
 import { styled } from "nativewind"
 
 type AuthScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Auth'>
