@@ -30,9 +30,9 @@ export type RootStackParamList = {
   Auth: undefined
   Home: undefined
   Settings: undefined
-  SinglePlayer: undefined
-  Multiplayer: undefined
-  Matchmaking: { matchId: string }
+  SinglePlayer: undefined // TODO: Deprecate?
+  Multiplayer: undefined // TODO: Deprecate?
+  Matchmaking: { room_code: string } | undefined
   Match: { matchId: string } | undefined
 }
 
@@ -133,20 +133,12 @@ export default function App() {
               {(props: any) => <Settings {...props} user={user} />}
             </Stack.Screen>
 
-            <Stack.Screen name="Multiplayer" options={{ title: 'Multiplayer' }} >
-              {(props: any) => <Multiplayer {...props} user={user} />}
-            </Stack.Screen>
-
             <Stack.Screen name="Matchmaking" options={{ title: 'Matchmaking' }} >
               {(props: any) => <Matchmaking {...props} user={user} />}
             </Stack.Screen>
 
             <Stack.Screen name="Match" options={{ title: 'Match', headerShown: false }} >
               {(props: any) => <Match {...props} user={user} />}
-            </Stack.Screen>
-
-            <Stack.Screen name="SinglePlayer" options={{ title: 'Single Player' }} >
-              {(props: any) => <SinglePlayer {...props} user={user} />}
             </Stack.Screen>
           </>
         ) : (
