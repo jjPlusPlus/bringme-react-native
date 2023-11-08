@@ -102,6 +102,7 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
     <View style={styles.container}>
       <Text>Room Code: {code}</Text>
       <Text>Hosted By: {host?.username}</Text>
+      <Text>Status: {match?.status || "Created"}</Text>
 
       <Text>Players</Text>
       {players && players.map((player:any, i) => {
