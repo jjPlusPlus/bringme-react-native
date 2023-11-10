@@ -1,7 +1,6 @@
 import React, { useState, useEffect, FunctionComponent } from 'react'
-
-import { Button, Image, TouchableOpacity, StyleSheet, Text, View, } from 'react-native'
-
+import { supabase } from '../../supabase/init'
+import { Button, Image, TouchableOpacity, StyleSheet, Text, View,} from 'react-native'
 import { t } from 'react-native-tailwindcss'
 import { styled } from 'nativewind'
 import { StackNavigationProp } from '@react-navigation/stack'
@@ -22,6 +21,21 @@ interface Props {
 
 const Home: FunctionComponent<Props> = (props) => {
   const { user } = props
+
+  const createMatch = async () => {
+    // send request to server to create a new Match
+    const { data, error } = await supabase.functions.invoke('create-match', {
+      body: { user: user },
+    })
+    console.log('in createMatch: ', data,error)
+    // if match creation fails, show an error message
+    if (error?.message) {
+      alert(error.message)
+      return
+    }
+    // if match successfully created, navigate to MatchLobby
+    props.navigation.navigate('Matchmaking', { room_code: data.room_code })
+  }
 
   return (
     <View className="bg-white flex-1 items-center">
@@ -45,8 +59,8 @@ const Home: FunctionComponent<Props> = (props) => {
         </View>
       </View>
       <View className="mb-8 pr-8 self-start w-full">
-        <StyledButton onPress={() => props.navigation.navigate('Multiplayer')}>
-          <StyledButtonText>Multiplayer</StyledButtonText>
+        <StyledButton onPress={() => createMatch()}>
+          <StyledButtonText>Create a Match</StyledButtonText>
         </StyledButton>
         <StyledButton onPress={() => props.navigation.navigate('Settings')}>
           <StyledButtonText>Settings</StyledButtonText>
