@@ -7,6 +7,17 @@ import { RootStackParamList } from '../../App'
 import { styled } from "nativewind"
 import { supabase } from '../../supabase/init'
 
+interface User {
+  id: string
+  username: string | null
+}
+interface Match {
+  id: string
+  room_code: string
+  status: string
+  players: User[]
+  host: User
+}
 interface Props {
   navigation: StackNavigationProp<RootStackParamList>
   route: RouteProp<RootStackParamList, 'Matchmaking'>
@@ -46,11 +57,15 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
   }, [])
 
   const getMatchData = async () => {
+    if (!room_code) {
+      return
+    }
     let { data: matchData, error: matchError } = await supabase
       .from('matches')
       .select(`
         id,
         room_code,
+        status,
         players:users!players ( id, username )
       `)
       .eq('room_code', room_code)
@@ -64,11 +79,18 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
       .eq('room_code', room_code)
       .single()
     
-    if (matchError || !matchData || hostError || !hostData) {
+    if (matchError || !matchData || hostError || !hostData?.host) {
+      // TODO: Actually handle the error
+      // Possibly re-route to Home and show an error message?
       console.log('getMatchData match error: ', matchError)
       console.log('getMatchData host error: ', hostError)
-    } else {
-      setMatch({ ...matchData, ...hostData })
+    } else {      
+      // Overwrite the matchData with the host query response
+      setMatch({
+        ...matchData,
+        status: matchData?.status || MATCH_STATES.MATCHMAKING,
+        host: hostData?.host
+      })
     }
   }
 
@@ -96,7 +118,7 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
   const MIN_PLAYERS = 2
   const { players, host, room_code:code } = match || {}
   const isHost = host?.id === user?.id
-  const readyToStart = players?.length >= MIN_PLAYERS
+  const readyToStart = players?.length ? players.length >= MIN_PLAYERS : false
 
   return match ? (
     <View style={styles.container}>

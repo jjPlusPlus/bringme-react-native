@@ -61,7 +61,7 @@ const Home: FunctionComponent<Props> = (props) => {
         <StyledButton onPress={() => createMatch()}>
           <StyledButtonText>Create a Match</StyledButtonText>
         </StyledButton>
-        <StyledButton onPress={() => props.navigation.navigate('Matchmaking', { room_code: null })}>
+        <StyledButton onPress={() => props.navigation.navigate('Matchmaking')}>
           <StyledButtonText>Join a Match</StyledButtonText>
         </StyledButton>
         <StyledButton onPress={() => props.navigation.navigate('Settings')}>
