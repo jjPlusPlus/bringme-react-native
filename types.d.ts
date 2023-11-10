@@ -122,3 +122,5 @@ export interface Database {
     }
   }
 }
+
+/// <reference types="nativewind/types" />
