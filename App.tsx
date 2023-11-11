@@ -32,17 +32,16 @@ export type RootStackParamList = {
   Settings: undefined
   SinglePlayer: undefined // TODO: Deprecate?
   Multiplayer: undefined // TODO: Deprecate?
-  Matchmaking: { room_code: string } | undefined
+  Matchmaking: { room_code: string | undefined } | undefined
   Match: { matchId: string } | undefined
 }
 
 interface User {
   id: string
-  username: string
-  email: string
-  auth_uuid: string
+  username: string | null
+  email: string | null
+  auth_uuid: string | null
   created_at: string
-  updated_at: string
 }
 
 export default function App() {
