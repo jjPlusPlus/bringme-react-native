@@ -75,30 +75,22 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
         id,
         room_code,
         status,
-        players:users!players ( id, username )
-      `)
-      .eq('room_code', room_code)
-      .single()
-
-    let { data: hostData, error: hostError } = await supabase
-      .from('matches')
-      .select(`
+        players:users!players ( id, username ),
         host:users!matches_host_fkey ( id, username )
       `)
       .eq('room_code', room_code)
       .single()
     
-    if (matchError || !matchData || hostError || !hostData?.host) {
+    if (matchError || !matchData) {
       // TODO: Actually handle the error
       // Possibly re-route to Home and show an error message?
       console.log('getMatchData match error: ', matchError)
-      console.log('getMatchData host error: ', hostError)
     } else {      
       // Overwrite the matchData with the host query response
       setMatch({
         ...matchData,
-        status: matchData?.status || MATCH_STATES.MATCHMAKING,
-        host: hostData?.host
+        status: matchData.status || MATCH_STATES.MATCHMAKING,
+        host: matchData.host || { id: '', username: null }
       })
     }
   }
@@ -163,8 +155,8 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
 
   const MIN_PLAYERS = 2
   const { players, host, room_code:code } = match || {}
-  const isHost = host?.id === user?.id
   const readyToStart = players?.length ? players.length >= MIN_PLAYERS : false
+  const isHost = host?.id === user?.id
 
   return match ? (
     <View style={styles.container}>
