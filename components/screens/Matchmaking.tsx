@@ -29,7 +29,7 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
   const room_code = props?.route?.params?.room_code
   const [match, setMatch] = useState<Match>()
   const [roomCodeInput, setRoomCodeInput] = useState<string>('')
-
+  const [confirmLeave, setConfirmLeave] = useState<boolean>(false)
   // on mount get the full Match object
   useEffect(() => {
     // Remove players from the match if they back out of the lobby
@@ -56,6 +56,12 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
     } 
     getMatchData()
   }, [])
+
+  useEffect(() => {
+    if (match) {
+      subscribeToMatchUpdates()
+    }
+  }, [match])
 
   const getMatchData = async () => {
     if (!room_code) {
@@ -95,6 +101,48 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
     }
   }
 
+  const subscribeToMatchUpdates = async () => {
+    console.log('subscribing to match updates')
+    if (match) {
+      console.log('match_id: ', match.id)
+      supabase
+        .channel(`matches:${match.id}`)
+        .on(
+          'postgres_changes', 
+          { 
+            event: '*', 
+            schema: 'public', 
+            table: 'matches',
+            filter: `id=eq.${match.id}` 
+          }, handleMatchUpdates
+        )
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'players',
+            filter: `match_id=eq.${match.id}` 
+          }, handleMatchUpdates
+        )
+        .subscribe((status, err) => {
+          if (status) {
+            console.log('match status: ', status)
+          } else {
+            console.log(err)
+          }
+        })
+    }
+  }
+
+  const handlePlayerUpdates = (payload: any) => {
+    getMatchData()
+  }
+
+  const handleMatchUpdates = (payload: any) => {
+    getMatchData()
+  }
+
   const joinMatch = async () => {
     const { data, error } = await supabase.functions.invoke('join-match', {
       body: { 
@@ -102,7 +150,7 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
         room_code: roomCodeInput
       },
     })
-    console.log('in joinMatch: ', data,error)
+    console.log('in joinMatch: ', data)
     // if match creation fails, show an error message
     if (error?.message) {
       alert(error.message)
