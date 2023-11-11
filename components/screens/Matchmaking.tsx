@@ -34,7 +34,7 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
   useEffect(() => {
     // Remove players from the match if they back out of the lobby
     props.navigation.addListener('beforeRemove', (e) => {
-      e.preventDefault();
+      e.preventDefault()
       Alert.alert(
         'Leave the Lobby?',
         'Going back will remove you from this match',
@@ -44,12 +44,13 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
             text: 'Leave',
             style: 'destructive',
             onPress: () => {
-              props.navigation.navigate('Home')            
+              props.navigation.dispatch(e.data.action)    
             },
           },
         ]
-      );
+      )
     })
+
     if (!room_code) {
       return
     } 
