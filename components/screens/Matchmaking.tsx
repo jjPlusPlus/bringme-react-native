@@ -29,11 +29,9 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
   const [room_code, setRoomCode] = useState<string | undefined>(() => props?.route?.params?.room_code || undefined)
   const [match, setMatch] = useState<Match>()
   const [roomCodeInput, setRoomCodeInput] = useState<string>('')
-  const [confirmLeave, setConfirmLeave] = useState<boolean>(false)
 
-  // on mount get the full Match object
+  // On component mount, Remove players from the match if they back out of the lobby
   useEffect(() => {
-    // Remove players from the match if they back out of the lobby
     props.navigation.addListener('beforeRemove', (e) => {
       e.preventDefault()
       Alert.alert(
@@ -53,17 +51,19 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
     })
   }, [])
 
-  useEffect(() => {
-    if (match) {
-      subscribeToMatchUpdates()
-    }
-  }, [match])
-
+  // If the room code changed, get the match data
   useEffect(() => {
     if (room_code) {
       getMatchData()
     }
   }, [room_code])
+
+  // If the match changed, subscribe to updates
+  useEffect(() => {
+    if (match) {
+      subscribeToMatchUpdates()
+    }
+  }, [match])
 
   const getMatchData = async () => {
     if (!room_code) {
@@ -134,10 +134,6 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
           }
         })
     }
-  }
-
-  const handlePlayerUpdates = (payload: any) => {
-    getMatchData()
   }
 
   const handleMatchUpdates = (payload: any) => {
