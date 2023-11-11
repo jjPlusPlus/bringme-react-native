@@ -130,7 +130,7 @@ export default function App() {
             </Stack.Screen>
 
             <Stack.Screen name="Settings" options={{ title: 'Settings' }} >
-              {(props: any) => <Settings {...props} user={user} />}
+              {(props: any) => <Settings {...props} user={user} setUser={setUser} />}
             </Stack.Screen>
 
             <Stack.Screen name="Matchmaking" options={{ title: 'Matchmaking' }} >

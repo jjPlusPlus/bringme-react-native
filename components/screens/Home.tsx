@@ -1,7 +1,6 @@
 import React, { useState, useEffect, FunctionComponent } from 'react'
 import { supabase } from '../../supabase/init'
-import { Button, Image, TouchableOpacity, StyleSheet, Text, View,} from 'react-native'
-import { t } from 'react-native-tailwindcss'
+import { Button, Image, TouchableOpacity, StyleSheet, Text, View, } from 'react-native'
 import { styled } from 'nativewind'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { RootStackParamList } from '../../App'
@@ -27,7 +26,7 @@ const Home: FunctionComponent<Props> = (props) => {
     const { data, error } = await supabase.functions.invoke('create-match', {
       body: { user: user },
     })
-    console.log('in createMatch: ', data,error)
+    console.log('in createMatch: ', data, error)
     // if match creation fails, show an error message
     if (error?.message) {
       alert(error.message)
