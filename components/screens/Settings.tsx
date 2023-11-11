@@ -1,19 +1,32 @@
 import React, { useState, useEffect, FunctionComponent } from 'react'
 
-import { Button, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Alert, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { supabase } from '../../supabase/init'
+
+
 import { styled } from "nativewind"
 
 import pen from '../../assets/register.png'
 
 interface Props {
   user: User;
+  setUser: (user: User) => void;
+}
+
+interface User {
+  id: string
+  username: string
+  email: string
+  auth_uuid: string
+  created_at: string
+  updated_at: string
 }
 
 const Settings: FunctionComponent<Props> = (props) => {
-  const { user } = props
+  const { user, setUser } = props
 
   const [userName, setUsername] = useState('')
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState<{ [field: string]: string | undefined }>({})
 
   useEffect(() => {
@@ -30,10 +43,30 @@ const Settings: FunctionComponent<Props> = (props) => {
     return setError({})
   }
 
-  const saveUsername = () => {
+  const saveUsername = async () => {
     if (Object.keys(error).length) {
       return
     }
+    setLoading(true)
+    const { data, error: err } = await supabase
+      .from('users')
+      .update({ username: userName })
+      .eq('id', user.id)
+      .select()
+
+    if (data && data.length) {
+      setUser(data[0]);
+      setLoading(false)
+    }
+
+    return Alert.alert(
+      'Success!', // alert title
+      'You have successfully changed your username.', // alert body
+      [
+        { text: 'OK', onPress: () => console.log("test") }
+      ],
+      { cancelable: false }
+    )
   }
 
   if (!user) {
@@ -49,13 +82,13 @@ const Settings: FunctionComponent<Props> = (props) => {
           onChangeText={text => {
             setUsername(text)
           }}
-          defaultValue={user.name}
+          defaultValue={user.username}
         />
         {error.userName && <Text className="text-gray-600">{error.userName}</Text>}
       </View>
       <View className="my-8">
         <StyledButton onPress={saveUsername}>
-          <StyledButtonText>Save</StyledButtonText>
+          <StyledButtonText>{loading ? 'Saving...' : 'Save'}</StyledButtonText>
         </StyledButton>
         <TouchableOpacity className="mt-2 py-4" onPress={async () => { await supabase.auth.signOut() }}>
           <Text className="font-lucky text-3xl text-bmBlue text-center">Sign Out</Text>
