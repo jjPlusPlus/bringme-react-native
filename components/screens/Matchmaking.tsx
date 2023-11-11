@@ -26,10 +26,11 @@ interface Props {
 
 const Matchmaking: FunctionComponent<Props> = (props) => {
   const { user } = props
-  const room_code = props?.route?.params?.room_code
+  const [room_code, setRoomCode] = useState<string | undefined>(() => props?.route?.params?.room_code || undefined)
   const [match, setMatch] = useState<Match>()
   const [roomCodeInput, setRoomCodeInput] = useState<string>('')
   const [confirmLeave, setConfirmLeave] = useState<boolean>(false)
+
   // on mount get the full Match object
   useEffect(() => {
     // Remove players from the match if they back out of the lobby
@@ -50,11 +51,6 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
         ]
       )
     })
-
-    if (!room_code) {
-      return
-    } 
-    getMatchData()
   }, [])
 
   useEffect(() => {
@@ -62,6 +58,12 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
       subscribeToMatchUpdates()
     }
   }, [match])
+
+  useEffect(() => {
+    if (room_code) {
+      getMatchData()
+    }
+  }, [room_code])
 
   const getMatchData = async () => {
     if (!room_code) {
@@ -104,7 +106,6 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
   const subscribeToMatchUpdates = async () => {
     console.log('subscribing to match updates')
     if (match) {
-      console.log('match_id: ', match.id)
       supabase
         .channel(`matches:${match.id}`)
         .on(
@@ -143,6 +144,7 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
     getMatchData()
   }
 
+  /* ACTION HANDLERS */
   const joinMatch = async () => {
     const { data, error } = await supabase.functions.invoke('join-match', {
       body: { 
@@ -150,14 +152,13 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
         room_code: roomCodeInput
       },
     })
-    console.log('in joinMatch: ', data)
     // if match creation fails, show an error message
     if (error?.message) {
       alert(error.message)
       return
     }
     // if match successfully joined, navigate to MatchLobby
-    setMatch(data)
+    setRoomCode(data.room_code)
   }
 
   const startMatch = () => {
