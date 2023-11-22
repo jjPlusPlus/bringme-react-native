@@ -32,7 +32,6 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
   const [room_code, setRoomCode] = useState<string | undefined>(() => props?.route?.params?.room_code || undefined)
   const [match, setMatch] = useState<Match>()
   const [roomCodeInput, setRoomCodeInput] = useState<string>('')
-
   // On component mount, Remove players from the match if they back out of the lobby
   useEffect(() => {
     props.navigation.addListener('beforeRemove', (e) => {
@@ -47,7 +46,10 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
             style: 'destructive',
             onPress: () => {
               // Unsubscribe the listeners
-              leaveMatch()
+              if (!match) {
+                return
+              }
+              leaveMatch(match.id, user.id)
               props.navigation.dispatch(e.data.action)    
             },
           },
@@ -154,11 +156,14 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
     setRoomCode(data.room_code)
   }
 
-  const leaveMatch = async () => {
-    const { data, error } = await supabase.functions.invoke('leave-match', {
+  const leaveMatch = async (match_id: string, user_id: string) => {
+    if (!match_id || !user_id) {
+      return
+    }
+    const { error } = await supabase.functions.invoke('leave-match', {
       body: { 
-        user: user, 
-        room_code: room_code
+        user: user_id, 
+        match: match_id
       },
     })
     // if USER fails to leave the match, show an error message
@@ -170,7 +175,7 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
     setRoomCode(undefined)
     supabase.removeAllChannels()
     // WARNING: this could double-up on the onRemove listener
-    props.navigation.navigate('Match')
+    props.navigation.navigate('Home')
   }
 
   const startMatch = () => {
