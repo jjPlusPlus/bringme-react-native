@@ -46,7 +46,9 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
             text: 'Leave',
             style: 'destructive',
             onPress: () => {
-              props.navigation.dispatch(e.data.action)
+              // Unsubscribe the listeners
+              leaveMatch()
+              props.navigation.dispatch(e.data.action)    
             },
           },
         ]
@@ -150,6 +152,25 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
     }
     // if match successfully joined, navigate to MatchLobby
     setRoomCode(data.room_code)
+  }
+
+  const leaveMatch = async () => {
+    const { data, error } = await supabase.functions.invoke('leave-match', {
+      body: { 
+        user: user, 
+        room_code: room_code
+      },
+    })
+    // if USER fails to leave the match, show an error message
+    if (error?.message) {
+      alert(error.message)
+      return
+    }
+    // removing the room code should successfully boot the user back to the lobby
+    setRoomCode(undefined)
+    supabase.removeAllChannels()
+    // WARNING: this could double-up on the onRemove listener
+    props.navigation.navigate('Match')
   }
 
   const startMatch = () => {
