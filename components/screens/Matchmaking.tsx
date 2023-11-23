@@ -32,9 +32,10 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
   const [room_code, setRoomCode] = useState<string | undefined>(() => props?.route?.params?.room_code || undefined)
   const [match, setMatch] = useState<Match>()
   const [roomCodeInput, setRoomCodeInput] = useState<string>('')
-  // On component mount, Remove players from the match if they back out of the lobby
+
+  // On component mount, setup "back" confirmation https://reactnavigation.org/docs/preventing-going-back/
   useEffect(() => {
-    props.navigation.addListener('beforeRemove', (e) => {
+    const beforeRemove = (e:any) => {
       e.preventDefault()
       Alert.alert(
         'Leave the Lobby?',
@@ -45,8 +46,8 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
             text: 'Leave',
             style: 'destructive',
             onPress: () => {
-              // Unsubscribe the listeners
               if (!match) {
+                // TODO: show the user an error; maybe try to re-fetch the match?
                 return
               }
               leaveMatch(match.id, user.id)
@@ -55,8 +56,12 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
           },
         ]
       )
-    })
-  }, [])
+    }
+    props.navigation.addListener('beforeRemove', beforeRemove)
+    return () => {
+      props.navigation.removeListener('beforeRemove', beforeRemove)
+    }
+  }, [match])
 
   // If the room code changed, get the match data
   useEffect(() => {
