@@ -118,8 +118,8 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
             event: '*',
             schema: 'public',
             table: 'matches',
-            filter: `id=eq.${match.id}`
-          }, handleMatchUpdates
+            filter: `id=eq.${match.id}` 
+          }, getMatchData
         )
         .on(
           'postgres_changes',
@@ -127,21 +127,17 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
             event: '*',
             schema: 'public',
             table: 'players',
-            filter: `match_id=eq.${match.id}`
-          }, handleMatchUpdates
+            filter: `match_id=eq.${match.id}` 
+          }, getMatchData
         )
         .subscribe((status, err) => {
           if (status) {
             console.log('match status: ', status)
-          } else {
-            console.log(err)
+          } else if (err) {
+            console.log('error subscribing to match updates: ', err.message)
           }
         })
     }
-  }
-
-  const handleMatchUpdates = (payload: any) => {
-    getMatchData()
   }
 
   /* ACTION HANDLERS */
