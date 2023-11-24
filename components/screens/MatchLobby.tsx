@@ -32,8 +32,14 @@ const MatchLobby: FunctionComponent<Props> = (props) => {
   const [room_code, setRoomCode] = useState<string | undefined>(() => props?.route?.params?.room_code || undefined)
   const [match, setMatch] = useState<Match>()
 
-  // On component mount, setup "back" confirmation https://reactnavigation.org/docs/preventing-going-back/
+  /* On component mount, setup "back" confirmation https://reactnavigation.org/docs/preventing-going-back/
+   * Note: added match as a dependency key 
+   * because the match is undefined on the first render
+  */ 
   useEffect(() => {
+    if (!match) {
+      return
+    }
     const beforeRemove = (e:any) => {
       e.preventDefault()
       Alert.alert(
@@ -45,10 +51,6 @@ const MatchLobby: FunctionComponent<Props> = (props) => {
             text: 'Leave',
             style: 'destructive',
             onPress: () => {
-              if (!match) {
-                // TODO: show the user an error; maybe try to re-fetch the match?
-                return
-              }
               leaveMatch(match.id, user.id)
               props.navigation.dispatch(e.data.action)    
             },
