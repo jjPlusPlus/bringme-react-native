@@ -23,15 +23,14 @@ interface Match {
 }
 interface Props {
   navigation: StackNavigationProp<RootStackParamList>
-  route: RouteProp<RootStackParamList, 'Matchmaking'>
+  route: RouteProp<RootStackParamList, 'MatchLobby'>
   user: User
 }
 
-const Matchmaking: FunctionComponent<Props> = (props) => {
+const MatchLobby: FunctionComponent<Props> = (props) => {
   const { user } = props
   const [room_code, setRoomCode] = useState<string | undefined>(() => props?.route?.params?.room_code || undefined)
   const [match, setMatch] = useState<Match>()
-  const [roomCodeInput, setRoomCodeInput] = useState<string>('')
 
   // On component mount, setup "back" confirmation https://reactnavigation.org/docs/preventing-going-back/
   useEffect(() => {
@@ -140,23 +139,6 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
     }
   }
 
-  /* ACTION HANDLERS */
-  const joinMatch = async () => {
-    const { data, error } = await supabase.functions.invoke('join-match', {
-      body: {
-        user: user,
-        room_code: roomCodeInput
-      },
-    })
-    // if match creation fails, show an error message
-    if (error?.message) {
-      alert(error.message)
-      return
-    }
-    // if match successfully joined, navigate to MatchLobby
-    setRoomCode(data.room_code)
-  }
-
   const leaveMatch = async (match_id: string, user_id: string) => {
     if (!match_id || !user_id) {
       return
@@ -237,22 +219,13 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
     </View >
   ) : (
     <View style={styles.container}>
-      {/* Match not found. Give the user the opportunity to JOIN a match */}
-      <Text>Enter your Room Code to join</Text>
-      <StyledInput
-        onChangeText={text => {
-          setRoomCodeInput(text)
-        }}
-      />
-      <Button
-        onPress={() => joinMatch()}
-        title="Join"
-      />
+      {/* Match not found */}
+      <Text>LOADING MATCH</Text>
     </View>
   )
 }
 
-export default Matchmaking
+export default MatchLobby
 
 const styles = StyleSheet.create({
   container: {
