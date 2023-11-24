@@ -159,8 +159,6 @@ const MatchLobby: FunctionComponent<Props> = (props) => {
     // removing the room code should successfully boot the user back to the lobby
     setRoomCode(undefined)
     supabase.removeAllChannels()
-    // WARNING: this could double-up on the onRemove listener
-    props.navigation.navigate('Home')
   }
 
   const startMatch = () => {
