@@ -32,14 +32,26 @@ const MatchLobby: FunctionComponent<Props> = (props) => {
   const [room_code, setRoomCode] = useState<string | undefined>(() => props?.route?.params?.room_code || undefined)
   const [match, setMatch] = useState<Match>()
 
-  /* On component mount, setup "back" confirmation https://reactnavigation.org/docs/preventing-going-back/
-   * Note: added match as a dependency key 
-   * because the match is undefined on the first render
-  */ 
+  // If the room code changed, get the match data
+  useEffect(() => {
+    if (room_code) {
+      getMatchData()
+    }
+  }, [room_code])
+
   useEffect(() => {
     if (!match) {
       return
     }
+
+    // Once we have a match, subscribe to match updates
+    subscribeToMatchUpdates()
+
+    /* On component mount, setup "back" confirmation 
+     * https://reactnavigation.org/docs/preventing-going-back/
+     * Note: added match as a dependency key 
+     * because the match is undefined on the first render
+    */ 
     const beforeRemove = (e:any) => {
       e.preventDefault()
       Alert.alert(
@@ -64,19 +76,7 @@ const MatchLobby: FunctionComponent<Props> = (props) => {
     }
   }, [match])
 
-  // If the room code changed, get the match data
-  useEffect(() => {
-    if (room_code) {
-      getMatchData()
-    }
-  }, [room_code])
 
-  // If the match changed, subscribe to updates
-  useEffect(() => {
-    if (match) {
-      subscribeToMatchUpdates()
-    }
-  }, [match])
 
   const getMatchData = async () => {
     if (!room_code) {
@@ -95,8 +95,8 @@ const MatchLobby: FunctionComponent<Props> = (props) => {
       .single()
 
     if (matchError || !matchData) {
-      // TODO: Actually handle the error
-      // Possibly re-route to Home and show an error message?
+      // TODO: handle the error
+      // Possibly re-route to Home and show an error message
       console.log('getMatchData match error: ', matchError)
     } else {
       // Overwrite the matchData with the host query response
