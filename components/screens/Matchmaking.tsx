@@ -168,22 +168,9 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
           <Text className="pb-1">Invite your friends with the code</Text>
           <Text className="font-lucky text-5xl text-bmBlue uppercase">{code}</Text>
         </AnnouncementHeader>
-        {/* <Text>Room Code: {code}</Text>
-      <Text>Hosted By: {host?.username}</Text>
-      <Text>Status: {match?.status || "Created"}</Text>
-
-      <Text>Players</Text>
-      {players && players.map((player: any, i) => {
-        return (
-          <View className="">
-            <Text key={i}>{i + 1}. {player.username}</Text>
-          </View>
-        )
-      })} */}
 
         <View className="flex-row-reverse flex-wrap justify-between">
           {players && players.map((player: any, i) => {
-            // console.log(player)
             return (
               <PlayerIcon key={i} name={player.username} index={i} isHost={player.id === host?.id} />
             )
