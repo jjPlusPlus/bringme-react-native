@@ -13,7 +13,7 @@ export const PLAYER_IMAGES = [
   { uri: require('../assets/player-1.png'), color: 'bg-[#f19f3f]' },
   { uri: require('../assets/player-2.png'), color: 'bg-[#eebebb]' },
   { uri: require('../assets/player-3.png'), color: 'bg-[#fbe9e7]' },
-  { uri: require('../assets/player-4.png'), color: 'bg-[#F7D2A2]' }
+  { uri: require('../assets/player-4.png'), color: 'bg-[#f7d2a2]' }
 ]
 
 const PlayerIcon: FunctionComponent<Props> = (props) => {
