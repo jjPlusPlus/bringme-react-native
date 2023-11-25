@@ -7,6 +7,9 @@ import { RootStackParamList } from '../../App'
 import { styled } from "nativewind"
 import { supabase } from '../../supabase/init'
 
+import AnnouncementHeader from '../AnnouncementHeader'
+import PlayerIcon from '../PlayerIcon'
+
 interface User {
   id: string
   username: string | null
@@ -43,7 +46,7 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
             text: 'Leave',
             style: 'destructive',
             onPress: () => {
-              props.navigation.dispatch(e.data.action)    
+              props.navigation.dispatch(e.data.action)
             },
           },
         ]
@@ -80,12 +83,12 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
       `)
       .eq('room_code', room_code)
       .single()
-    
+
     if (matchError || !matchData) {
       // TODO: Actually handle the error
       // Possibly re-route to Home and show an error message?
       console.log('getMatchData match error: ', matchError)
-    } else {      
+    } else {
       // Overwrite the matchData with the host query response
       setMatch({
         ...matchData,
@@ -101,12 +104,12 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
       supabase
         .channel(`matches:${match.id}`)
         .on(
-          'postgres_changes', 
-          { 
-            event: '*', 
-            schema: 'public', 
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
             table: 'matches',
-            filter: `id=eq.${match.id}` 
+            filter: `id=eq.${match.id}`
           }, handleMatchUpdates
         )
         .on(
@@ -115,7 +118,7 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
             event: '*',
             schema: 'public',
             table: 'players',
-            filter: `match_id=eq.${match.id}` 
+            filter: `match_id=eq.${match.id}`
           }, handleMatchUpdates
         )
         .subscribe((status, err) => {
@@ -135,8 +138,8 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
   /* ACTION HANDLERS */
   const joinMatch = async () => {
     const { data, error } = await supabase.functions.invoke('join-match', {
-      body: { 
-        user: user, 
+      body: {
+        user: user,
         room_code: roomCodeInput
       },
     })
@@ -154,47 +157,66 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
   }
 
   const MIN_PLAYERS = 2
-  const { players, host, room_code:code } = match || {}
+  const { players, host, room_code: code } = match || {}
   const readyToStart = players?.length ? players.length >= MIN_PLAYERS : false
   const isHost = host?.id === user?.id
 
   return match ? (
-    <View style={styles.container}>
-      <Text>Room Code: {code}</Text>
+    <View className="bg-white flex-1">
+      <AnnouncementHeader>
+        <Text className="pb-1">Invite your friends with the code</Text>
+        <Text className="font-lucky text-5xl text-bmBlue uppercase">{code}</Text>
+      </AnnouncementHeader>
+      {/* <Text>Room Code: {code}</Text>
       <Text>Hosted By: {host?.username}</Text>
       <Text>Status: {match?.status || "Created"}</Text>
 
       <Text>Players</Text>
-      {players && players.map((player:any, i) => {
+      {players && players.map((player: any, i) => {
         return (
-          <Text key={i}>{i + 1}. {player.username}</Text>
+          <View className="">
+            <Text key={i}>{i + 1}. {player.username}</Text>
+          </View>
         )
-      })}
+      })} */}
+
+      <View className="flex-row-reverse flex-wrap justify-between">
+        {players && players.map((player: any, i) => {
+          // console.log(player)
+          return (
+            <PlayerIcon key={i} name={player.username} index={i} />
+          )
+        })}
+      </View>
 
       {/* If I'm the host, I should be able to start the match if all of the players are present */}
-      {match?.status !== MATCH_STATES.STARTED && (
-        <Button 
-          onPress={startMatch} 
-          disabled={!isHost || match?.players?.length !== 2} 
-          title={
-            readyToStart ? 
-              isHost ? 
-                "Start Match" 
-                : "Waiting for Host" 
-              : "Waiting for Players"
-          } 
-        />
-      )}
+      {
+        match?.status !== MATCH_STATES.STARTED && (
+          <Button
+            onPress={startMatch}
+            disabled={!isHost || match?.players?.length !== 2}
+            title={
+              readyToStart ?
+                isHost ?
+                  "Start Match"
+                  : "Waiting for Host"
+                : "Waiting for Players"
+            }
+          />
+        )
+      }
 
       {/* If the match is started and I somehow managed to get here AND the useEffect didn't already re-route me*/}
-      {match?.status === MATCH_STATES.STARTED && (
-        <Button 
-          onPress={() => props.navigation.navigate('Match', { matchId: match?.id })} 
-          title="Enter Match" 
-        />
-      )}
-      
-    </View>
+      {
+        match?.status === MATCH_STATES.STARTED && (
+          <Button
+            onPress={() => props.navigation.navigate('Match', { matchId: match?.id })}
+            title="Enter Match"
+          />
+        )
+      }
+
+    </View >
   ) : (
     <View style={styles.container}>
       {/* Match not found. Give the user the opportunity to JOIN a match */}
@@ -204,9 +226,9 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
           setRoomCodeInput(text)
         }}
       />
-      <Button 
-        onPress={() => joinMatch()} 
-        title="Join" 
+      <Button
+        onPress={() => joinMatch()}
+        title="Join"
       />
     </View>
   )
