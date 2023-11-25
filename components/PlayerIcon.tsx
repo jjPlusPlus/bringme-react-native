@@ -17,13 +17,13 @@ export const PLAYER_IMAGES = [
 ]
 
 const PlayerIcon: FunctionComponent<Props> = (props) => {
-  const { name, index, isHost } = props;
-  let imgSource = PLAYER_IMAGES[index].uri;
-  const even = index % 2 == 0;
-  let gridPosition = even ? 'py-2' : 'mt-8 mb-4';
-  let position = even ? 'translate-x-4' : '-translate-x-4';
-  let roundedness = even ? 'rounded-l-2xl' : 'rounded-r-2xl';
-  let translate = even ? 'translate-x-4' : '-translate-x-2';
+  const { name, index, isHost } = props
+  let imgSource = PLAYER_IMAGES[index].uri
+  const even = index % 2 == 0
+  let gridPosition = even ? 'py-2' : 'mt-8 mb-4'
+  let position = even ? 'translate-x-4' : '-translate-x-4'
+  let roundedness = even ? 'rounded-l-2xl' : 'rounded-r-2xl'
+  let translate = even ? 'translate-x-4' : '-translate-x-2'
 
   return (
     <View className={`${gridPosition} h-40 items-center justify-center relative w-1/2`}>

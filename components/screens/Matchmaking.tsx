@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 })
-const StyledInput = styled(TextInput, 'border-bmBlue border-4 my-2 p-4 rounded-[20px] text-black w-full');
-const StyledButton = styled(TouchableOpacity, 'bg-bmBlue items-center mx-4 p-4 pb-2 rounded-[20px] text-4xl');
+const StyledInput = styled(TextInput, 'border-bmBlue border-4 my-2 p-4 rounded-[20px] text-black w-full')
+const StyledButton = styled(TouchableOpacity, 'bg-bmBlue items-center mx-4 p-4 pb-2 rounded-[20px] text-4xl')
 const StyledButtonText = styled(Text, 'font-lucky text-3xl text-white')
 
