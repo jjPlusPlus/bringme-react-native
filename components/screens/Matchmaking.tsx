@@ -1,7 +1,7 @@
 import React, { useState, useEffect, FunctionComponent } from 'react'
 import { RouteProp } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
-import { StyleSheet, Text, TextInput, View, Alert, Button } from 'react-native'
+import { StyleSheet, Text, TextInput, View, Alert, Button, TouchableOpacity } from 'react-native'
 import { MATCH_STATES } from './constants'
 import { RootStackParamList } from '../../App'
 import { styled } from "nativewind"
@@ -162,12 +162,13 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
   const isHost = host?.id === user?.id
 
   return match ? (
-    <View className="bg-white flex-1">
-      <AnnouncementHeader>
-        <Text className="pb-1">Invite your friends with the code</Text>
-        <Text className="font-lucky text-5xl text-bmBlue uppercase">{code}</Text>
-      </AnnouncementHeader>
-      {/* <Text>Room Code: {code}</Text>
+    <View className="bg-white flex-1 pb-8">
+      <View className="flex-1">
+        <AnnouncementHeader>
+          <Text className="pb-1">Invite your friends with the code</Text>
+          <Text className="font-lucky text-5xl text-bmBlue uppercase">{code}</Text>
+        </AnnouncementHeader>
+        {/* <Text>Room Code: {code}</Text>
       <Text>Hosted By: {host?.username}</Text>
       <Text>Status: {match?.status || "Created"}</Text>
 
@@ -180,29 +181,32 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
         )
       })} */}
 
-      <View className="flex-row-reverse flex-wrap justify-between">
-        {players && players.map((player: any, i) => {
-          // console.log(player)
-          return (
-            <PlayerIcon key={i} name={player.username} index={i} />
-          )
-        })}
+        <View className="flex-row-reverse flex-wrap justify-between">
+          {players && players.map((player: any, i) => {
+            // console.log(player)
+            return (
+              <PlayerIcon key={i} name={player.username} index={i} />
+            )
+          })}
+        </View>
       </View>
-
       {/* If I'm the host, I should be able to start the match if all of the players are present */}
       {
         match?.status !== MATCH_STATES.STARTED && (
-          <Button
+          <StyledButton
             onPress={startMatch}
             disabled={!isHost || match?.players?.length !== 2}
-            title={
-              readyToStart ?
-                isHost ?
-                  "Start Match"
-                  : "Waiting for Host"
-                : "Waiting for Players"
-            }
-          />
+          >
+            <StyledButtonText>
+              {
+                readyToStart ?
+                  isHost ?
+                    "Start Match"
+                    : "Waiting for Host"
+                  : "Waiting for Players"
+              }
+            </StyledButtonText>
+          </StyledButton>
         )
       }
 
@@ -245,4 +249,6 @@ const styles = StyleSheet.create({
   },
 })
 const StyledInput = styled(TextInput, 'border-bmBlue border-4 my-2 p-4 rounded-[20px] text-black w-full');
+const StyledButton = styled(TouchableOpacity, 'bg-bmBlue items-center mx-4 p-4 pb-2 rounded-[20px] text-4xl');
+const StyledButtonText = styled(Text, 'font-lucky text-3xl text-white')
 
