@@ -27,17 +27,39 @@ interface Props {
   user: User
 }
 
+// TODO: Store this in an environment variable
+const MIN_PLAYERS = 2
+
+/* MATCH LOBBY: 
+ * Requires a room_code (passed in via route params)
+ * On component mount, use the room_code to fetch the match data
+ * If a room_code is not provided, the user is bounced back to the home screen 
+ * If a match is found, subscribes to realtime match updates and activates the "back" confirmation
+ * Subscription pings triggers the app to fetch the match data again
+ * Because the subscription payloads aren't the full updated Match object ><
+*/
+
 const MatchLobby: FunctionComponent<Props> = (props) => {
   const { user } = props
-  const [room_code, setRoomCode] = useState<string | undefined>(() => props?.route?.params?.room_code || undefined)
+  const room_code = props?.route?.params?.room_code
   const [match, setMatch] = useState<Match>()
+  const { 
+    players, 
+    host, 
+    room_code:code 
+  } = match || {}
 
-  // If the room code changed, get the match data
+  const readyToStart = players?.length ? players.length >= MIN_PLAYERS : false
+  const isHost = host?.id === user?.id
+
+  // On component mount
   useEffect(() => {
     if (room_code) {
       getMatchData()
+    } else {
+      // Bounce the user back to the home screen
     }
-  }, [room_code])
+  }, [])
 
   useEffect(() => {
     if (!match) {
@@ -50,7 +72,7 @@ const MatchLobby: FunctionComponent<Props> = (props) => {
     /* On component mount, setup "back" confirmation 
      * https://reactnavigation.org/docs/preventing-going-back/
      * Note: added match as a dependency key 
-     * because the match is undefined on the first render
+     *  because the match is undefined on the first render
     */ 
     const beforeRemove = (e:any) => {
       e.preventDefault()
@@ -76,8 +98,7 @@ const MatchLobby: FunctionComponent<Props> = (props) => {
     }
   }, [match])
 
-
-
+  // Fetches the Match from Supabase using the room_code
   const getMatchData = async () => {
     if (!room_code) {
       return
@@ -157,18 +178,12 @@ const MatchLobby: FunctionComponent<Props> = (props) => {
       return
     }
     // removing the room code should successfully boot the user back to the lobby
-    setRoomCode(undefined)
     supabase.removeAllChannels()
   }
 
   const startMatch = () => {
 
   }
-
-  const MIN_PLAYERS = 2
-  const { players, host, room_code: code } = match || {}
-  const readyToStart = players?.length ? players.length >= MIN_PLAYERS : false
-  const isHost = host?.id === user?.id
 
   return match ? (
     <View className="bg-white flex-1 pb-8">

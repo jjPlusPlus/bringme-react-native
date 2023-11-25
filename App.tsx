@@ -15,7 +15,9 @@ import Home from './components/screens/Home'
 import Settings from './components/screens/Settings'
 import SinglePlayer from './components/screens/SinglePlayer'
 import Multiplayer from './components/screens/Multiplayer'
-import Matchmaking from './components/screens/Matchmaking'
+import MatchLobby from './components/screens/MatchLobby'
+import JoinMatch from './components/screens/JoinMatch'
+
 import Match from './components/screens/Match'
 
 import { NativeWindStyleSheet } from "nativewind";
@@ -32,7 +34,8 @@ export type RootStackParamList = {
   Settings: undefined
   SinglePlayer: undefined // TODO: Deprecate?
   Multiplayer: undefined // TODO: Deprecate?
-  Matchmaking: { room_code: string | undefined } | undefined
+  JoinMatch: undefined
+  MatchLobby: { room_code: string | undefined } | undefined
   Match: { matchId: string } | undefined
 }
 
@@ -132,8 +135,12 @@ export default function App() {
               {(props: any) => <Settings {...props} user={user} setUser={setUser} />}
             </Stack.Screen>
 
-            <Stack.Screen name="Matchmaking" options={{ title: 'Matchmaking' }} >
-              {(props: any) => <Matchmaking {...props} user={user} />}
+            <Stack.Screen name="JoinMatch" options={{ title: 'Join Match' }} >
+              {(props: any) => <JoinMatch {...props} user={user} />}
+            </Stack.Screen>
+
+            <Stack.Screen name="MatchLobby" options={{ title: 'Match Lobby' }} >
+              {(props: any) => <MatchLobby {...props} user={user} />}
             </Stack.Screen>
 
             <Stack.Screen name="Match" options={{ title: 'Match', headerShown: false }} >
