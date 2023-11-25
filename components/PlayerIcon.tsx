@@ -6,6 +6,7 @@ import crown from '../assets/crown.png'
 interface Props {
   name?: String;
   index: any;
+  isHost: boolean;
 }
 
 export const PLAYER_IMAGES = [
@@ -16,7 +17,7 @@ export const PLAYER_IMAGES = [
 ]
 
 const PlayerIcon: FunctionComponent<Props> = (props) => {
-  const { name, index } = props;
+  const { name, index, isHost } = props;
   let imgSource = PLAYER_IMAGES[index].uri;
   const even = index % 2 == 0;
   let gridPosition = even ? 'py-2' : 'mt-8 mb-4';
@@ -26,7 +27,7 @@ const PlayerIcon: FunctionComponent<Props> = (props) => {
 
   return (
     <View className={`${gridPosition} h-40 items-center justify-center relative w-1/2`}>
-      {index === 0 &&
+      {isHost &&
         <Image className="self-start transform -translate-x-6 translate-y-1" source={crown} />
       }
       <Image source={imgSource} resizeMode="contain" className="h-full w-full"></Image>

@@ -185,7 +185,7 @@ const Matchmaking: FunctionComponent<Props> = (props) => {
           {players && players.map((player: any, i) => {
             // console.log(player)
             return (
-              <PlayerIcon key={i} name={player.username} index={i} />
+              <PlayerIcon key={i} name={player.username} index={i} isHost={player.id === host?.id} />
             )
           })}
         </View>
