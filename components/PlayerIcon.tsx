@@ -33,7 +33,7 @@ const PlayerIcon: FunctionComponent<Props> = (props) => {
       <Image source={imgSource} resizeMode="contain" className="h-full w-full"></Image>
       <View className={`absolute ${PLAYER_IMAGES[index].color} self-center w-full h-3/4 ${roundedness} ${position} -z-10`} />
       <View className={`bg-blue-200 px-4 py-0 rounded absolute bottom-3 transform ${translate}`}>
-        <Text className="font-bold lowercase text-bmBlue text-lg">{name}</Text>
+        <Text className="font-bold text-bmBlue text-lg">{name}</Text>
       </View>
     </View>
   )
