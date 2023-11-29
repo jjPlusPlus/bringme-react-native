@@ -107,8 +107,17 @@ const MatchLobby: FunctionComponent<Props> = (props) => {
     supabase.removeAllChannels()
   }
 
-  const startMatch = () => {
+  const startMatch = async () => {
+    console.log('starting match')
+    const { data, error } = await supabase.functions.invoke('start-match', {
+      body: { 
+        match_id: matchData?.id
+      },
+    })
 
+    if (error) {
+      return console.log('error starting match: ', error)
+    }
   }
 
   return matchData ? (
