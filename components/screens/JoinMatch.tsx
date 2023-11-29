@@ -72,5 +72,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 })
-const StyledInput = styled(TextInput, 'border-bmBlue border-4 my-2 p-4 rounded-[20px] text-black w-full');
+const StyledInput = styled(TextInput, 'border-bmBlue border-4 my-2 p-4 rounded-[20px] text-black w-full')
 
