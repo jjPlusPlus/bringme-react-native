@@ -6,7 +6,7 @@ import { MATCH_STATES } from './constants'
 import { RootStackParamList } from '../../App'
 import { styled } from "nativewind"
 import { supabase } from '../../supabase/init'
-
+import { useMatchData } from '../../supabase/MatchUtils'
 import AnnouncementHeader from '../AnnouncementHeader'
 import PlayerIcon from '../PlayerIcon'
 
@@ -32,8 +32,8 @@ const MIN_PLAYERS = 2
 
 /* MATCH LOBBY: 
  * Requires a room_code (passed in via route params)
- * On component mount, use the room_code to fetch the match data
  * If a room_code is not provided, the user is bounced back to the home screen 
+ * On component mount, use the room_code to fetch the match data
  * If a match is found, subscribes to realtime match updates and activates the "back" confirmation
  * Subscription pings triggers the app to fetch the match data again
  * Because the subscription payloads aren't the full updated Match object ><
@@ -42,32 +42,21 @@ const MIN_PLAYERS = 2
 const MatchLobby: FunctionComponent<Props> = (props) => {
   const { user } = props
   const room_code = props?.route?.params?.room_code
-  const [match, setMatch] = useState<Match>()
+  const [ matchData ] = useMatchData(room_code)
+
   const { 
     players, 
     host, 
     room_code:code 
-  } = match || {}
+  } = matchData
 
   const readyToStart = players?.length ? players.length >= MIN_PLAYERS : false
   const isHost = host?.id === user?.id
 
-  // On component mount
   useEffect(() => {
-    if (room_code) {
-      getMatchData()
-    } else {
-      // Bounce the user back to the home screen
-    }
-  }, [])
-
-  useEffect(() => {
-    if (!match) {
+    if (!matchData) {
       return
     }
-
-    // Once we have a match, subscribe to match updates
-    subscribeToMatchUpdates()
 
     /* On component mount, setup "back" confirmation 
      * https://reactnavigation.org/docs/preventing-going-back/
@@ -85,7 +74,7 @@ const MatchLobby: FunctionComponent<Props> = (props) => {
             text: 'Leave',
             style: 'destructive',
             onPress: () => {
-              leaveMatch(match.id, user.id)
+              leaveMatch(matchData.id, user.id)
               props.navigation.dispatch(e.data.action)    
             },
           },
@@ -96,72 +85,9 @@ const MatchLobby: FunctionComponent<Props> = (props) => {
     return () => {
       props.navigation.removeListener('beforeRemove', beforeRemove)
     }
-  }, [match])
+  }, [matchData])
 
-  // Fetches the Match from Supabase using the room_code
-  const getMatchData = async () => {
-    if (!room_code) {
-      return
-    }
-    let { data: matchData, error: matchError } = await supabase
-      .from('matches')
-      .select(`
-        id,
-        room_code,
-        status,
-        players:users!players ( id, username ),
-        host:users!matches_host_fkey ( id, username )
-      `)
-      .eq('room_code', room_code)
-      .single()
-
-    if (matchError || !matchData) {
-      // TODO: handle the error
-      // Possibly re-route to Home and show an error message
-      console.log('getMatchData match error: ', matchError)
-    } else {
-      // Overwrite the matchData with the host query response
-      setMatch({
-        ...matchData,
-        status: matchData.status || MATCH_STATES.MATCHMAKING,
-        host: matchData.host || { id: '', username: null }
-      })
-    }
-  }
-
-  const subscribeToMatchUpdates = async () => {
-    console.log('subscribing to match updates')
-    if (match) {
-      supabase
-        .channel(`matches:${match.id}`)
-        .on(
-          'postgres_changes',
-          {
-            event: '*',
-            schema: 'public',
-            table: 'matches',
-            filter: `id=eq.${match.id}` 
-          }, getMatchData
-        )
-        .on(
-          'postgres_changes',
-          {
-            event: '*',
-            schema: 'public',
-            table: 'players',
-            filter: `match_id=eq.${match.id}` 
-          }, getMatchData
-        )
-        .subscribe((status, err) => {
-          if (status) {
-            console.log('match status: ', status)
-          } else if (err) {
-            console.log('error subscribing to match updates: ', err.message)
-          }
-        })
-    }
-  }
-
+  
   const leaveMatch = async (match_id: string, user_id: string) => {
     if (!match_id || !user_id) {
       return
@@ -185,7 +111,7 @@ const MatchLobby: FunctionComponent<Props> = (props) => {
 
   }
 
-  return match ? (
+  return matchData ? (
     <View className="bg-white flex-1 pb-8">
       <View className="flex-1">
         <AnnouncementHeader>
@@ -194,7 +120,7 @@ const MatchLobby: FunctionComponent<Props> = (props) => {
         </AnnouncementHeader>
 
         <View className="flex-row-reverse flex-wrap justify-between">
-          {players && players.map((player: any, i) => {
+          {players && players.map((player: any, i: number) => {
             return (
               <PlayerIcon key={i} name={player.username} index={i} isHost={player.id === host?.id} />
             )
@@ -203,10 +129,10 @@ const MatchLobby: FunctionComponent<Props> = (props) => {
       </View>
       {/* If I'm the host, I should be able to start the match if all of the players are present */}
       {
-        match?.status !== MATCH_STATES.STARTED && (
+        matchData?.status !== MATCH_STATES.STARTED && (
           <StyledButton
             onPress={startMatch}
-            disabled={!isHost || match?.players?.length !== 2}
+            disabled={!isHost || matchData?.players?.length !== 2}
           >
             <StyledButtonText>
               {
@@ -221,11 +147,14 @@ const MatchLobby: FunctionComponent<Props> = (props) => {
         )
       }
 
-      {/* If the match is started and I somehow managed to get here AND the useEffect didn't already re-route me*/}
+      {/* 
+        If the match is started and I somehow managed to get here 
+        AND the useEffect didn't already re-route me
+      */}
       {
-        match?.status === MATCH_STATES.STARTED && (
+        matchData?.status === MATCH_STATES.STARTED && (
           <Button
-            onPress={() => props.navigation.navigate('Match', { matchId: match?.id })}
+            onPress={() => props.navigation.navigate('Match', { matchId: matchData?.id })}
             title="Enter Match"
           />
         )
@@ -250,7 +179,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 })
-const StyledInput = styled(TextInput, 'border-bmBlue border-4 my-2 p-4 rounded-[20px] text-black w-full')
-const StyledButton = styled(TouchableOpacity, 'bg-bmBlue items-center mx-4 p-4 pb-2 rounded-[20px] text-4xl')
+const StyledButton = styled(
+  TouchableOpacity, 
+  'bg-bmBlue disabled:bg-gray-400 items-center mx-4 p-4 pb-2 rounded-[20px] text-4xl '
+)
 const StyledButtonText = styled(Text, 'font-lucky text-3xl text-white')
 
