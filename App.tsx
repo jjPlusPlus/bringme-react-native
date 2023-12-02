@@ -36,7 +36,7 @@ export type RootStackParamList = {
   Multiplayer: undefined // TODO: Deprecate?
   JoinMatch: undefined
   MatchLobby: { room_code: string | undefined } | undefined
-  Match: { matchId: string } | undefined
+  Match: { room_code: string } | undefined
 }
 
 interface User {

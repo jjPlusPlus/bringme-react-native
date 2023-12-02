@@ -25,12 +25,13 @@ export function useMatchData(room_code:string | undefined) {
         id,
         room_code,
         status,
+        round_index,
+        rounds ( id, round_index, status, time, started_at, finished_at, time_remaining, points, word, winner, leader ),
         players:users!players ( id, username ),
         host:users!matches_host_fkey ( id, username )
       `)
       .eq('room_code', room_code)
       .single()
-
     if (matchError || !data) {
       // TODO: handle the error
       // Possibly re-route to Home and show an error message
@@ -45,18 +46,8 @@ export function useMatchData(room_code:string | undefined) {
     }
   }
 
-  const [matchData, setMatchData] = useState<any>(() => {
-    return getMatchData()
-  })
-
-  useEffect(() => {
-    if (matchData) {
-      subscribeToMatchUpdates(matchData.id)
-    }
-  }, [matchData])
-
   const subscribeToMatchUpdates = async (matchId:string) => {
-    console.log('subscribing to match updates')
+    console.log(`subscribing to match updates`)
     if (matchId) {
       supabase
         .channel(`matches:${matchId}`)
@@ -80,7 +71,6 @@ export function useMatchData(room_code:string | undefined) {
         )
         .subscribe((status, err) => {
           if (status) {
-            console.log('match status: ', status)
           } else if (err) {
             console.log('error subscribing to match updates: ', err.message)
           }
@@ -88,24 +78,53 @@ export function useMatchData(room_code:string | undefined) {
     }
   }
 
-  const updateMatchData = () => {
-
+  const leaveMatch = async (match_id: string, user_id: string) => {
+    if (!match_id || !user_id) {
+      return
+    }
+    const { error } = await supabase.functions.invoke('leave-match', {
+      body: { 
+        user: user_id, 
+        match: match_id
+      },
+    })
+    // if USER fails to leave the match, show an error message
+    if (error?.message) {
+      alert(error.message)
+      return
+    }
+    // removing the room code should successfully boot the user back to the lobby
+    supabase.removeAllChannels()
   }
 
-  const addPlayerToMatch = () => {
+  const startMatch = async () => {
+    console.log('starting match')
+    const { data, error } = await supabase.functions.invoke('start-match', {
+      body: { 
+        match_id: matchData?.id
+      },
+    })
 
+    if (error) {
+      return console.log('error starting match: ', error)
+    }
   }
 
-  const removePlayerFromMatch = () => {
+  const [matchData, setMatchData] = useState<any>()
 
-  }
+  useEffect(() => {
+    getMatchData()
+  }, [])
+
+  useEffect(() => {
+    if (matchData) {
+      subscribeToMatchUpdates(matchData.id)
+    }
+  }, [matchData])
 
   return [
     matchData,
-    subscribeToMatchUpdates,
-    getMatchData,
-    updateMatchData,
-    addPlayerToMatch,
-    removePlayerFromMatch,
+    startMatch,
+    leaveMatch
   ]
 }

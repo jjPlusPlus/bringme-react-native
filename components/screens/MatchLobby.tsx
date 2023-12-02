@@ -42,13 +42,13 @@ const MIN_PLAYERS = 2
 const MatchLobby: FunctionComponent<Props> = (props) => {
   const { user } = props
   const room_code = props?.route?.params?.room_code
-  const [ matchData ] = useMatchData(room_code)
+  const [ matchData, startMatch, leaveMatch ] = useMatchData(room_code)
 
   const { 
     players, 
     host, 
     room_code:code 
-  } = matchData
+  } = matchData || {}
 
   const readyToStart = players?.length ? players.length >= MIN_PLAYERS : false
   const isHost = host?.id === user?.id
@@ -57,6 +57,10 @@ const MatchLobby: FunctionComponent<Props> = (props) => {
     if (!matchData) {
       return
     }
+
+    if (matchData?.status === MATCH_STATES.STARTED) {
+      props.navigation.navigate('Match', { room_code: matchData?.room_code })
+    } 
 
     /* On component mount, setup "back" confirmation 
      * https://reactnavigation.org/docs/preventing-going-back/
@@ -86,39 +90,6 @@ const MatchLobby: FunctionComponent<Props> = (props) => {
       props.navigation.removeListener('beforeRemove', beforeRemove)
     }
   }, [matchData])
-
-  
-  const leaveMatch = async (match_id: string, user_id: string) => {
-    if (!match_id || !user_id) {
-      return
-    }
-    const { error } = await supabase.functions.invoke('leave-match', {
-      body: { 
-        user: user_id, 
-        match: match_id
-      },
-    })
-    // if USER fails to leave the match, show an error message
-    if (error?.message) {
-      alert(error.message)
-      return
-    }
-    // removing the room code should successfully boot the user back to the lobby
-    supabase.removeAllChannels()
-  }
-
-  const startMatch = async () => {
-    console.log('starting match')
-    const { data, error } = await supabase.functions.invoke('start-match', {
-      body: { 
-        match_id: matchData?.id
-      },
-    })
-
-    if (error) {
-      return console.log('error starting match: ', error)
-    }
-  }
 
   return matchData ? (
     <View className="bg-white flex-1 pb-8">
@@ -163,7 +134,7 @@ const MatchLobby: FunctionComponent<Props> = (props) => {
       {
         matchData?.status === MATCH_STATES.STARTED && (
           <Button
-            onPress={() => props.navigation.navigate('Match', { matchId: matchData?.id })}
+            onPress={() => props.navigation.navigate('Match', { room_code: matchData?.room_code })}
             title="Enter Match"
           />
         )
