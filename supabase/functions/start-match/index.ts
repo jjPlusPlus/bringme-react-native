@@ -15,11 +15,28 @@ Deno.serve(async (req: any) => {
     const { match_id } = await req.json() // throws an error
     if (!match_id) throw new Error("Missing 'match_id' in request body")
 
+    // Update the match status to 'started'
     const { data, error } = await supabase_client
       .from('matches')
         .update({ status: 'started' })
         .eq('id', match_id)
         .select()
+
+    // Get the first player in the match
+    const { data: players, error: playersError } = await supabase_client
+      .from('players')
+        .select('*')
+        .eq('match_id', match_id)
+        
+    // Update the first round to 'starting' and set the round leader
+    const { error: leaderError } = await supabase_client
+      .from('rounds')
+        .update({ 
+          status: 'STARTING',
+          leader: players[0].user_id
+        })
+        .eq('match_id', match_id)
+        .eq('round_index', 0)
 
     return new Response(
       JSON.stringify({ data, error }),

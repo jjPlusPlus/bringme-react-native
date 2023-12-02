@@ -53,9 +53,9 @@ const Match: FunctionComponent<Props> = (props) => {
       <View><Text>Loading</Text></View>
     )
   }
-
-  const round = rounds[round_index]
-  return round.leader?.id === user.id ? (
+ 
+  const round = rounds.find((r:any) => r.round_index === round_index)
+  return round.leader === user.id ? (
     <View>
       <Text>Host View</Text>
     </View>
