@@ -23,6 +23,7 @@ const Home: FunctionComponent<Props> = (props) => {
 
   const createMatch = async () => {
     // send request to server to create a new Match
+    // TODO: show a loading state here
     const { data, error } = await supabase.functions.invoke('create-match', {
       body: { user: user },
     })
@@ -33,7 +34,7 @@ const Home: FunctionComponent<Props> = (props) => {
       return
     }
     // if match successfully created, navigate to MatchLobby
-    props.navigation.navigate('Matchmaking', { room_code: data.room_code })
+    props.navigation.navigate('MatchLobby', { room_code: data.room_code })
   }
 
   return (
@@ -61,7 +62,7 @@ const Home: FunctionComponent<Props> = (props) => {
         <StyledButton onPress={() => createMatch()}>
           <StyledButtonText>Create a Match</StyledButtonText>
         </StyledButton>
-        <StyledButton onPress={() => props.navigation.navigate('Matchmaking')}>
+        <StyledButton onPress={() => props.navigation.navigate('JoinMatch')}>
           <StyledButtonText>Join a Match</StyledButtonText>
         </StyledButton>
         <StyledButton onPress={() => props.navigation.navigate('Settings')}>
