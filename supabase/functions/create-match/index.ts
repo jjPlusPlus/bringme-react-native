@@ -11,6 +11,9 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
+const MATCH_LENGTH = 60
+const NUM_ROUNDS = 6
+
 Deno.serve(async (req: any) => {
   try {
     const { user } = await req.json() // throws an error
@@ -27,6 +30,22 @@ Deno.serve(async (req: any) => {
         },
       ])
       .select('*')
+
+    const generateRounds = () => {
+      const rounds = []
+      for (let i = 0; i < NUM_ROUNDS; i++) {
+        rounds.push({
+          match_id: matchData[0].id,
+          round_index: i,
+          status: 'CREATED',
+          time: MATCH_LENGTH,
+        })
+      }
+      return rounds
+    }
+    const { data: roundsData, error: roundsError } = await supabase_client
+      .from('rounds')
+      .insert(generateRounds())
 
     const { data: playersData, error: playersError } = await supabase_client
       .from('players')
