@@ -18,7 +18,7 @@ Deno.serve(async (req: any) => {
     // Update the match status to 'started'
     const { data, error } = await supabase_client
       .from('matches')
-        .update({ status: 'started' })
+        .update({ status: 'STARTED' })
         .eq('id', match_id)
         .select()
 

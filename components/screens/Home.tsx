@@ -5,14 +5,8 @@ import { styled } from 'nativewind'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { RootStackParamList } from '../../App'
 
-interface User {
-  id: string
-  username: string
-  email: string
-  auth_uuid: string
-  created_at: string
-  updated_at: string
-}
+import { User } from '../types'
+
 interface Props {
   navigation: StackNavigationProp<RootStackParamList>
   user: User

@@ -1,36 +1,29 @@
-import React, { FunctionComponent, useEffect, useState } from 'react'
-import { StyleSheet, Text, View, TouchableOpacity, Dimensions } from 'react-native'
+import React, { FunctionComponent, useState, useEffect } from 'react'
+import { SafeAreaView, StyleSheet, Text, View, TextInput } from 'react-native'
 import { RouteProp } from '@react-navigation/native'
-import { StackNavigationProp } from '@react-navigation/stack'
-import { styled } from "nativewind"
+import { Drawer } from 'react-native-drawer-layout'
+
 import { useMatchData } from '../../supabase/MatchUtils'
-import MatchHostView from '../MatchHostView'
-import MatchPlayerView from '../MatchPlayerView'
-import Scoreboard from '../Scoreboard'
 import { RootStackParamList } from '../../App'
 
-interface User {
-  id: string
-  username: string | null
-}
-interface Match {
-  id: string
-  room_code: string
-  status: string
-  players: User[]
-  host: User
-}
+import RoundPlayerView from '../RoundPlayerView'
+import RoundLeaderView from '../RoundLeaderView'
+
+import { User, Round } from '../types'
+
 interface Props {
-  navigation: StackNavigationProp<RootStackParamList>
   route: RouteProp<RootStackParamList, 'Match'>
   user: User
 }
 
 const Match: FunctionComponent<Props> = (props) => {
-  const { user } = props
-  const room_code = props?.route?.params?.room_code
-  const [ matchData, startMatch, leaveMatch ] = useMatchData(room_code)
+  const { user, route } = props
+  const room_code = route?.params?.room_code
+  const [ matchData, startMatch, leaveMatch, startRound, endRound ] = useMatchData(room_code)
+  const [ round, setRound ] = useState<Round | null>(null)
+  const [devToolsOpen, setDevToolsOpen] = useState(false)
 
+  // might need to refactor this to better reflect the state of the data
   const { 
     players, 
     host, 
@@ -48,21 +41,65 @@ const Match: FunctionComponent<Props> = (props) => {
     // TODO: handle back action
   }, [matchData])
 
+  useEffect(() => {
+    if (!rounds) { 
+      return 
+    }
+    const currentRound = rounds.find((r:Round) => r.round_index === round_index) || rounds[0]
+    setRound(currentRound)
+  }, [round_index, rounds])
+
   if (!matchData) {
     return (
       <View><Text>Loading</Text></View>
     )
   }
- 
-  const round = rounds.find((r:any) => r.round_index === round_index)
-  return round.leader === user.id ? (
-    <View>
-      <Text>Host View</Text>
-    </View>
-  ) : (
-    <View>
-      <Text>Player View</Text>
-    </View>
+
+  if (!round) {
+    return ( <View><Text>Waiting to start game</Text></View> )
+  }
+
+  const leader = players.find((player: User) => player.id === round.leader)
+  return (
+    <>
+      <Drawer
+        open={devToolsOpen}
+        onOpen={() => setDevToolsOpen(true)}
+        onClose={() => setDevToolsOpen(false)}
+        renderDrawerContent={() => {
+          return (
+            <SafeAreaView>
+              <Text>Room Code: {room_code}</Text>
+              <Text>Created by: {host.username}</Text>
+              <Text>Match status: {status}</Text>
+              <Text>Match started at: TODO</Text>
+              <Text>Players: {players.map((player: User) => player.username).join(', ')}</Text>
+              <Text>Round: {round.round_index + 1} | #{round.id}</Text>
+              <Text>Round Status: {round.status}</Text>
+              <Text>Round Word: {round.word}</Text>
+              <Text>Started At: {round.started_at || "Not yet"}</Text>
+            </SafeAreaView>
+          )
+        }}
+      >
+        <SafeAreaView>
+          {round.leader === user.id ? (
+            <RoundLeaderView 
+              round={round} 
+              user={user} 
+              players={players} 
+              startRound={startRound} 
+              endRound={endRound}
+            />
+          ) : (
+            <RoundPlayerView
+              round={round}
+              leader={leader}
+            />
+          )}
+        </SafeAreaView>
+      </Drawer>
+    </>
   )
 }
 
