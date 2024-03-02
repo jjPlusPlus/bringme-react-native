@@ -9,18 +9,18 @@
 */
 
 export const MATCH_STATES = {
-  MATCHMAKING: 'matchmaking',
-  STARTED: 'started',
-  INCOMPLETE: 'incomplete',
-  COMPLETE: 'complete',
-  ARCHIVED: 'archived'
+  MATCHMAKING: 'MATCHMAKING',
+  STARTED: 'STARTED',
+  INCOMPLETE: 'INCOMPLETE',
+  COMPLETE: 'COMPLETE',
+  ARCHIVED: 'ARCHIVED'
 }
 
 export const ROUND_STATES = {
-  CREATED: 'created',
-  STARTING: 'starting',
-  STARTED: 'started',
-  TIMED_OUT: 'timeout',
-  COMPLETE: 'complete'
+  CREATED: 'CREATED',
+  STARTED: 'STARTED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  TIMED_OUT: 'TIMEOUT',
+  COMPLETE: 'COMPLETE'
 }
 

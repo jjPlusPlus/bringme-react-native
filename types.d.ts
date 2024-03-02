@@ -17,6 +17,7 @@ export interface Database {
           host: string | null
           id: string
           room_code: string
+          round_index: number
           status: string | null
         }
         Insert: {
@@ -26,6 +27,7 @@ export interface Database {
           host?: string | null
           id?: string
           room_code: string
+          round_index?: number
           status?: string | null
         }
         Update: {
@@ -35,6 +37,7 @@ export interface Database {
           host?: string | null
           id?: string
           room_code?: string
+          round_index?: number
           status?: string | null
         }
         Relationships: [

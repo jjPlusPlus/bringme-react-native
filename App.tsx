@@ -26,25 +26,17 @@ NativeWindStyleSheet.setOutput({
   default: "native",
 });
 
+import { User } from './components/types'
+
 export type RootStackParamList = {
   Login: undefined
   Register: undefined
   Auth: undefined
   Home: undefined
   Settings: undefined
-  SinglePlayer: undefined // TODO: Deprecate?
-  Multiplayer: undefined // TODO: Deprecate?
   JoinMatch: undefined
   MatchLobby: { room_code: string | undefined } | undefined
   Match: { room_code: string } | undefined
-}
-
-interface User {
-  id: string
-  username: string | null
-  email: string | null
-  auth_uuid: string | null
-  created_at: string
 }
 
 export default function App() {
@@ -114,7 +106,7 @@ export default function App() {
     if (error || !users) {
       console.log('failed to fetch user data')
     } else {
-      setUser(users[0])
+      setUser(users[0] as User)
     }
   }
 
