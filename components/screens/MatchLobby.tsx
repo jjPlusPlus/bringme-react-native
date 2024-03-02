@@ -57,7 +57,7 @@ const MatchLobby: FunctionComponent<Props> = (props) => {
     if (!matchData) {
       return
     }
-
+  
     if (matchData?.status === MATCH_STATES.STARTED) {
       props.navigation.navigate('Match', { room_code: matchData?.room_code })
     } 
@@ -91,6 +91,27 @@ const MatchLobby: FunctionComponent<Props> = (props) => {
     }
   }, [matchData])
 
+  const addTestPlayers = async () => {
+    // Add a player to the match where the user id is 
+    // This is a temporary solution to add a player to a match for testing
+    // const { data: players1Data, error: players1Error } = await supabase
+    //   .from('players')
+    //   .insert([
+    //     {
+    //       match_id: matchData.id,
+    //       user_id: 'f1d29abc-6462-4b93-b301-87224693cbb5',
+    //     }
+    //   ])
+    const { data: players2Data, error: players2Error } = await supabase
+      .from('players')
+      .insert([
+        {
+          match_id: matchData.id,
+          user_id: '29b79a30-a33e-4a5a-b7a6-89c5e2225370',
+        }
+      ])
+  }
+
   return matchData ? (
     <View className="bg-white flex-1 pb-8">
       <View className="flex-1">
@@ -107,12 +128,18 @@ const MatchLobby: FunctionComponent<Props> = (props) => {
           })}
         </View>
       </View>
+
+      {/* TESTING ONLY  */}
+      <TouchableOpacity onPress={addTestPlayers}>
+        <Text>Add test players</Text>
+      </TouchableOpacity>
+
       {/* If I'm the host, I should be able to start the match if all of the players are present */}
       {
         matchData?.status !== MATCH_STATES.STARTED && (
           <StyledButton
             onPress={startMatch}
-            disabled={!isHost || matchData?.players?.length !== 2}
+            disabled={!isHost || matchData?.players?.length < 3}
           >
             <StyledButtonText>
               {
