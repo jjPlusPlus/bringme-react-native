@@ -18,7 +18,7 @@ export const PLAYER_IMAGES = [
 
 const PlayerIcon: FunctionComponent<Props> = (props) => {
   const { name, index, isHost } = props
-  let imgSource = PLAYER_IMAGES[index].uri
+  let imgSource = PLAYER_IMAGES[index]?.uri
   const even = index % 2 == 0
   let gridPosition = even ? 'py-2' : 'mt-8 mb-4'
   let position = even ? 'translate-x-4' : '-translate-x-4'
@@ -31,7 +31,7 @@ const PlayerIcon: FunctionComponent<Props> = (props) => {
         <Image className="self-start transform -translate-x-6 translate-y-1" source={crown} />
       }
       <Image source={imgSource} resizeMode="contain" className="h-full w-full"></Image>
-      <View className={`absolute ${PLAYER_IMAGES[index].color} self-center w-full h-3/4 ${roundedness} ${position} -z-10`} />
+      <View className={`absolute ${PLAYER_IMAGES[index]?.color} self-center w-full h-3/4 ${roundedness} ${position} -z-10`} />
       <View className={`bg-blue-200 px-4 py-0 rounded absolute bottom-3 transform ${translate}`}>
         <Text className="font-bold text-bmBlue text-lg">{name}</Text>
       </View>
