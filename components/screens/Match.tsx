@@ -95,6 +95,7 @@ const Match: FunctionComponent<Props> = (props) => {
             <RoundPlayerView
               round={round}
               leader={leader}
+              user={user}
             />
           )}
         </SafeAreaView>

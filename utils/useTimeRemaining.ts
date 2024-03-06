@@ -20,6 +20,8 @@ const useTimeRemaining = ( start: string, seconds: number): number => {
         return clearInterval(timer)
       }
     }, 1000)
+
+    return () => clearInterval(timer)
   }, [start])
 
   return parseInt(remaining)

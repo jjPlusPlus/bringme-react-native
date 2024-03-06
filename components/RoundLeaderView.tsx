@@ -1,8 +1,9 @@
-import React, { FunctionComponent, useState } from 'react'
-import { Text, View, TextInput } from 'react-native'
+import React, { FunctionComponent, useState, useEffect } from 'react'
+import { Text, View, Image, TextInput } from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import useTimeRemaining from '../utils/useTimeRemaining'
+import { supabase } from '../supabase/init'
 
 import { User, Round } from './types'
 
@@ -16,34 +17,19 @@ interface Props {
 
 const RoundLeaderView: FunctionComponent<Props> = (props) => {
   const { user, round, players, startRound, endRound } = props
-  const remaining_time = useTimeRemaining(round.started_at, round.time)
-
   const [ roundWord, setRoundWord ] = useState<string>('')
+
   return (
     <View className="flex h-full">
       <Text>You're the Leader of this Round!</Text>
       {round.status === 'IN_PROGRESS' ? (
         <>
           <MaterialIcons name="timer" size={24} color="black" />
-          <Text>Time Remaining: {remaining_time}</Text>
+          <RoundTimer round={round}/>
+          
           <Text>The players will bring you: {round.word}</Text>
-          {/* Show each of the other player's */}
-          {players.map((player: User) => {
-            if (player.id === user.id) { return }
-            return (
-              <View key={player.id}>
-                <Text>{player.username}</Text>
-                <TouchableOpacity
-                  onPress={() => {
-                    // set the round winner
-                    endRound(round, player)
-                  }}
-                >
-                  <Text>Accept</Text>
-                </TouchableOpacity>
-              </View>
-            )
-          })}
+          
+          <Players players={players} endRound={endRound} round={round} user={user}/>
         </>
       ) : (
         <>
@@ -66,5 +52,107 @@ const RoundLeaderView: FunctionComponent<Props> = (props) => {
     </View>
   )
 }
+
+const RoundTimer = (props: any) => {
+  const { round } = props
+  const remaining_time = useTimeRemaining(round.started_at, round.time)
+  return (
+    <View>
+      <Text>Time Remaining: {remaining_time}</Text>
+    </View>
+  )
+}
+
+const Players = (props: any) => {
+  const { user, players, endRound, round } = props
+  const [submissions, setSubmissions] = useState<any[]>([])
+
+  useEffect(() => {
+    // get all submissions, and then subscribe to submissions
+    refetchSubmissions()
+    // subscribe to submissions
+    supabase
+      .channel(`submissions:${round.id}`)
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'submissions',
+          filter: `round_id=eq.${round.id}` 
+        }, refetchSubmissions
+      )
+      .subscribe((status, err) => {
+        if (status) {
+          console.log(status, ': subscribed to round updates')
+        } else if (err) {
+          console.log('error subscribing to submission updates: ', err.message)
+        }
+      })
+  }, [])
+
+  const refetchSubmissions = async () => {
+    const { data, error } = await supabase
+      .from('submissions')
+      .select(`
+        id,
+        path,
+        base64_image,
+        player:users ( id, username )
+      `)
+      .eq('round_id', round.id)
+    if (error) {
+      console.log('fetchSubmissions error: ', error)
+    } else {
+      setSubmissions(data || [])
+    }
+  }
+
+  /*
+    // This is how we would get the image from the storage bucket
+    const path = `${process.env.EXPO_PUBLIC_SUPABASE_URL}/storage/v1/object/public/submissions/${submission.path}`
+  */
+
+  return (
+    <View>
+      <Text>Players</Text>
+      {/* Show each of the other player's */}
+      {players.map((player: User) => {
+
+        if (player.id === user.id) { return }
+
+        const submission = submissions.find((s:any) => s.player.id === player.id)
+
+        return (
+          <View key={player.id}>
+            <Text>{player.username}</Text>
+            {submission ? (
+              <View>
+                <Image 
+                  source={{ 
+                    uri: `data:image/jpeg;base64,${submission.base64_image}`
+                  }} 
+                  width={200} 
+                  height={200} 
+                />
+              </View>
+            ) : (
+              <Text>Not Submitted</Text>
+            )}
+            <TouchableOpacity
+              onPress={() => {
+                // set the round winner
+                endRound(round, player)
+              }}
+            >
+              <Text>Accept</Text>
+            </TouchableOpacity>
+          </View>
+        )
+      })}
+    </View>
+  )
+}
+
 
 export default RoundLeaderView
