@@ -6,7 +6,13 @@ import useTimeRemaining from '../utils/useTimeRemaining'
 import { supabase } from '../supabase/init'
 import { useMatchData } from '../supabase/MatchUtils'
 
+import AnnouncementHeader from './AnnouncementHeader'
+
+import divider from '../assets/divider.png'
+import loading from '../assets/loading.png'
+
 import { User, Round } from './types'
+import { styled } from 'nativewind'
 
 interface Props {
   user: User
@@ -19,41 +25,43 @@ interface Props {
 
 const RoundLeaderView: FunctionComponent<Props> = (props) => {
   const { user, round, players, room_code, startRound, acceptSubmission } = props
-  const [ roundWord, setRoundWord ] = useState<string>('')
-  // const {
-  //   startRound, 
-  //   acceptSubmission
-  // } = useMatchData(room_code)
 
   return (
-    <View className="flex h-full">
-      <Text>You're the Leader of this Round!</Text>
+    <View className="bg-white flex h-full p-4">
+      <AnnouncementHeader>
+        <View>
+          <Text className="font-lucky text-3xl text-bmBlue uppercase">
+            {round.status === 'IN_PROGRESS' ? `Bring me` : `You're the king`}
+          </Text>
+        </View>
+      </AnnouncementHeader>
       {round.status === 'IN_PROGRESS' ? (
         <>
+          <View>
+            <Image source={divider} />
+            <Text className="font-lucky text-4xl mb-4 mt-5 text-center uppercase">{round.word}</Text>
+            <Image className="" source={divider} />
+          </View>
           <MaterialIcons name="timer" size={24} color="black" />
-          <RoundTimer round={round}/>
-          
-          <Text>The players will bring you: {round.word}</Text>
-          
-          <Players players={players} acceptSubmission={acceptSubmission} round={round} user={user}/>
+          <Players players={players} acceptSubmission={acceptSubmission} round={round} user={user} />
         </>
       ) : (
-        <>
-          <Text>What do you want the other players to bring you this round?</Text>
-          <TextInput
-            placeholder="........................."
+        <View className="my-4">
+          <Text className="font-medium text-base">What do you want the others to bring to you?</Text>
+          <StyledInput
+            placeholder=""
             onChangeText={(text) => {
               // handle text input change
               setRoundWord(text)
             }}
             value={roundWord}
           />
-          <TouchableOpacity
+          <StyledButton
             onPress={() => startRound(round, roundWord)}
           >
-            <Text>Start Round</Text>
-          </TouchableOpacity>
-        </>
+            <StyledButtonText>Start Round</StyledButtonText>
+          </StyledButton>
+        </View>
       )}
     </View>
   )
@@ -85,7 +93,7 @@ const Players = (props: any) => {
           event: '*',
           schema: 'public',
           table: 'submissions',
-          filter: `round_id=eq.${round.id}` 
+          filter: `round_id=eq.${round.id}`
         }, refetchSubmissions
       )
       .subscribe((status, err) => {
@@ -127,19 +135,35 @@ const Players = (props: any) => {
 
         if (player.id === user.id) { return }
 
-        const submission = submissions.find((s:any) => s.player.id === player.id)
+        const submission = submissions.find((s: any) => s.player.id === player.id)
 
         return (
+          //     <View key={player.id} className="flex-1 items-center">
+          //   <View className="bg-bmPeach h-36 p-4 relative rounded-[20px] w-full">
+          //     <Image source={loading} className="h-full w-full" resizeMode="contain" />
+          //     <View className="absolute bg-bmBlue bottom-[-15px] px-4 py-2 rounded-md self-center">
+          //       <Text className="text-center text-sm text-white">{player.username}</Text>
+          //     </View>
+          //   </View>
+          //   <TouchableOpacity
+          //     onPress={() => {
+          //       // set the round winner
+          //       endRound(round, player)
+          //     }}
+          //   >
+          //     <Text>Accept</Text>
+          //   </TouchableOpacity>
+          // </View>
           <View key={player.id}>
             <Text>{player.username}</Text>
             {submission ? (
               <View>
-                <Image 
-                  source={{ 
+                <Image
+                  source={{
                     uri: `data:image/jpeg;base64,${submission.base64_image}`
-                  }} 
-                  width={200} 
-                  height={200} 
+                  }}
+                  width={200}
+                  height={200}
                 />
               </View>
             ) : (
@@ -162,3 +186,8 @@ const Players = (props: any) => {
 
 
 export default RoundLeaderView
+
+const StyledInput = styled(TextInput, 'bg-gray-100 my-2 rounded-[15px] p-4');
+const StyledButton = styled(TouchableOpacity, 'bg-bmBlue items-center justify-center mb-1 mt-4 p-3 rounded-[15px] w-full');
+const StyledButtonText = styled(Text, 'font-bold font-lucky pt-2 justify-center text-center text-3xl text-white uppercase');
+
