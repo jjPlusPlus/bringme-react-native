@@ -88,7 +88,7 @@ const Players = (props: any) => {
       )
       .subscribe((status, err) => {
         if (status) {
-          console.log(status, ': subscribed to round updates')
+          console.log(status, ': subscribed to submission updates')
         } else if (err) {
           console.log('error subscribing to submission updates: ', err.message)
         }
