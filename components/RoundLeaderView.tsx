@@ -12,11 +12,11 @@ interface Props {
   round: Round
   players: User[]
   startRound: (round: Round, word: string) => void
-  endRound: (round: Round, player: User) => void
+  acceptSubmission: (round: Round, player: User) => void
 }
 
 const RoundLeaderView: FunctionComponent<Props> = (props) => {
-  const { user, round, players, startRound, endRound } = props
+  const { user, round, players, startRound, acceptSubmission } = props
   const [ roundWord, setRoundWord ] = useState<string>('')
 
   return (
@@ -29,7 +29,7 @@ const RoundLeaderView: FunctionComponent<Props> = (props) => {
           
           <Text>The players will bring you: {round.word}</Text>
           
-          <Players players={players} endRound={endRound} round={round} user={user}/>
+          <Players players={players} acceptSubmission={acceptSubmission} round={round} user={user}/>
         </>
       ) : (
         <>
@@ -64,7 +64,7 @@ const RoundTimer = (props: any) => {
 }
 
 const Players = (props: any) => {
-  const { user, players, endRound, round } = props
+  const { user, players, acceptSubmission, round } = props
   const [submissions, setSubmissions] = useState<any[]>([])
 
   useEffect(() => {
@@ -142,7 +142,7 @@ const Players = (props: any) => {
             <TouchableOpacity
               onPress={() => {
                 // set the round winner
-                endRound(round, player)
+                acceptSubmission(round, player)
               }}
             >
               <Text>Accept</Text>

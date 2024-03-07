@@ -162,7 +162,7 @@ export function useMatchData(room_code:string | undefined) {
     return nextLeader
   }
 
-  const endRound = async (round: Round, player: User) => {
+  const acceptSubmission = async (round: Round, player: User) => {
     const time_remaining = round.time - (Math.round( Date.now() / 1000 ) - Math.round( new Date(round.started_at).getTime() / 1000 ))
     const final_score = 100 + time_remaining
     // update the current round
@@ -220,6 +220,6 @@ export function useMatchData(room_code:string | undefined) {
     startMatch,
     leaveMatch,
     startRound,
-    endRound
+    acceptSubmission
   ]
 }
