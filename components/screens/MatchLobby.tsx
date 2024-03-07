@@ -42,7 +42,7 @@ const MIN_PLAYERS = process.env.EXPO_PUBLIC_MIN_PLAYERS || 3
 const MatchLobby: FunctionComponent<Props> = (props) => {
   const { user } = props
   const room_code = props?.route?.params?.room_code
-  const [ matchData, startMatch, leaveMatch ] = useMatchData(room_code)
+  const { matchData, startMatch, leaveMatch } = useMatchData(room_code)
 
   const { 
     players, 
