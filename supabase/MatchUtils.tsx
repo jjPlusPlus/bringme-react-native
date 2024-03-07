@@ -1,34 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { supabase } from './init'
 import { MATCH_STATES } from './constants'
-
-interface User {
-  id: string
-  username: string | null
-}
-interface Match {
-  id: string
-  room_code: string
-  round_index: number
-  status: string
-  players: User[]
-  host: User
-}
-interface Round {
-  id: string
-  created_at: string
-  match_id: string
-  leader: string
-  winner: User
-  word: string
-  points: number
-  time: number
-  time_remaining: number
-  started_at: string
-  finished_at: string
-  status: string
-  round_index: number
-}
+import { User, Match, Round } from '../components/types'
 
 export function useMatchData(room_code:string | undefined) {
 

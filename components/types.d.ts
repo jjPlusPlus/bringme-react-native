@@ -2,9 +2,9 @@
 interface User {
   id: string
   username?: string | null
-  email: string
-  auth_uuid: string
-  created_at: string
+  email?: string
+  auth_uuid?: string
+  created_at?: string
   updated_at?: string
 }
 
@@ -20,7 +20,7 @@ export interface Round {
   created_at: string
   match_id: string
   leader: string
-  winner: User
+  winner?: User
   word: string
   points: number
   time: number
