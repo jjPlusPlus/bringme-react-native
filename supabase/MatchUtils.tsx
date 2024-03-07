@@ -188,11 +188,11 @@ export function useMatchData(room_code:string | undefined) {
     }
   }, [matchData])
 
-  return [
+  return {
     matchData,
     startMatch,
     leaveMatch,
     startRound,
     acceptSubmission
-  ]
+  }
 }
