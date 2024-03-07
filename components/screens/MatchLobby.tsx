@@ -28,7 +28,7 @@ interface Props {
 }
 
 // TODO: Store this in an environment variable
-const MIN_PLAYERS = 2
+const MIN_PLAYERS = process.env.EXPO_PUBLIC_MIN_PLAYERS || 3
 
 /* MATCH LOBBY: 
  * Requires a room_code (passed in via route params)

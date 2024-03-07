@@ -11,8 +11,9 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-const MATCH_LENGTH = 60
-const NUM_ROUNDS = 6
+const MATCH_LENGTH = Deno.env.get('EXPO_PUBLIC_ROUND_LENGTH') || 60
+const MIN_PLAYERS = Deno.env.get('EXPO_PUBLIC_MIN_PLAYERS') || 3
+const NUM_ROUNDS = Deno.env.get('EXPO_PUBLIC_NUM_ROUNDS') || 6
 
 Deno.serve(async (req: any) => {
   try {

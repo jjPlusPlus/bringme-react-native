@@ -90,7 +90,7 @@ Deno.serve(async (req: any) => {
           })
           .eq('id', match_snapshot.id)
       }
-    }, 60000 ) // 60 seconds
+    }, (Deno.env.get('EXPO_PUBLIC_ROUND_LENGTH') || 60) * 1000 )
 
     return new Response(
       JSON.stringify({ data, error }),
