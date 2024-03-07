@@ -88,8 +88,7 @@ const Match: FunctionComponent<Props> = (props) => {
               round={round} 
               user={user} 
               players={players} 
-              startRound={startRound} 
-              acceptSubmission={acceptSubmission}
+              room_code={room_code}
             />
           ) : (
             <RoundPlayerView

@@ -13,8 +13,6 @@ import Login from './components/screens/Login'
 import Registration from './components/screens/Registration'
 import Home from './components/screens/Home'
 import Settings from './components/screens/Settings'
-import SinglePlayer from './components/screens/SinglePlayer'
-import Multiplayer from './components/screens/Multiplayer'
 import MatchLobby from './components/screens/MatchLobby'
 import JoinMatch from './components/screens/JoinMatch'
 

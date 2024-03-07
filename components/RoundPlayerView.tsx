@@ -75,7 +75,7 @@ const RoundPlayerView: FunctionComponent<Props> = (props) => {
         <>
           {/* I Imagine this section will be some sort of top-bar */}
           <View>
-            <Text>Time Remaining: {remaining_time} </Text> 
+            <RoundTimer round={round}/>
             <Text>{leader.username} wants you to bring them: {round.word}</Text>
           </View>
           { image ? (

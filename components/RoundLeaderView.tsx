@@ -4,6 +4,7 @@ import { MaterialIcons } from '@expo/vector-icons'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import useTimeRemaining from '../utils/useTimeRemaining'
 import { supabase } from '../supabase/init'
+import { useMatchData } from '../supabase/MatchUtils'
 
 import { User, Round } from './types'
 
@@ -11,13 +12,16 @@ interface Props {
   user: User
   round: Round
   players: User[]
-  startRound: (round: Round, word: string) => void
-  acceptSubmission: (round: Round, player: User) => void
+  room_code?: string
 }
 
 const RoundLeaderView: FunctionComponent<Props> = (props) => {
-  const { user, round, players, startRound, acceptSubmission } = props
+  const { user, round, players, room_code } = props
   const [ roundWord, setRoundWord ] = useState<string>('')
+  const {
+    startRound, 
+    acceptSubmission
+  } = useMatchData(room_code)
 
   return (
     <View className="flex h-full">
