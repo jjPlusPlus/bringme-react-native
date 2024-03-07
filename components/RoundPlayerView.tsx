@@ -23,7 +23,6 @@ interface Props {
 
 const RoundPlayerView: FunctionComponent<Props> = (props) => {
   const { round, leader, user } = props
-  const remaining_time = useTimeRemaining(round.started_at, round.time)
   const [hasCameraPermission, setHasCameraPermission] = useState(false)
  
   const [image, setImage] = useState<CameraCapturedPicture | null>(null)  // Todo: type should be CameraCapturedPicture but it's not in the expo-camera types
@@ -31,7 +30,6 @@ const RoundPlayerView: FunctionComponent<Props> = (props) => {
 
   // Save for WebRTC
   // const [stream, setStream] = useState(null)
-
   useEffect(() => {
     (async () => {
       if (!hasCameraPermission) {
@@ -146,6 +144,16 @@ const RoundPlayerView: FunctionComponent<Props> = (props) => {
         <Text>{leader?.username} is choosing what to ask you for</Text>
       )}
     </SafeAreaView>
+  )
+}
+
+const RoundTimer = (props: any) => {
+  const { round } = props
+  const remaining_time = useTimeRemaining(round.started_at, round.time)
+  return (
+    <View>
+      <Text>Time Remaining: {remaining_time}</Text>
+    </View>
   )
 }
 
