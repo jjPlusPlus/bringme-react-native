@@ -13,15 +13,17 @@ interface Props {
   round: Round
   players: User[]
   room_code?: string
+  startRound: (round: Round, word: string) => void
+  acceptSubmission: (round: Round, player: User) => void
 }
 
 const RoundLeaderView: FunctionComponent<Props> = (props) => {
-  const { user, round, players, room_code } = props
+  const { user, round, players, room_code, startRound, acceptSubmission } = props
   const [ roundWord, setRoundWord ] = useState<string>('')
-  const {
-    startRound, 
-    acceptSubmission
-  } = useMatchData(room_code)
+  // const {
+  //   startRound, 
+  //   acceptSubmission
+  // } = useMatchData(room_code)
 
   return (
     <View className="flex h-full">
