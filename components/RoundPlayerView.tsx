@@ -7,6 +7,10 @@ import useTimeRemaining from '../utils/useTimeRemaining'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { Ionicons, MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons'
 import { supabase } from '../supabase/init'
+import { styled } from 'nativewind'
+
+import AnnouncementHeader from './AnnouncementHeader'
+import handWaiting from '../assets/hand-waiting.png'
 
 
 // WebRTC
@@ -24,7 +28,7 @@ interface Props {
 const RoundPlayerView: FunctionComponent<Props> = (props) => {
   const { round, leader, user } = props
   const [hasCameraPermission, setHasCameraPermission] = useState(false)
- 
+
   const [image, setImage] = useState<CameraCapturedPicture | null>(null)  // Todo: type should be CameraCapturedPicture but it's not in the expo-camera types
   const cameraRef = useRef<Camera>(null)
 
@@ -64,21 +68,21 @@ const RoundPlayerView: FunctionComponent<Props> = (props) => {
       try {
         const photo = await cameraRef.current?.takePictureAsync()
         if (photo) { setImage(photo) }
-      } catch(e) {
+      } catch (e) {
         console.error('take_picture_error: ', e)
       }
     }
   }
   return (
-    <SafeAreaView>
+    <SafeAreaView className="bg-white">
       {round.status === 'IN_PROGRESS' ? (
         <>
           {/* I Imagine this section will be some sort of top-bar */}
           <View>
-            <RoundTimer round={round}/>
+            <RoundTimer round={round} />
             <Text>{leader.username} wants you to bring them: {round.word}</Text>
           </View>
-          { image ? (
+          {image ? (
             <>
               {/* Show a preview of the submission to the player
                 * Along with a button to submit
@@ -127,7 +131,7 @@ const RoundPlayerView: FunctionComponent<Props> = (props) => {
               {/* Show a camera view for the player */}
               <Camera type={CameraType.back} ref={cameraRef}>
                 <View className="h-80">
-                  <TouchableOpacity className="" onPress={ take_picture }>
+                  <TouchableOpacity className="" onPress={take_picture}>
                     <Ionicons name="ios-radio-button-on" size={50} color="white" />
                   </TouchableOpacity>
                 </View>
@@ -138,10 +142,26 @@ const RoundPlayerView: FunctionComponent<Props> = (props) => {
 
           {/* <RTCView streamURL={stream.toURL()} /> */}
 
-          
         </>
       ) : (
-        <Text>{leader?.username} is choosing what to ask you for</Text>
+        <View className='bg-white h-full px-4 py-2'>
+          <AnnouncementHeader headerImage={handWaiting}>
+            <Text className="font-lucky ml-2 text-3xl text-bmBlue uppercase">
+              Waiting...
+            </Text>
+            <View className="px-3 ml-12 -mt-1 w-2/3">
+              <Text className="text-left">
+                <Text className="font-bold">{leader?.username}</Text> is currently writing their decree.
+              </Text>
+            </View>
+          </AnnouncementHeader>
+          <View className="flex-1 gap-4">
+            <View className="border-2 border-bmBlue h-[150px] relative rounded-[20px] w-1/2 z-10">
+              <View className="absolute bg-bmPeach h-full rounded-[20px] translate-x-2 -translate-y-2 w-full -z-10" />
+              <Text>{user.username} live cam goes here?</Text>
+            </View>
+          </View>
+        </View>
       )}
     </SafeAreaView>
   )
