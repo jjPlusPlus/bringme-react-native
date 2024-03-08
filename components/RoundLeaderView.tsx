@@ -31,7 +31,7 @@ const RoundLeaderView: FunctionComponent<Props> = (props) => {
       <AnnouncementHeader>
         <View>
           <Text className="font-lucky text-3xl text-bmBlue uppercase">
-            {round.status === 'IN_PROGRESS' ? `Bring me` : `You're the king`}
+            {round.status === 'IN_PROGRESS' ? `Bring me...` : `You're the king`}
           </Text>
         </View>
       </AnnouncementHeader>
@@ -126,9 +126,9 @@ const Players = (props: any) => {
     // This is how we would get the image from the storage bucket
     const path = `${process.env.EXPO_PUBLIC_SUPABASE_URL}/storage/v1/object/public/submissions/${submission.path}`
   */
-
+  console.log(players)
   return (
-    <View>
+    <View className="flex-row flex-wrap">
       <Text>Players</Text>
       {/* Show each of the other player's */}
       {players.map((player: User) => {
@@ -138,24 +138,7 @@ const Players = (props: any) => {
         const submission = submissions.find((s: any) => s.player.id === player.id)
 
         return (
-          //     <View key={player.id} className="flex-1 items-center">
-          //   <View className="bg-bmPeach h-36 p-4 relative rounded-[20px] w-full">
-          //     <Image source={loading} className="h-full w-full" resizeMode="contain" />
-          //     <View className="absolute bg-bmBlue bottom-[-15px] px-4 py-2 rounded-md self-center">
-          //       <Text className="text-center text-sm text-white">{player.username}</Text>
-          //     </View>
-          //   </View>
-          //   <TouchableOpacity
-          //     onPress={() => {
-          //       // set the round winner
-          //       endRound(round, player)
-          //     }}
-          //   >
-          //     <Text>Accept</Text>
-          //   </TouchableOpacity>
-          // </View>
-          <View key={player.id}>
-            <Text>{player.username}</Text>
+          <View key={player.id} className="flex-1 items-center">
             {submission ? (
               <View>
                 <Image
@@ -167,7 +150,12 @@ const Players = (props: any) => {
                 />
               </View>
             ) : (
-              <Text>Not Submitted</Text>
+              <View className="bg-bmPeach h-36 p-4 relative rounded-[20px] w-full">
+                <Image source={loading} className="h-full w-full" resizeMode="contain" />
+                <View className="absolute bg-bmBlue bottom-[-15px] px-4 py-2 rounded-md self-center">
+                  <Text className="text-center text-sm text-white">{player.username}</Text>
+                </View>
+              </View>
             )}
             <TouchableOpacity
               onPress={() => {
