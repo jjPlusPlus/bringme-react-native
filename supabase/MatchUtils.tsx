@@ -3,7 +3,7 @@ import { supabase } from './init'
 import { MATCH_STATES } from './constants'
 import { User, Match, Round } from '../components/types'
 
-export function useMatchData(room_code:string | undefined) {
+export function useMatchData(room_code:string | undefined, user: User) {
 
   const getMatchData = async () => {
     if (!room_code) {
@@ -74,6 +74,33 @@ export function useMatchData(room_code:string | undefined) {
             console.log('error subscribing to match updates: ', err.message)
           }
         })
+      const matchRoom = supabase.channel(matchId, {
+        config: {
+          presence: {
+            key: user.id,
+          },
+        },
+      })
+      matchRoom
+        .on('presence', { event: 'sync' }, () => {
+          const newState = matchRoom.presenceState()
+          setPresence(newState)
+        })
+        .on('presence', { event: 'join' }, ({ key, newPresences }) => {
+          console.log('join', key, newPresences)
+        })
+        .on('presence', { event: 'leave' }, ({ key, leftPresences }) => {
+          console.log('leave', key, leftPresences)
+        })
+        .subscribe((status, err) => {
+          if (status) {
+            console.log('status: ', status)
+          } else if (err) {
+            console.log('error subscribing to presence: ', err.message)
+          }
+        })
+      matchRoom.track({})
+
     }
   }
 
@@ -177,6 +204,7 @@ export function useMatchData(room_code:string | undefined) {
   }
 
   const [matchData, setMatchData] = useState<any>()
+  const [presence, setPresence] = useState<any>()
 
   useEffect(() => {
     getMatchData()
@@ -189,6 +217,7 @@ export function useMatchData(room_code:string | undefined) {
   }, [matchData])
 
   return {
+    presence,
     matchData,
     startMatch,
     leaveMatch,

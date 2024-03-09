@@ -19,7 +19,7 @@ interface Props {
 const Match: FunctionComponent<Props> = (props) => {
   const { user, route } = props
   const room_code = route?.params?.room_code
-  const { matchData, startRound, acceptSubmission} = useMatchData(room_code)
+  const { presence, matchData, startRound, acceptSubmission} = useMatchData(room_code, user)
   const [ round, setRound ] = useState<Round | null>(null)
   const [devToolsOpen, setDevToolsOpen] = useState(false)
 
