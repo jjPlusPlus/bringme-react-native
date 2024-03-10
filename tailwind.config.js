@@ -10,6 +10,7 @@ module.exports = {
         bmOrange: "#fe564f",
         bmBlue: "#2567ee",
         bmPeach: "#ffe8e6",
+        bmTeal: "#324A58",
       },
       fontFamily: {
         lucky: "LuckiestGuy-Regular",
