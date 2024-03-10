@@ -4,15 +4,17 @@ import { Image, Text, View } from 'react-native'
 import hostImage from '../assets/host-says.png'
 
 interface Props {
+  headerImage?: String;
   children: any;
 }
 
 const AnnouncementHeader: FunctionComponent<Props> = (props) => {
-  const { children } = props;
+  const { headerImage, children } = props;
+
   return (
     <View className="h-48 relative w-full">
       <Image
-        source={hostImage}
+        source={headerImage ? headerImage : hostImage}
         className="absolute flex-start h-full left-0 top-0 w-full"
         resizeMode="contain"
         resizeMethod="resize"

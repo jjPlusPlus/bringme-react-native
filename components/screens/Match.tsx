@@ -24,28 +24,28 @@ const Match: FunctionComponent<Props> = (props) => {
   const [devToolsOpen, setDevToolsOpen] = useState(false)
 
   // might need to refactor this to better reflect the state of the data
-  const { 
-    players, 
-    host, 
+  const {
+    players,
+    host,
     rounds,
     round_index,
     status,
-    room_code:code 
+    room_code: code
   } = matchData || {}
 
   // On component mount
   useEffect(() => {
     if (!matchData) {
       return
-    } 
+    }
     // TODO: handle back action
   }, [matchData])
 
   useEffect(() => {
-    if (!rounds) { 
-      return 
+    if (!rounds) {
+      return
     }
-    const currentRound = rounds.find((r:Round) => r.round_index === round_index) || rounds[0]
+    const currentRound = rounds.find((r: Round) => r.round_index === round_index) || rounds[0]
     setRound(currentRound)
   }, [round_index, rounds])
 
@@ -56,7 +56,7 @@ const Match: FunctionComponent<Props> = (props) => {
   }
 
   if (!round) {
-    return ( <View><Text>Waiting to start game</Text></View> )
+    return (<View><Text>Waiting to start game</Text></View>)
   }
 
   const leader = players.find((player: User) => player.id === round.leader)
@@ -102,14 +102,14 @@ const Match: FunctionComponent<Props> = (props) => {
           )
         }}
       >
-        <SafeAreaView>
+        <SafeAreaView className="bg-white flex-1 h-full">
           {round.leader === user.id ? (
-            <RoundLeaderView 
-              round={round} 
-              user={user} 
-              players={players} 
+            <RoundLeaderView
+              round={round}
+              user={user}
+              players={players}
               room_code={room_code}
-              startRound={startRound} 
+              startRound={startRound}
               acceptSubmission={acceptSubmission}
             />
           ) : (

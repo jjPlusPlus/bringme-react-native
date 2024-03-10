@@ -43,7 +43,7 @@ const Home: FunctionComponent<Props> = (props) => {
       </View>
       <View className="flex-1 w-full">
         <Image source={require('../../assets/list.png')}
-          className="h-[350] w-full"
+          className="h-[300] w-full"
           resizeMode="contain"
         />
         <View className="p-4">
