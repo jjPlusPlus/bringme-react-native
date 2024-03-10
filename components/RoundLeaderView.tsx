@@ -25,6 +25,7 @@ interface Props {
 
 const RoundLeaderView: FunctionComponent<Props> = (props) => {
   const { user, round, players, room_code, startRound, acceptSubmission } = props
+  const [roundWord, setRoundWord] = useState<string>('')
 
   return (
     <View className="bg-white flex h-full p-4">
