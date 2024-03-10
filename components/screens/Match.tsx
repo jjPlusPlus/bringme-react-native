@@ -82,7 +82,7 @@ const Match: FunctionComponent<Props> = (props) => {
           )
         }}
       >
-        <SafeAreaView className="bg-white">
+        <SafeAreaView className="bg-white flex-1 h-full">
           {round.leader === user.id ? (
             <RoundLeaderView
               round={round}
