@@ -73,11 +73,31 @@ const Match: FunctionComponent<Props> = (props) => {
               <Text>Created by: {host.username}</Text>
               <Text>Match status: {status}</Text>
               <Text>Match started at: TODO</Text>
-              <Text>Players: {players.map((player: User) => player.username).join(', ')}</Text>
               <Text>Round: {round.round_index + 1} | #{round.id}</Text>
               <Text>Round Status: {round.status}</Text>
               <Text>Round Word: {round.word}</Text>
               <Text>Started At: {round.started_at || "Not yet"}</Text>
+
+              <View>
+                <Text>Players:</Text> 
+                {players.map((player: User) => {
+                  // Online status / connection indicator using Supabase Realtime Presence
+                  const isPresent = presence && Object.keys(presence).find((p:string) => p === player.id)
+                  // search the rounds array for object where the winner is the current player
+                  const points = rounds.reduce((acc: any, round: Round) => {
+                    if (round.winner === player.id) {
+                      acc += round.points
+                    }
+                    return acc
+                  }, 0)
+
+                  return (
+                    <Text key={player.id}>
+                      {isPresent ? 'Y' : 'N'} {player.username} {points}
+                    </Text>
+                  )
+                })}
+              </View>
             </SafeAreaView>
           )
         }}
