@@ -20,7 +20,7 @@ export interface Round {
   created_at: string
   match_id: string
   leader: string
-  winner?: User
+  winner?: string
   word: string
   points: number
   time: number
