@@ -146,8 +146,8 @@ const MatchLobby: FunctionComponent<Props> = (props) => {
                 readyToStart ?
                   isHost ?
                     "Start Match"
-                    : "Waiting for Host"
-                  : "Waiting for Players"
+                    : "Waiting for Host..."
+                  : "Waiting for Players..."
               }
             </StyledButtonText>
           </StyledButton>
