@@ -139,7 +139,7 @@ const Players = (props: any) => {
         const submission = submissions.find((s: any) => s.player.id === player.id)
 
         return (
-          <View key={player.id} className="flex-1 items-center">
+          <View key={player.id} className="items-center gap-4 w-1/2">
             {submission ? (
               <View>
                 <Image

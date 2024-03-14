@@ -123,7 +123,9 @@ const RoundPlayerView: FunctionComponent<Props> = (props) => {
                     </TouchableOpacity>
                   </View>
 
-                  <Text className="font-lucky mt-2 text-bmTeal text-center text-3xl">Ready to send?</Text>
+                  <Text className="font-lucky mt-8 text-bmTeal text-center text-3xl">
+                    Ready to send?
+                  </Text>
                   <View className="px-4">
                     <TouchableOpacity
                       className="bg-bmBlue items-center justify-center mb-1 mt-4 p-3 rounded-[15px] w-full"
