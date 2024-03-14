@@ -151,11 +151,14 @@ const Players = (props: any) => {
                 />
               </View>
             ) : (
-              <View className="bg-bmPeach h-36 p-4 relative rounded-[20px] w-full">
-                <Image source={loading} className="h-full w-full" resizeMode="contain" />
-                <View className="absolute bg-bmBlue bottom-[-15px] px-4 py-2 rounded-md self-center">
-                  <Text className="text-center text-sm text-white">{player.username}</Text>
+              <View className="h-36 w-full">
+                <View className="bg-bmPeach h-full p-4 relative rounded-[20px] w-full z-10">
+                  <Image source={loading} className="h-full w-full" resizeMode="contain" />
+                  <View className="absolute bg-bmBlue bottom-[-15px] px-4 py-2 rounded-md self-center">
+                    <Text className="font-bold text-center text-sm text-white">{player.username}</Text>
+                  </View>
                 </View>
+                <View className="absolute border border-bmYellow h-36 transform -translate-x-3 -translate-y-3 rounded-[20px] w-full -z-50" />
               </View>
             )}
             <TouchableOpacity
