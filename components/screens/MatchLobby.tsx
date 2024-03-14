@@ -44,10 +44,10 @@ const MatchLobby: FunctionComponent<Props> = (props) => {
   const room_code = props?.route?.params?.room_code
   const { matchData, startMatch, leaveMatch } = useMatchData(room_code, user)
 
-  const { 
-    players, 
-    host, 
-    room_code:code 
+  const {
+    players,
+    host,
+    room_code: code
   } = matchData || {}
 
   const readyToStart = players?.length ? players.length >= MIN_PLAYERS : false
@@ -57,17 +57,17 @@ const MatchLobby: FunctionComponent<Props> = (props) => {
     if (!matchData) {
       return
     }
-  
+
     if (matchData?.status === MATCH_STATES.STARTED) {
       props.navigation.navigate('Match', { room_code: matchData?.room_code })
-    } 
+    }
 
     /* On component mount, setup "back" confirmation 
      * https://reactnavigation.org/docs/preventing-going-back/
      * Note: added match as a dependency key 
      *  because the match is undefined on the first render
-    */ 
-    const beforeRemove = (e:any) => {
+    */
+    const beforeRemove = (e: any) => {
       e.preventDefault()
       Alert.alert(
         'Leave the Lobby?',
@@ -79,7 +79,7 @@ const MatchLobby: FunctionComponent<Props> = (props) => {
             style: 'destructive',
             onPress: () => {
               leaveMatch(matchData.id, user.id)
-              props.navigation.dispatch(e.data.action)    
+              props.navigation.dispatch(e.data.action)
             },
           },
         ]
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
   },
 })
 const StyledButton = styled(
-  TouchableOpacity, 
+  TouchableOpacity,
   'bg-bmBlue disabled:bg-gray-400 items-center mx-4 p-4 pb-2 rounded-[20px] text-4xl '
 )
 const StyledButtonText = styled(Text, 'font-lucky text-3xl text-white')
