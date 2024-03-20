@@ -10,19 +10,35 @@ const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
+
+const ROUND_COUNTDOWN_PADDING = 10000 // 10 seconds
+
 Deno.serve(async (req: any) => {
   try {
     const { round, roundWord } = await req.json() 
     if (!round) throw new Error("Missing 'round' in request body")
 
+    // give padding for a countdown
+    const start_at = new Date().getTime() + ROUND_COUNTDOWN_PADDING
+
     const { data, error } = await supabase_client
       .from('rounds')
       .update({ 
-        status: 'IN_PROGRESS',
+        status: 'STARTING',
         word: roundWord,
-        started_at: new Date().toISOString(),
+        started_at: new Date(start_at).toISOString(),
       })
       .eq('id', round.id)
+    
+    // Update the round status to "IN_PROGRESS" after the 10 second countdown
+    setTimeout(async () => {
+      const { data, error } = await supabase_client
+      .from('rounds')
+      .update({ 
+        status: 'IN_PROGRESS',
+      })
+      .eq('id', round.id)
+    }, ROUND_COUNTDOWN_PADDING)
 
     const getNextLeader = (match_snapshot: any) => {
       const { players, rounds } = match_snapshot
@@ -90,7 +106,7 @@ Deno.serve(async (req: any) => {
           })
           .eq('id', match_snapshot.id)
       }
-    }, (Deno.env.get('EXPO_PUBLIC_ROUND_LENGTH') || 60) * 1000 )
+    }, (Deno.env.get('EXPO_PUBLIC_ROUND_LENGTH') || 70) * 1000 )
 
     return new Response(
       JSON.stringify({ data, error }),
