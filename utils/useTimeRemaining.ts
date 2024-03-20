@@ -13,6 +13,11 @@ const useTimeRemaining = ( start: string, seconds: number): number => {
       const now = Math.round( Date.now() / 1000 )
       const remainder = seconds - (now - start_in_seconds)
 
+      // we want remainder to be a countdown if it's over the round length in seconds
+      if (remainder > seconds) {
+        return setRemaining((remainder - seconds).toString())
+      }
+
       setRemaining(remainder.toString())
 
       // redundant (because a remainder of zero is also !remainder) but explicit
