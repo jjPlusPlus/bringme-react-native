@@ -8,12 +8,12 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import { Ionicons, MaterialIcons, MaterialCommunityIcons, Feather } from '@expo/vector-icons'
 import { supabase } from '../supabase/init'
 import { styled } from 'nativewind'
+import { ROUND_STATES } from './constants'
 
 import AnnouncementHeader from './AnnouncementHeader'
 import BottomBar from './BottomBar'
 import handWaiting from '../assets/hand-waiting.png'
 import divider from '../assets/divider.png'
-
 
 // WebRTC
 // import { mediaDevices, RTCView } from 'react-native-webrtc'
@@ -30,7 +30,7 @@ interface Props {
 const RoundPlayerView: FunctionComponent<Props> = (props) => {
   const { round, leader, user } = props
   const [hasCameraPermission, setHasCameraPermission] = useState(false)
-  const [type, setType] = useState(CameraType.back);
+  const [type, setType] = useState(CameraType.back)
   const [image, setImage] = useState<CameraCapturedPicture | null>(null)  // Todo: type should be CameraCapturedPicture but it's not in the expo-camera types
   const cameraRef = useRef<Camera>(null)
 
@@ -78,11 +78,9 @@ const RoundPlayerView: FunctionComponent<Props> = (props) => {
   return (
     <SafeAreaView className="bg-white flex-1">
       <View className="flex-1">
-        {round.status != 'IN_PROGRESS' ? (
+        {round.status === ROUND_STATES.STARTING ? (
           <>
-            {/* Show this section before the camera
-             /* It counts down from 3 then switches to the camera view
-
+            {/* Show this section before the camera */}
             <View>
               <AnnouncementHeader>
                 <View>
@@ -92,12 +90,13 @@ const RoundPlayerView: FunctionComponent<Props> = (props) => {
                 </View>
               </AnnouncementHeader>
               <View>
-                <Text>3, 2, 1 countdown goes here!</Text>
+                <RoundTimer round={round} />
               </View>
             </View>
-            */}
-
-            <View className="items-center w-full">
+          </>
+        ) : (round.status === ROUND_STATES.IN_PROGRESS) ? (
+          <>
+            <View>
               <RoundTimer round={round} />
             </View>
 
@@ -231,8 +230,20 @@ const RoundPlayerView: FunctionComponent<Props> = (props) => {
 const RoundTimer = (props: any) => {
   const { round } = props
   const remaining_time = useTimeRemaining(round.started_at, round.time)
+
   return (
-    <Text className="font-luck items-center text-5xl">{remaining_time}</Text>
+    <View>
+      <AnnouncementHeader>
+        <View>
+          <Text className="font-lucky text-3xl text-bmBlue uppercase">
+            Bring me...
+          </Text>
+        </View>
+      </AnnouncementHeader>
+      <View>
+        <Text className="font-luck items-center text-5xl">{remaining_time}</Text>
+      </View>
+    </View>
   )
 }
 
