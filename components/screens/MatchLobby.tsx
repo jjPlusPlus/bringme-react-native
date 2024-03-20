@@ -2,7 +2,7 @@ import React, { useState, useEffect, FunctionComponent } from 'react'
 import { RouteProp } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { StyleSheet, Text, TextInput, View, Alert, Button, TouchableOpacity } from 'react-native'
-import { MATCH_STATES } from './constants'
+import { MATCH_STATES } from '../constants'
 import { RootStackParamList } from '../../App'
 import { styled } from "nativewind"
 import { supabase } from '../../supabase/init'

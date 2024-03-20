@@ -33,7 +33,7 @@ Deno.serve(async (req: any) => {
       const nextLeader = players[nextLeaderIndex].id
       return nextLeader
     }
-    
+
     // using a javascript timeout feels gross to me... I would prefer to use a background worker or something
     // but I don't know how to do that in deno/supabase yet. 
     // This timeout could be unreliable if the server is under heavy load.
@@ -76,7 +76,7 @@ Deno.serve(async (req: any) => {
         await supabase_client
           .from('rounds')
           .update({
-            status: 'STARTED',
+            status: 'ACTIVE',
             leader: next_leader
           })
           .eq('match_id', round_snapshot.match_id)

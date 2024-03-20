@@ -32,7 +32,7 @@ Deno.serve(async (req: any) => {
     const { error: leaderError } = await supabase_client
       .from('rounds')
         .update({ 
-          status: 'STARTING',
+          status: 'ACTIVE',
           leader: players[0].user_id
         })
         .eq('match_id', match_id)
