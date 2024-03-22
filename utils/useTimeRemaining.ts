@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react'
 
 const useTimeRemaining = ( start: string, seconds: number): number => {
-  const [remaining, setRemaining] = useState(() => seconds.toString())
+  const [remaining, setRemaining] = useState('')
 
   useEffect(() => {
     if (!start || !seconds) { return }
@@ -15,10 +15,10 @@ const useTimeRemaining = ( start: string, seconds: number): number => {
 
       // we want remainder to be a countdown if it's over the round length in seconds
       if (remainder > seconds) {
-        return setRemaining((remainder - seconds).toString())
+        return setRemaining((remainder - seconds).toString() || '')
       }
 
-      setRemaining(remainder.toString())
+      setRemaining(remainder.toString() || '')
 
       // redundant (because a remainder of zero is also !remainder) but explicit
       if (!remainder || remainder == 0) {
