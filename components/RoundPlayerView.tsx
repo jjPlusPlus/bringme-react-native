@@ -82,13 +82,13 @@ const RoundPlayerView: FunctionComponent<Props> = (props) => {
           <>
             {/* Show this section before the camera */}
             <View>
-              <AnnouncementHeader>
+              {/* <AnnouncementHeader>
                 <View>
                   <Text className="font-lucky text-3xl text-bmBlue uppercase">
                     Bring me...
                   </Text>
                 </View>
-              </AnnouncementHeader>
+              </AnnouncementHeader> */}
               <View>
                 <RoundTimer round={round} />
               </View>
@@ -160,6 +160,11 @@ const RoundPlayerView: FunctionComponent<Props> = (props) => {
               </>
             ) : (
               <View>
+                <View>
+                  <Image source={divider} />
+                  <Text className="font-lucky text-4xl mb-4 mt-5 text-center uppercase">{round.word}</Text>
+                  <Image className="" source={divider} />
+                </View>
                 <View className="h-2/3 py-4 rounded-[20px] overflow-hidden">
                   {/* Show a camera view for the player */}
                   <Camera type={type} ref={cameraRef}>
@@ -169,11 +174,6 @@ const RoundPlayerView: FunctionComponent<Props> = (props) => {
                       </TouchableOpacity>
                     </View>
                   </Camera>
-                </View>
-                <View>
-                  <Image source={divider} />
-                  <Text className="font-lucky text-4xl mb-4 mt-5 text-center uppercase">{round.word}</Text>
-                  <Image className="" source={divider} />
                 </View>
               </View>
             )}
