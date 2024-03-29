@@ -262,7 +262,7 @@ const RoundTimer = (props: any) => {
 
   return (
     <View>
-      <Text className="font-luck items-center text-5xl">{remaining_time}</Text>
+      <Text className="font-luck items-center text-5xl">{remaining_time || ''}</Text>
     </View>
   )
 }
