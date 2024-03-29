@@ -1,4 +1,5 @@
 import React, { FunctionComponent, useState, useEffect, useRef } from 'react'
+import { Dispatch, SetStateAction } from 'react'
 import { Text, View, Image, SafeAreaView } from 'react-native'
 import { Camera, CameraCapturedPicture, CameraType } from 'expo-camera'
 import * as FileSystem from 'expo-file-system'
@@ -19,13 +20,15 @@ const divider = require('../assets/divider.png')
 import { User, Round } from './types'
 import { content } from '../tailwind.config'
 
-interface Props {
+
+
+interface RoundPlayerViewProps {
   round: Round
   leader: User
   user: User
 }
 
-const RoundPlayerView: FunctionComponent<Props> = (props) => {
+const RoundPlayerView: FunctionComponent<RoundPlayerViewProps> = (props) => {
   const { round, leader, user } = props
 
   switch (round.status) {
@@ -40,10 +43,7 @@ const RoundPlayerView: FunctionComponent<Props> = (props) => {
   }
 }
 
-interface RoundStartingProps {
-  round: Round
-}
-const RoundStarting: FunctionComponent<RoundStartingProps> = (props) => {
+const RoundStarting: FunctionComponent<{round: Round}> = (props) => {
   const { round } = props
   return (
     <SafeAreaView className="bg-white flex-1">
@@ -63,13 +63,7 @@ const RoundStarting: FunctionComponent<RoundStartingProps> = (props) => {
   )
 }
 
-interface ImagePreviewProps {
-  image: any,
-  setImage: any,
-  round: Round,
-  user: User
-}
-const ImagePreview: FunctionComponent<ImagePreviewProps> = (props) => {
+const ImagePreview: FunctionComponent<{image: any, setImage: any, round: Round, user: User}> = (props) => {
   const { image, setImage, round, user } = props
   return (
     <View className="h-2/3 py-4 relative">
@@ -110,44 +104,10 @@ const ImagePreview: FunctionComponent<ImagePreviewProps> = (props) => {
   )
 }
 
-interface CameraWrapperProps {
-  type: any,
-  cameraRef: any,
-  take_picture: any,
-  round: any
-} 
-const CameraWrapper: FunctionComponent<CameraWrapperProps> = (props) => {
-  const { type, cameraRef, take_picture, round } = props
-  return (
-    <View>
-      <View>
-        <Image source={divider} />
-        <Text className="font-lucky text-4xl mb-4 mt-5 text-center uppercase">{round.word}</Text>
-        <Image className="" source={divider} />
-      </View>
-      <View className="h-2/3 py-4 rounded-[20px] overflow-hidden">
-        {/* Show a camera view for the player */}
-        <Camera type={type} ref={cameraRef}>
-          <View className="h-full justify-end w-full">
-            <TouchableOpacity className="self-center mb-4" onPress={take_picture}>
-              <Ionicons name="ios-radio-button-on" size={50} color="white" />
-            </TouchableOpacity>
-          </View>
-        </Camera>
-      </View>
-    </View>
-  )
-}
-
-interface RoundInProgressProps {
-  round: Round,
-  user: User
-}
-const RoundInProgress: FunctionComponent<RoundInProgressProps> = (props) => {
-  const { round, user } = props
+const CameraWrapper: FunctionComponent<{ round: Round, image: any, setImage: any }> = (props) => {
+  const { round, image, setImage } = props
   const cameraRef = useRef<Camera>(null)
   const [type, setType] = useState(CameraType.back)
-  const [image, setImage] = useState<CameraCapturedPicture | null>(null)  // Todo: type should be CameraCapturedPicture but it's not in the expo-camera types
   const [hasCameraPermission, setHasCameraPermission] = useState(false)
 
   useEffect(() => {
@@ -172,16 +132,25 @@ const RoundInProgress: FunctionComponent<RoundInProgressProps> = (props) => {
   }
 
   return (
-    <SafeAreaView className="bg-white flex-1">
-      <View className="flex-1">
-        <View>
-          <RoundTimer round={round} />
-        </View>
-        {image ? (
-          <ImagePreview image={image} setImage={setImage} round={round} user={user} />
-        ) : (
-          <CameraWrapper type={type} cameraRef={cameraRef} take_picture={take_picture} round={round}/>
-        )}
+    <View className="h-full flex flex-col">
+
+      <View>
+        <Image source={divider} />
+        <Text className="font-lucky text-4xl mb-4 mt-5 text-center uppercase">{round.word}</Text>
+        <Image className="" source={divider} />
+      </View>
+
+      <View>
+        <RoundTimer round={round} />
+      </View>
+
+      <View className="flex-1 py-4 rounded-[20px] overflow-hidden">
+        {/* Show a camera view for the player */}
+        <Camera type={type} ref={cameraRef}>
+          <View className="h-full justify-end w-full">
+
+          </View>
+        </Camera>
       </View>
       <BottomBar>
         {!image ?
@@ -204,48 +173,56 @@ const RoundInProgress: FunctionComponent<RoundInProgressProps> = (props) => {
           : null
         }
       </BottomBar>
+    </View>
+  )
+}
+
+const RoundInProgress: FunctionComponent<{ round: Round, user: User }> = (props) => {
+  const { round, user } = props
+  const [image, setImage] = useState<CameraCapturedPicture | null>(null)  // Todo: type should be CameraCapturedPicture but it's not in the expo-camera types
+
+  return (
+    <SafeAreaView className="">
+      <View className="">
+        {image ? (
+          <ImagePreview image={image} setImage={setImage} round={round} user={user} />
+        ) : (
+          <CameraWrapper image={image} setImage={setImage} round={round} />
+        )}
+      </View>
     </SafeAreaView>
   )
 }
 
-interface RoundActiveProps {
-  leader: User,
-  user: User
-}
-const RoundActive:FunctionComponent<RoundActiveProps> = (props) => {
+const RoundActive: FunctionComponent<{ leader: User, user: User }> = (props) => {
   const { leader, user } = props
   return (
     <SafeAreaView className="bg-white flex-1">
       <View className="flex-1">
         <View className='bg-white h-full px-4 py-2'>
-        <AnnouncementHeader headerImage={handWaiting}>
-          <Text className="font-lucky ml-2 text-3xl text-bmBlue uppercase">
-            Waiting...
-          </Text>
-          <View className="px-3 ml-12 -mt-1 w-2/3">
-            <Text className="text-left">
-              <Text className="font-bold">{leader?.username}</Text> is currently writing their decree.
+          <AnnouncementHeader headerImage={handWaiting}>
+            <Text className="font-lucky ml-2 text-3xl text-bmBlue uppercase">
+              Waiting...
             </Text>
-          </View>
-        </AnnouncementHeader>
-        <View className="flex-1 gap-4">
-          <View className="border-2 border-bmBlue h-[150px] relative rounded-[20px] w-1/2 z-10">
-            <View className="absolute bg-bmPeach h-full rounded-[20px] translate-x-2 -translate-y-2 w-full -z-10" />
-            <Text>{user.username} live cam goes here?</Text>
+            <View className="px-3 ml-12 -mt-1 w-2/3">
+              <Text className="text-left">
+                <Text className="font-bold">{leader?.username}</Text> is currently writing their decree.
+              </Text>
+            </View>
+          </AnnouncementHeader>
+          <View className="flex-1 gap-4">
+            <View className="border-2 border-bmBlue h-[150px] relative rounded-[20px] w-1/2 z-10">
+              <View className="absolute bg-bmPeach h-full rounded-[20px] translate-x-2 -translate-y-2 w-full -z-10" />
+              <Text>{user.username} live cam goes here?</Text>
+            </View>
           </View>
         </View>
-      </View>
       </View>
     </SafeAreaView>
   )
 }
 
-
-interface RoundOutsideStateProps {
-  status: string
-}
-
-const RoundOutsideState: FunctionComponent<RoundOutsideStateProps> = (props) => {
+const RoundOutsideState: FunctionComponent<{status: string}> = (props) => {
   const { status } = props
   return (
     <SafeAreaView className="bg-white flex-1">
@@ -256,7 +233,7 @@ const RoundOutsideState: FunctionComponent<RoundOutsideStateProps> = (props) => 
   )
 }
 
-const RoundTimer = (props: any) => {
+const RoundTimer: FunctionComponent<{round:Round}> = (props) => {
   const { round } = props
   const remaining_time = useTimeRemaining(round.started_at, round.time)
 
