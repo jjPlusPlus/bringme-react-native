@@ -15,10 +15,10 @@ const useTimeRemaining = ( start: string, seconds: number): number => {
 
       // we want remainder to be a countdown if it's over the round length in seconds
       if (remainder > seconds) {
-        return setRemaining((remainder - seconds).toString() || '')
+        return setRemaining((remainder - seconds).toString())
       }
 
-      setRemaining(remainder.toString() || '')
+      setRemaining(remainder.toString())
 
       // redundant (because a remainder of zero is also !remainder) but explicit
       if (!remainder || remainder == 0) {
@@ -29,7 +29,7 @@ const useTimeRemaining = ( start: string, seconds: number): number => {
     return () => clearInterval(timer)
   }, [start])
 
-  return parseInt(remaining)
+  return remaining ? parseInt(remaining) : 0
 }
 
 export default useTimeRemaining
