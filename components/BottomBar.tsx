@@ -7,7 +7,7 @@ interface Props {
   children: any;
 }
 
-const AnnouncementHeader: FunctionComponent<Props> = (props) => {
+const BottomBar: FunctionComponent<Props> = (props) => {
   const { children } = props;
 
   return (
@@ -18,4 +18,4 @@ const AnnouncementHeader: FunctionComponent<Props> = (props) => {
   )
 }
 
-export default AnnouncementHeader
+export default BottomBar
