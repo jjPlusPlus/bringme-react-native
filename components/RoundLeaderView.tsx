@@ -8,8 +8,8 @@ import { useMatchData } from '../supabase/MatchUtils'
 
 import AnnouncementHeader from './AnnouncementHeader'
 
-import divider from '../assets/divider.png'
-import loading from '../assets/loading.png'
+const divider = require('../assets/divider.png')
+const loading = require('../assets/loading.png')
 
 import { User, Round } from './types'
 import { styled } from 'nativewind'
