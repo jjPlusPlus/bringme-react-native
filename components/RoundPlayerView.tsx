@@ -17,29 +17,31 @@ import BottomBar from './BottomBar'
 const handWaiting = require('../assets/hand-waiting.png')
 const divider = require('../assets/divider.png')
 
-import { User, Round } from './types'
+import { User, Round, Submission } from './types'
 import { content } from '../tailwind.config'
-
-
 
 interface RoundPlayerViewProps {
   round: Round
   leader: User
   user: User
+  submissions: Submission[]
 }
-
 const RoundPlayerView: FunctionComponent<RoundPlayerViewProps> = (props) => {
-  const { round, leader, user } = props
+  const { round, leader, user, submissions } = props
 
   switch (round.status) {
     case ROUND_STATES.STARTING:
+      // Countdown to round start
       return <RoundStarting round={round} />
     case ROUND_STATES.IN_PROGRESS:
-      return <RoundInProgress round={round} user={user} />
+      // Player is taking & submitting their picture
+      return <RoundInProgress round={round} user={user} submissions={submissions}/>
     case ROUND_STATES.ACTIVE:
+      // Round leader is choosing a word
       return <RoundActive leader={leader} user={user} />
     default:
-      return <RoundOutsideState status={round.status} />
+      // Fallback in case we end up in an unexpected state
+      return <FallbackState status={round.status} />
   }
 }
 
@@ -63,22 +65,23 @@ const RoundStarting: FunctionComponent<{round: Round}> = (props) => {
   )
 }
 
-const RoundInProgress: FunctionComponent<{ round: Round, user: User }> = (props) => {
-  const { round, user } = props
+const RoundInProgress: FunctionComponent<{ round: Round, user: User, submissions: Submission[] }> = (props) => {
+  const { round, user, submissions } = props
   const [image, setImage] = useState<CameraCapturedPicture | null>(null)  // Todo: type should be CameraCapturedPicture but it's not in the expo-camera types
 
+  const mySubmission = submissions.find(s => s.player.id === user.id)
   // TODO: if the user has already submitted, show a new view with player submissions
-  return (
-    <SafeAreaView className="">
-      <View className="">
-        {image ? (
-          <ImagePreview image={image} setImage={setImage} round={round} user={user} />
-        ) : (
-          <CameraWrapper image={image} setImage={setImage} round={round} />
-        )}
-      </View>
-    </SafeAreaView>
-  )
+
+  if (mySubmission) {
+    // Step 3: Picture Sent (to the Round Leader)
+    return <PictureSent submission={mySubmission} />
+  } else if (image) {
+    // Step 2: Review Picture & Submit
+    return <ReviewPicture image={image} setImage={setImage} round={round} user={user} />
+  } else {
+    // Step 1: Take Picture
+    return <TakePicture image={image} setImage={setImage} round={round} />
+  }
 }
 
 const RoundActive: FunctionComponent<{ leader: User, user: User }> = (props) => {
@@ -109,48 +112,7 @@ const RoundActive: FunctionComponent<{ leader: User, user: User }> = (props) => 
   )
 }
 
-const ImagePreview: FunctionComponent<{image: any, setImage: any, round: Round, user: User}> = (props) => {
-  const { image, setImage, round, user } = props
-  return (
-    <View className="h-2/3 py-4 relative">
-      <Image
-        source={{ uri: image.uri }}
-        width={200}
-        height={200}
-        className="h-full rounded-[30px] w-full"
-      />
-      <View className="absolute mt-6 mx-2">
-        <TouchableOpacity onPress={() => {
-          setImage(null)
-        }}>
-          <Ionicons name="close" size={50} color="white" />
-        </TouchableOpacity>
-      </View>
-
-      <Text className="font-lucky mt-8 text-bmTeal text-center text-3xl">
-        Ready to send?
-      </Text>
-      <View className="px-4">
-        <TouchableOpacity
-          className="bg-bmBlue items-center justify-center mb-1 mt-4 p-3 rounded-[15px] w-full"
-          onPress={async () => {
-            const base64 = await FileSystem.readAsStringAsync(image.uri, { encoding: 'base64' })
-            const { data: submission, error: submission_error } = await supabase
-              .from('submissions')
-              .insert({
-                round_id: round.id,
-                player_id: user.id,
-                base64_image: base64
-              })
-          }}>
-          <Text className="font-bold font-lucky pt-2 justify-center text-center text-3xl text-white uppercase">Submit</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  )
-}
-
-const CameraWrapper: FunctionComponent<{ round: Round, image: any, setImage: any }> = (props) => {
+const TakePicture: FunctionComponent<{ round: Round, image: any, setImage: any }> = (props) => {
   const { round, image, setImage } = props
   const cameraRef = useRef<Camera>(null)
   const [type, setType] = useState(CameraType.back)
@@ -223,12 +185,72 @@ const CameraWrapper: FunctionComponent<{ round: Round, image: any, setImage: any
   )
 }
 
-const RoundOutsideState: FunctionComponent<{status: string}> = (props) => {
+const ReviewPicture: FunctionComponent<{image: any, setImage: any, round: Round, user: User}> = (props) => {
+  const { image, setImage, round, user } = props
+  return (
+    <View className="h-2/3 py-4 relative">
+      <Image
+        source={{ uri: image.uri }}
+        width={200}
+        height={200}
+        className="h-full rounded-[30px] w-full"
+      />
+      <View className="absolute mt-6 mx-2">
+        <TouchableOpacity onPress={() => {
+          setImage(null)
+        }}>
+          <Ionicons name="close" size={50} color="white" />
+        </TouchableOpacity>
+      </View>
+
+      <Text className="font-lucky mt-8 text-bmTeal text-center text-3xl">
+        Ready to send?
+      </Text>
+      <View className="px-4">
+        <TouchableOpacity
+          className="bg-bmBlue items-center justify-center mb-1 mt-4 p-3 rounded-[15px] w-full"
+          onPress={async () => {
+            const base64 = await FileSystem.readAsStringAsync(image.uri, { encoding: 'base64' })
+            const { data: submission, error: submission_error } = await supabase
+              .from('submissions')
+              .insert({
+                round_id: round.id,
+                player_id: user.id,
+                base64_image: base64
+              })
+          }}>
+          <Text className="font-bold font-lucky pt-2 justify-center text-center text-3xl text-white uppercase">Submit</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  )
+}
+
+const PictureSent: FunctionComponent<{submission: Submission}> = (props) => {
+  const { submission } = props
+  return (
+    <View className="h-full py-4">
+      <Image
+        source={{
+          uri: `data:image/jpeg;base64,${submission.base64_image}`
+        }}
+        width={200}
+        height={200}
+        className="h-full rounded-[30px] w-full"
+      />
+      <Text className="font-lucky mt-8 text-bmTeal text-center text-3xl">
+        Your Submission
+      </Text>
+    </View>
+  )
+}
+
+const FallbackState: FunctionComponent<{status: string}> = (props) => {
   const { status } = props
   return (
     <SafeAreaView className="bg-white flex-1">
       <View className="flex-1">
-        <Text>what the shit? {status}</Text>
+        <Text>{status}</Text>
       </View>
     </SafeAreaView>
   )

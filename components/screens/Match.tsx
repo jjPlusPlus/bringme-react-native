@@ -3,6 +3,7 @@ import { SafeAreaView, StyleSheet, Text, View, TextInput } from 'react-native'
 import { RouteProp } from '@react-navigation/native'
 import { Drawer } from 'react-native-drawer-layout'
 
+import { supabase } from '../../supabase/init'
 import { useMatchData } from '../../supabase/MatchUtils'
 import { RootStackParamList } from '../../App'
 
@@ -21,6 +22,7 @@ const Match: FunctionComponent<Props> = (props) => {
   const room_code = route?.params?.room_code
   const { presence, matchData, startRound, acceptSubmission} = useMatchData(room_code, user)
   const [ round, setRound ] = useState<Round | null>(null)
+  const [submissions, setSubmissions] = useState<any[]>([])
   const [devToolsOpen, setDevToolsOpen] = useState(false)
 
   // might need to refactor this to better reflect the state of the data
@@ -48,6 +50,51 @@ const Match: FunctionComponent<Props> = (props) => {
     const currentRound = rounds.find((r: Round) => r.round_index === round_index) || rounds[0]
     setRound(currentRound)
   }, [round_index, rounds])
+
+  useEffect(() => {
+    if (!round) {
+      return
+    }
+    refetchSubmissions()
+    supabase
+      .channel(`submissions:${round.id}`)
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'submissions',
+          filter: `round_id=eq.${round.id}`
+        }, refetchSubmissions
+      )
+      .subscribe((status, err) => {
+        if (status) {
+          console.log(status, ': subscribed to submission updates')
+        } else if (err) {
+          console.log('error subscribing to submission updates: ', err.message)
+        }
+      })
+  }, [round])
+
+  const refetchSubmissions = async () => {
+    if (!round) {
+      return
+    }
+    const { data, error } = await supabase
+      .from('submissions')
+      .select(`
+        id,
+        path,
+        base64_image,
+        player:users ( id, username )
+      `)
+      .eq('round_id', round.id)
+    if (error) {
+      console.log('fetchSubmissions error: ', error)
+    } else {
+      setSubmissions(data || [])
+    }
+  }
 
   if (!matchData) {
     return (
@@ -110,6 +157,7 @@ const Match: FunctionComponent<Props> = (props) => {
               players={players}
               room_code={room_code}
               startRound={startRound}
+              submissions={submissions}
               acceptSubmission={acceptSubmission}
             />
           ) : (
@@ -117,6 +165,7 @@ const Match: FunctionComponent<Props> = (props) => {
               round={round}
               leader={leader}
               user={user}
+              submissions={submissions}
             />
           )}
         </SafeAreaView>

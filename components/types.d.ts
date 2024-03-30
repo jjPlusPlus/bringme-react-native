@@ -30,3 +30,12 @@ export interface Round {
   status: string
   round_index: number
 }
+export interface Submission {
+  id: string
+  round_id: string
+  player: User
+  base64_image: string
+  created_at: string
+  updated_at: string
+  accepted: boolean
+}

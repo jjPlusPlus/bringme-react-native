@@ -2,29 +2,27 @@ import React, { FunctionComponent, useState, useEffect } from 'react'
 import { Text, View, Image, TextInput } from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-import useTimeRemaining from '../utils/useTimeRemaining'
-import { supabase } from '../supabase/init'
-import { useMatchData } from '../supabase/MatchUtils'
 
+import useTimeRemaining from '../utils/useTimeRemaining'
 import AnnouncementHeader from './AnnouncementHeader'
 
 const divider = require('../assets/divider.png')
 const loading = require('../assets/loading.png')
 
-import { User, Round } from './types'
+import { User, Round, Submission } from './types'
 import { styled } from 'nativewind'
 
-interface Props {
+interface RoundLeaderViewProps {
   user: User
   round: Round
   players: User[]
   room_code?: string
+  submissions: Submission[]
   startRound: (round: Round, word: string) => void
   acceptSubmission: (round: Round, player: User) => void
 }
-
-const RoundLeaderView: FunctionComponent<Props> = (props) => {
-  const { user, round, players, room_code, startRound, acceptSubmission } = props
+const RoundLeaderView: FunctionComponent<RoundLeaderViewProps> = (props) => {
+  const { user, round, players, room_code, startRound, submissions, acceptSubmission } = props
   const [roundWord, setRoundWord] = useState<string>('')
 
   return (
@@ -44,7 +42,7 @@ const RoundLeaderView: FunctionComponent<Props> = (props) => {
             <Image className="" source={divider} />
           </View>
           <MaterialIcons name="timer" size={24} color="black" />
-          <Players players={players} acceptSubmission={acceptSubmission} round={round} user={user} />
+          <RoundPlayers players={players} submissions={submissions} acceptSubmission={acceptSubmission} round={round} user={user} />
         </>
       ) : (
         <View className="my-4">
@@ -78,56 +76,19 @@ const RoundTimer = (props: any) => {
   )
 }
 
-const Players = (props: any) => {
-  const { user, players, acceptSubmission, round } = props
-  const [submissions, setSubmissions] = useState<any[]>([])
-
-  useEffect(() => {
-    // get all submissions, and then subscribe to submissions
-    refetchSubmissions()
-    // subscribe to submissions
-    supabase
-      .channel(`submissions:${round.id}`)
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'submissions',
-          filter: `round_id=eq.${round.id}`
-        }, refetchSubmissions
-      )
-      .subscribe((status, err) => {
-        if (status) {
-          console.log(status, ': subscribed to submission updates')
-        } else if (err) {
-          console.log('error subscribing to submission updates: ', err.message)
-        }
-      })
-  }, [])
-
-  const refetchSubmissions = async () => {
-    const { data, error } = await supabase
-      .from('submissions')
-      .select(`
-        id,
-        path,
-        base64_image,
-        player:users ( id, username )
-      `)
-      .eq('round_id', round.id)
-    if (error) {
-      console.log('fetchSubmissions error: ', error)
-    } else {
-      setSubmissions(data || [])
-    }
-  }
-
+interface RoundPlayersProps {
+  user: User, 
+  players: User[], 
+  submissions: Submission[], 
+  acceptSubmission: (round: Round, player: User) => void, 
+  round: Round
+}
+const RoundPlayers: FunctionComponent<RoundPlayersProps> = (props) => {
+  const { user, players, submissions, acceptSubmission, round } = props
   /*
     // This is how we would get the image from the storage bucket
     const path = `${process.env.EXPO_PUBLIC_SUPABASE_URL}/storage/v1/object/public/submissions/${submission.path}`
   */
-  console.log(players)
   return (
     <View className="flex-row flex-wrap">
       <Text>Players</Text>
@@ -136,7 +97,7 @@ const Players = (props: any) => {
 
         if (player.id === user.id) { return }
 
-        const submission = submissions.find((s: any) => s.player.id === player.id)
+        const submission = submissions.find((s: Submission) => s.player.id === player.id)
 
         return (
           <View key={player.id} className="items-center gap-4 w-1/2">
