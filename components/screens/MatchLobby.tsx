@@ -91,23 +91,34 @@ const MatchLobby: FunctionComponent<Props> = (props) => {
     }
   }, [matchData])
 
-  const addTestPlayers = async () => {
-    // Add a player to the match where the user id is 
-    // This is a temporary solution to add a player to a match for testing
-    // const { data: players1Data, error: players1Error } = await supabase
-    //   .from('players')
-    //   .insert([
-    //     {
-    //       match_id: matchData.id,
-    //       user_id: 'f1d29abc-6462-4b93-b301-87224693cbb5',
-    //     }
-    //   ])
-    const { data: players2Data, error: players2Error } = await supabase
+  const addWagyu = async () => {
+    const { data: playerData, error: playerError } = await supabase
       .from('players')
       .insert([
         {
           match_id: matchData.id,
           user_id: '29b79a30-a33e-4a5a-b7a6-89c5e2225370',
+        }
+      ])
+  }
+  const addJJLaptop = async () => {
+
+    const { data: playerData, error: playerError } = await supabase
+      .from('players')
+      .insert([
+        {
+          match_id: matchData.id,
+          user_id: '42ce3231-3e65-44cd-851a-758b0cf9ec6f',
+        }
+      ])
+  }
+  const addJJPhone = async () => {
+    const { data: playerData, error: playerError } = await supabase
+      .from('players')
+      .insert([
+        {
+          match_id: matchData.id,
+          user_id: 'b2c35cea-4000-46c9-b619-eeadccf6efff',
         }
       ])
   }
@@ -130,8 +141,14 @@ const MatchLobby: FunctionComponent<Props> = (props) => {
       </View>
 
       {/* TESTING ONLY  */}
-      <TouchableOpacity onPress={addTestPlayers}>
-        <Text>Add test players</Text>
+      <TouchableOpacity onPress={addWagyu}>
+        <Text>Add Wagyu</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={addJJLaptop}>
+        <Text>Add JJ Laptop</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={addJJPhone}>
+        <Text>Add JJ Phone</Text>
       </TouchableOpacity>
 
       {/* If I'm the host, I should be able to start the match if all of the players are present */}
