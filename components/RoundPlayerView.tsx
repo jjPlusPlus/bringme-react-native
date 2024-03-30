@@ -63,6 +63,52 @@ const RoundStarting: FunctionComponent<{round: Round}> = (props) => {
   )
 }
 
+const RoundInProgress: FunctionComponent<{ round: Round, user: User }> = (props) => {
+  const { round, user } = props
+  const [image, setImage] = useState<CameraCapturedPicture | null>(null)  // Todo: type should be CameraCapturedPicture but it's not in the expo-camera types
+
+  // TODO: if the user has already submitted, show a new view with player submissions
+  return (
+    <SafeAreaView className="">
+      <View className="">
+        {image ? (
+          <ImagePreview image={image} setImage={setImage} round={round} user={user} />
+        ) : (
+          <CameraWrapper image={image} setImage={setImage} round={round} />
+        )}
+      </View>
+    </SafeAreaView>
+  )
+}
+
+const RoundActive: FunctionComponent<{ leader: User, user: User }> = (props) => {
+  const { leader, user } = props
+  return (
+    <SafeAreaView className="bg-white flex-1">
+      <View className="flex-1">
+        <View className='bg-white h-full px-4 py-2'>
+          <AnnouncementHeader headerImage={handWaiting}>
+            <Text className="font-lucky ml-2 text-3xl text-bmBlue uppercase">
+              Waiting...
+            </Text>
+            <View className="px-3 ml-12 -mt-1 w-2/3">
+              <Text className="text-left">
+                <Text className="font-bold">{leader?.username}</Text> is currently writing their decree.
+              </Text>
+            </View>
+          </AnnouncementHeader>
+          <View className="flex-1 gap-4">
+            <View className="border-2 border-bmBlue h-[150px] relative rounded-[20px] w-1/2 z-10">
+              <View className="absolute bg-bmPeach h-full rounded-[20px] translate-x-2 -translate-y-2 w-full -z-10" />
+              <Text>{user.username} live cam goes here?</Text>
+            </View>
+          </View>
+        </View>
+      </View>
+    </SafeAreaView>
+  )
+}
+
 const ImagePreview: FunctionComponent<{image: any, setImage: any, round: Round, user: User}> = (props) => {
   const { image, setImage, round, user } = props
   return (
@@ -174,51 +220,6 @@ const CameraWrapper: FunctionComponent<{ round: Round, image: any, setImage: any
         }
       </BottomBar>
     </View>
-  )
-}
-
-const RoundInProgress: FunctionComponent<{ round: Round, user: User }> = (props) => {
-  const { round, user } = props
-  const [image, setImage] = useState<CameraCapturedPicture | null>(null)  // Todo: type should be CameraCapturedPicture but it's not in the expo-camera types
-
-  return (
-    <SafeAreaView className="">
-      <View className="">
-        {image ? (
-          <ImagePreview image={image} setImage={setImage} round={round} user={user} />
-        ) : (
-          <CameraWrapper image={image} setImage={setImage} round={round} />
-        )}
-      </View>
-    </SafeAreaView>
-  )
-}
-
-const RoundActive: FunctionComponent<{ leader: User, user: User }> = (props) => {
-  const { leader, user } = props
-  return (
-    <SafeAreaView className="bg-white flex-1">
-      <View className="flex-1">
-        <View className='bg-white h-full px-4 py-2'>
-          <AnnouncementHeader headerImage={handWaiting}>
-            <Text className="font-lucky ml-2 text-3xl text-bmBlue uppercase">
-              Waiting...
-            </Text>
-            <View className="px-3 ml-12 -mt-1 w-2/3">
-              <Text className="text-left">
-                <Text className="font-bold">{leader?.username}</Text> is currently writing their decree.
-              </Text>
-            </View>
-          </AnnouncementHeader>
-          <View className="flex-1 gap-4">
-            <View className="border-2 border-bmBlue h-[150px] relative rounded-[20px] w-1/2 z-10">
-              <View className="absolute bg-bmPeach h-full rounded-[20px] translate-x-2 -translate-y-2 w-full -z-10" />
-              <Text>{user.username} live cam goes here?</Text>
-            </View>
-          </View>
-        </View>
-      </View>
-    </SafeAreaView>
   )
 }
 
