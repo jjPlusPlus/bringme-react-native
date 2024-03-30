@@ -68,13 +68,16 @@ const RoundStarting: FunctionComponent<{round: Round}> = (props) => {
 const RoundInProgress: FunctionComponent<{ round: Round, user: User, submissions: Submission[] }> = (props) => {
   const { round, user, submissions } = props
   const [image, setImage] = useState<CameraCapturedPicture | null>(null)  // Todo: type should be CameraCapturedPicture but it's not in the expo-camera types
+  const [submission, setSubmission] = useState<Submission | null>(null)
+  useEffect(() => {
+    const mySubmission = submissions.find(s => s.player.id === user.id)
+    mySubmission && setSubmission(mySubmission)
+  }, [submissions, submissions.length])
 
-  const mySubmission = submissions.find(s => s.player.id === user.id)
   // TODO: if the user has already submitted, show a new view with player submissions
-
-  if (mySubmission) {
+  if (submission) {
     // Step 3: Picture Sent (to the Round Leader)
-    return <PictureSent submission={mySubmission} />
+    return <PictureSent submission={submission} />
   } else if (image) {
     // Step 2: Review Picture & Submit
     return <ReviewPicture image={image} setImage={setImage} round={round} user={user} />

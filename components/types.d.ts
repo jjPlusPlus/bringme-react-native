@@ -34,6 +34,7 @@ export interface Submission {
   id: string
   round_id: string
   player: User
+  player_id: string
   base64_image: string
   created_at: string
   updated_at: string
