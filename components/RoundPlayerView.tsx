@@ -53,7 +53,7 @@ const RoundStarting: FunctionComponent<{round: Round}> = (props) => {
         <AnnouncementHeader>
           <View>
             <Text className="font-lucky text-3xl text-bmBlue uppercase">
-              Match Starting In:
+              Round Starting In:
             </Text>
           </View>
         </AnnouncementHeader>
@@ -190,6 +190,7 @@ const TakePicture: FunctionComponent<{ round: Round, image: any, setImage: any }
 
 const ReviewPicture: FunctionComponent<{image: any, setImage: any, round: Round, user: User}> = (props) => {
   const { image, setImage, round, user } = props
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
   return (
     <View className="h-2/3 py-4 relative">
       <Image
@@ -211,8 +212,10 @@ const ReviewPicture: FunctionComponent<{image: any, setImage: any, round: Round,
       </Text>
       <View className="px-4">
         <TouchableOpacity
-          className="bg-bmBlue items-center justify-center mb-1 mt-4 p-3 rounded-[15px] w-full"
+          className={`items-center justify-center mb-1 mt-4 p-3 rounded-[15px] w-full ${isSubmitting ? "bg-grey" : "bg-bmBlue"}`}
+          disabled={isSubmitting}
           onPress={async () => {
+            setIsSubmitting(true)
             const base64 = await FileSystem.readAsStringAsync(image.uri, { encoding: 'base64' })
             const { data: submission, error: submission_error } = await supabase
               .from('submissions')
@@ -221,8 +224,11 @@ const ReviewPicture: FunctionComponent<{image: any, setImage: any, round: Round,
                 player_id: user.id,
                 base64_image: base64
               })
+            setIsSubmitting(false)
           }}>
-          <Text className="font-bold font-lucky pt-2 justify-center text-center text-3xl text-white uppercase">Submit</Text>
+          <Text className="font-bold font-lucky pt-2 justify-center text-center text-3xl text-white uppercase">
+            {isSubmitting ? 'Submitting...' : 'Submit'}
+          </Text>
         </TouchableOpacity>
       </View>
     </View>

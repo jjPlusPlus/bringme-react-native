@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { supabase } from './init'
 import { MATCH_STATES } from './constants'
-import { User, Match, Round } from '../components/types'
+import { User, Match, Round, Submission } from '../components/types'
 
 export function useMatchData(room_code:string | undefined, user: User) {
 
@@ -162,7 +162,7 @@ export function useMatchData(room_code:string | undefined, user: User) {
     return nextLeader
   }
 
-  const acceptSubmission = async (round: Round, player: User) => {
+  const acceptSubmission = async (round: Round, player: User, submission: Submission | undefined) => {
     const time_remaining = round.time - (Math.round( Date.now() / 1000 ) - Math.round( new Date(round.started_at).getTime() / 1000 ))
     const final_score = 100 + time_remaining
     // update the current round
@@ -189,7 +189,7 @@ export function useMatchData(room_code:string | undefined, user: User) {
     const { data: nextRoundData, error: nextRoundError } = await supabase
       .from('rounds')
       .update({
-        status: 'STARTED',
+        status: 'ACTIVE',
         leader: getNextLeader()
       })
       .eq('id', next_round.id)
