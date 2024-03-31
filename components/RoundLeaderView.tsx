@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useState, useEffect } from 'react'
-import { Text, View, Image, TextInput } from 'react-native'
+import { Text, View, SafeAreaView, Image, TextInput } from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 
@@ -20,7 +20,7 @@ interface RoundLeaderViewProps {
   room_code?: string
   submissions: Submission[]
   startRound: (round: Round, word: string) => void
-  acceptSubmission: (round: Round, player: User) => void
+  acceptSubmission: (round: Round, player: User, submission: Submission) => void
 }
 const RoundLeaderView: FunctionComponent<RoundLeaderViewProps> = (props) => {
   const { user, round, players, room_code, startRound, submissions, acceptSubmission } = props
@@ -38,7 +38,7 @@ const RoundLeaderView: FunctionComponent<RoundLeaderViewProps> = (props) => {
       return <RoundActive round={round} roundWord={roundWord} setRoundWord={setRoundWord} startRound={startRound} />
     default:
       // Fallback in case we end up in an unexpected state
-      return <FallbackState />
+      return <FallbackState status={round.status} />
   }
 }
 
@@ -116,9 +116,14 @@ const RoundActive: FunctionComponent<{round: Round, setRoundWord: any, roundWord
   )
 }
 
-const FallbackState = () => {
+const FallbackState: FunctionComponent<{status: string}> = (props) => {
+  const { status } = props
   return (
-    <View><Text>eh?</Text></View>
+    <SafeAreaView className="bg-white flex-1">
+      <View className="flex-1">
+        <Text>{status}</Text>
+      </View>
+    </SafeAreaView>
   )
 }
 
@@ -136,7 +141,7 @@ interface RoundPlayersProps {
   user: User, 
   players: User[], 
   submissions: Submission[], 
-  acceptSubmission: (round: Round, player: User) => void, 
+  acceptSubmission: (round: Round, player: User, submission: Submission | undefined) => void, 
   round: Round
 }
 const RoundPlayers: FunctionComponent<RoundPlayersProps> = (props) => {
@@ -147,8 +152,6 @@ const RoundPlayers: FunctionComponent<RoundPlayersProps> = (props) => {
   */
   return (
     <View className="flex-row flex-wrap">
-      <Text>Players</Text>
-      {/* Show each of the other player's */}
       {players.map((player: User) => {
 
         if (player.id === user.id) { return }
@@ -181,7 +184,7 @@ const RoundPlayers: FunctionComponent<RoundPlayersProps> = (props) => {
             <TouchableOpacity
               onPress={() => {
                 // set the round winner
-                acceptSubmission(round, player)
+                acceptSubmission(round, player, submission)
               }}
             >
               <Text>Accept</Text>
