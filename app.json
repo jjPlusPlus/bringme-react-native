@@ -3,14 +3,40 @@
     "name": "bringMeNative",
     "slug": "bringMeNative",
     "version": "1.0.0",
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "android": {
-      "package": "com.bringMeNative"
-    },
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
     "ios": {
-      "bundleIdentifier": "com.bringMeNative"
-    }
+      "supportsTablet": true,
+      "bundleIdentifier": "com.bringMeNative",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSCameraUsageDescription": "This app requires access to the camera for video chat.",
+        "NSMicrophoneUsageDescription": "This app requires access to the microphone for audio chat."
+      }
+      
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "be2f3973-9a1a-4f0f-8ca3-48a9bb562a6d"
+      }
+    },
+    "plugins": [
+      "expo-font",
+      "expo-secure-store",
+      "expo-asset",
+      "@config-plugins/react-native-webrtc"
+    ],
+    "owner": "jjplusplus",
+    "platforms": [
+      "ios",
+      "android"
+    ]
   }
 }

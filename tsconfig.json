@@ -7,9 +7,9 @@
     ],
     "moduleResolution": "node",
     "noEmit": true,
-    "skipLibCheck": false,
+    "skipLibCheck": true,
     "resolveJsonModule": true,
-    "strict": true
+    "strict": true,
   },
   "extends": "expo/tsconfig.base"
 }

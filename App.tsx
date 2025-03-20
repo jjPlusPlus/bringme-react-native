@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { StyleSheet, Linking } from 'react-native'
+import 'expo-dev-client'
 
 // import 'react-native-gesture-handler'
 import { NavigationContainer } from '@react-navigation/native'

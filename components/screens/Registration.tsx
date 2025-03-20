@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { supabase } from '../../supabase/init'
 
-import { StyleSheet, Text, TextInput, TouchableOpacity, View, Alert, Image } from 'react-native'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { StyleSheet, Text, TextInput, TouchableOpacity, View, Alert, Image, KeyboardAvoidingView } from 'react-native'
 
 import { styled } from 'nativewind'
 import pen from '../../assets/register.png'
@@ -72,9 +71,9 @@ export default function Register({ navigation }: Props) {
 
   return (
     <View className="bg-white flex-1 w-full">
-      <KeyboardAwareScrollView
-        contentContainerStyle={styles.scrollView}
-        keyboardShouldPersistTaps="always"
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{ flex: 1 }}
       >
         <Image source={pen} className="h-40 m-4 -mt-12 mb-8" resizeMode="contain" />
         <StyledInput
@@ -120,7 +119,7 @@ export default function Register({ navigation }: Props) {
         <View className="items-center pt-4">
           <Text className="font-bold text-bmBlue text-xl uppercase" onPress={() => navigation.navigate('Login')}>Sign In</Text>
         </View>
-      </KeyboardAwareScrollView >
+      </KeyboardAvoidingView>
     </View >
   )
 

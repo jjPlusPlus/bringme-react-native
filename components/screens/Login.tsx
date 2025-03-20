@@ -1,8 +1,6 @@
 import React, { useState } from 'react'
 import { supabase } from '../../supabase/init'
-
-import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View, Alert, Linking } from 'react-native'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View, Alert, Linking, KeyboardAvoidingView, Platform } from 'react-native'
 
 import { RootStackParamList } from '../../App'
 import { StackNavigationProp } from '@react-navigation/stack'
@@ -61,8 +59,10 @@ export default function Login({ navigation }: Props) {
           resizeMode='contain'
         />
       </View>
-      <KeyboardAwareScrollView
-        keyboardShouldPersistTaps="always">
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{ flex: 1 }}
+      >
         <View className="p-4">
           <Image
             source={require('../../assets/hero.png')}
@@ -115,9 +115,14 @@ export default function Login({ navigation }: Props) {
           <Text style={styles.signUpText}>
             Don't have an account? <Text style={{ color: '#2568EF' }} onPress={() => navigation.navigate('Register')}>Sign Up</Text>
           </Text>
+          <TouchableOpacity onPress={() => navigation.navigate('VideoChat')}>
+            <Text>
+              Video Chat Test
+            </Text>
+          </TouchableOpacity>
         </View>
 
-      </KeyboardAwareScrollView>
+      </KeyboardAvoidingView>
     </View>
   )
 

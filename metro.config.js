@@ -1,21 +1,5 @@
+const { getDefaultConfig } = require('@expo/metro-config');
 
-const {getDefaultConfig} = require('metro-config');
-const {resolver: defaultResolver} = getDefaultConfig.getDefaultValues();
+const config = getDefaultConfig(__dirname);
 
-module.exports = {
-  // transformer: {
-  //   assetPlugins: ['expo-asset/tools/hashAssetFiles'],
-  // },
-  transformer: {
-    getTransformOptions: async () => ({
-      transform: {
-        experimentalImportSupport: false,
-        inlineRequires: true,
-      },
-    }),
-  },
-  resolver: {                              
-    sourceExts: ['jsx', 'js', 'json', 'ts', 'tsx', 'cjs'],
-  },
-}
-
+module.exports = config;
